@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="Description" content="">
+        <!--outillage, soudure, robotique, conception 3D, robot, entreprise france-->
+        <meta name="keywords" content="">
+        <meta name="copyright" content="">
+        <link rel="icon" type="image/png" href="dist/images/favicon.png">
+        <title>AGC - Hallowen</title>
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css"
+         integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI="
+         crossorigin=""/>
+        <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"
+         integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM="
+         crossorigin=""></script>
+    </head>
+    <body>
+        <div id="map" class="mapContainer" style="width: 100%; height: 100%; position: absolute;"></div>
+        <script>
+            //maps
+            var map = L.map('map',{zoomControl: false}).setView([47.3361765,5.1518826], 16);
+            L.tileLayer('http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',
+             {
+                subdomains:['mt0','mt1','mt2','mt3'],
+                attribution: '&copy; <a href="http://www.openstreetmap.org/copyright" title="map">OpenStreetMap</a>'
+            }).addTo(map);
+
+
+            let customIcon = {
+ iconUrl:"picto.png",
+ iconSize:[30,30]
+}
+let myIcon = L.icon(customIcon);
+
+let iconOptions = {
+ title:"citrouille",
+ draggable:true,
+ icon:myIcon
+}
+let marker = new L.Marker([47.3361765,5.1518826] , iconOptions).addTo(map);
+        
+            </script>
+    </body>
+</html>
