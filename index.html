@@ -21,27 +21,44 @@
         <div id="map" class="mapContainer" style="width: 100%; height: 100%; position: absolute;"></div>
         <script>
             //maps
-            var map = L.map('map',{zoomControl: false}).setView([47.3361765,5.1518826], 16);
+            var map = L.map('map',{zoomControl: true}).setView([47.3361765,5.1518826], 16);
             L.tileLayer('http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',
              {
                 subdomains:['mt0','mt1','mt2','mt3'],
                 attribution: '&copy; <a href="http://www.openstreetmap.org/copyright" title="map">OpenStreetMap</a>'
             }).addTo(map);
 
-
             let customIcon = {
- iconUrl:"picto.png",
- iconSize:[30,30]
-}
-let myIcon = L.icon(customIcon);
+                iconUrl:"picto.png",
+                iconSize:[40,40]
+                }
+            let myIcon = L.icon(customIcon);
 
-let iconOptions = {
- title:"citrouille",
- draggable:true,
- icon:myIcon
-}
-let marker = new L.Marker([47.3361765,5.1518826] , iconOptions).addTo(map);
-        
+            let iconOptions = {
+            title:"citrouille",
+            draggable:false,
+            icon:myIcon
+            }
+            
+            let marker1 = new L.Marker([47.331484, 5.156729] , iconOptions).bindTooltip("1", { permanent: true, direction: 'top'}).addTo(map);
+            let marker2 = new L.Marker([47.331693, 5.154582] , iconOptions).bindTooltip("2", { permanent: true, direction: 'top'}).addTo(map);
+            let marker3 = new L.Marker([47.332244, 5.154542] , iconOptions).bindTooltip("3", { permanent: true, direction: 'top'}).addTo(map);
+            let marker4 = new L.Marker([47.332224, 5.153939] , iconOptions).bindTooltip("4", { permanent: true, direction: 'top'}).addTo(map);
+            let marker5 = new L.Marker([47.331878, 5.152650] , iconOptions).bindTooltip("5", { permanent: true, direction: 'top'}).addTo(map);
+            let marker6 = new L.Marker([47.331446, 5.152159] , iconOptions).bindTooltip("6", { permanent: true, direction: 'top'}).addTo(map);
+            let marker7 = new L.Marker([47.334267, 5.154304] , iconOptions).bindTooltip("7", { permanent: true, direction: 'top'}).addTo(map);
+            let marker8 = new L.Marker([47.334399, 5.149966] , iconOptions).bindTooltip("8", { permanent: true, direction: 'top'}).addTo(map);
+            let marker9 = new L.Marker([47.334338, 5.149016] , iconOptions).bindTooltip("9", { permanent: true, direction: 'top'}).addTo(map);
+            let marker10 = new L.Marker([47.333882, 5.148400] , iconOptions).bindTooltip("10", { permanent: true, direction: 'top'}).addTo(map);
+            let marker11 = new L.Marker([47.332713, 5.148748] , iconOptions).bindTooltip("11", { permanent: true, direction: 'top'}).addTo(map);
+            let marker12 = new L.Marker([47.334905, 5.148384] , iconOptions).bindTooltip("12", { permanent: true, direction: 'top'}).addTo(map);
+            let marker13 = new L.Marker([47.334862, 5.149969] , iconOptions).bindTooltip("13", { permanent: true, direction: 'top'}).addTo(map);
+            let marker14 = new L.Marker([47.335400, 5.150589] , iconOptions).bindTooltip("14", { permanent: true, direction: 'top'}).addTo(map);
+            let marker15 = new L.Marker([47.336126, 5.150325] , iconOptions).bindTooltip("15", { permanent: true, direction: 'top'}).addTo(map);
+            let marker16 = new L.Marker([47.337448, 5.149531] , iconOptions).bindTooltip("16", { permanent: true, direction: 'top'}).addTo(map);
+            let marker17 = new L.Marker([47.337738, 5.147247] , iconOptions).bindTooltip("17", { permanent: true, direction: 'top'}).addTo(map);
+
+
             </script>
     </body>
 </html>
