@@ -28,6 +28,8 @@
                 attribution: '&copy; <a href="http://www.openstreetmap.org/copyright" title="map">OpenStreetMap</a>'
             }).addTo(map);
 
+            map.locate({setView: true, maxZoom: 16});
+
             let customIcon = {
                 iconUrl:"picto.png",
                 iconSize:[40,40]
@@ -57,6 +59,22 @@
             let marker15 = new L.Marker([47.336126, 5.150325] , iconOptions).bindTooltip("15", { permanent: true, direction: 'top'}).addTo(map);
             let marker16 = new L.Marker([47.337448, 5.149531] , iconOptions).bindTooltip("16", { permanent: true, direction: 'top'}).addTo(map);
             let marker17 = new L.Marker([47.337738, 5.147247] , iconOptions).bindTooltip("17", { permanent: true, direction: 'top'}).addTo(map);
+
+            map.on('locationfound', onLocationFound);
+            map.on('locationerror', onLocationError);
+
+            function onLocationFound(e) {
+                var radius = e.accuracy;
+
+                L.marker(e.latlng).addTo(map)
+                    .bindPopup("Je suis à " + radius + " mètre de ce point").openPopup();
+
+                L.circle(e.latlng, radius).addTo(map);
+            }
+
+            function onLocationError(e) {
+                alert(e.message);
+            }
         </script>
     </body>
 </html>
