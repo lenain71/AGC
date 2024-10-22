@@ -21,7 +21,7 @@
             #message {
             display: none;
             background-color: violet;
-            padding: 20px;
+            padding: 30px;
             border: 1px solid black;
             position: fixed;
             top: 50%;
@@ -137,13 +137,12 @@
                 var radius = e.accuracy;
 
                 currentPositionMarker = L.marker(e.latlng,{zIndexOffset: 1000}).addTo(map);
-                    //.bindPopup("Je suis à " + radius + " mètre de ce point").openPopup();
 
-                    currentPositionCircle = L.circle(e.latlng, radius).addTo(map);
+                currentPositionCircle = L.circle(e.latlng, radius).addTo(map);
             }
 
             function onLocationError(e) {
-                alert(e.message);
+                alert("La géolocalisation n'est pas disponible sur votre appareil ou a été refusée !");
             }
 
             function updatePosition(position) {
@@ -168,6 +167,19 @@
                         }, 60000);
                     }
                 });
+            }
+
+            function test(distance) {
+            
+                    if(distance <= 5 && !alertCooldown) {
+                        vibrateDevice();
+                        document.getElementById('message').style.display = 'block';
+                        alertCooldown = true;
+                        setTimeout(() => {
+                            alertCooldown = false;
+                            document.getElementById('message').style.display = 'none';
+                        }, 60000);
+                    }
             }
 
 
@@ -208,8 +220,11 @@
             }
             else
              {
-                alert("La géolocalisation n'est pas disponible sur votre apparreil !");
+                alert("La géolocalisation n'est pas disponible sur votre appareil !");
              }
+
+             test(4);
+
         </script>
     </body>
 </html>
