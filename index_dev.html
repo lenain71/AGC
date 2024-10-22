@@ -42,7 +42,7 @@
             let iconOptions = {
             title:"citrouille",
             draggable:false,
-            icon:myIcon
+            icon:myIcon,
             }
             
             let marker1 = new L.Marker([47.331484, 5.156729] , iconOptions).bindTooltip("1", { permanent: true, direction: 'top'}).addTo(map);
@@ -69,7 +69,7 @@
             function onLocationFound(e) {
                 var radius = e.accuracy;
 
-                currentPositionMarker = L.marker(e.latlng).addTo(map);
+                currentPositionMarker = L.marker(e.latlng,{zIndexOffset: 1000}).addTo(map);
                     //.bindPopup("Je suis à " + radius + " mètre de ce point").openPopup();
 
                     currentPositionCircle = L.circle(e.latlng, radius).addTo(map);
