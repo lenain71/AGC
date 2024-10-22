@@ -45,23 +45,58 @@
             icon:myIcon,
             }
             
+            let markers = [];
+
             let marker1 = new L.Marker([47.331484, 5.156729] , iconOptions).bindTooltip("1", { permanent: true, direction: 'top'}).addTo(map);
+            markers.push(marker1);
+
             let marker2 = new L.Marker([47.331693, 5.154582] , iconOptions).bindTooltip("2", { permanent: true, direction: 'top'}).addTo(map);
+            markers.push(marker2);
+
             let marker3 = new L.Marker([47.332244, 5.154542] , iconOptions).bindTooltip("3", { permanent: true, direction: 'top'}).addTo(map);
+            markers.push(marker3);
+
             let marker4 = new L.Marker([47.332224, 5.153939] , iconOptions).bindTooltip("4", { permanent: true, direction: 'top'}).addTo(map);
+            markers.push(marker4);
+
             let marker5 = new L.Marker([47.331878, 5.152650] , iconOptions).bindTooltip("5", { permanent: true, direction: 'top'}).addTo(map);
+            markers.push(marker5);
+
             let marker6 = new L.Marker([47.331446, 5.152159] , iconOptions).bindTooltip("6", { permanent: true, direction: 'top'}).addTo(map);
+            markers.push(marker6);
+
             let marker7 = new L.Marker([47.334267, 5.154304] , iconOptions).bindTooltip("7", { permanent: true, direction: 'top'}).addTo(map);
+            markers.push(marker7);
+
             let marker8 = new L.Marker([47.334399, 5.149966] , iconOptions).bindTooltip("8", { permanent: true, direction: 'top'}).addTo(map);
+            markers.push(marker8);
+
             let marker9 = new L.Marker([47.334338, 5.149016] , iconOptions).bindTooltip("9", { permanent: true, direction: 'top'}).addTo(map);
+            markers.push(marker9);
+
             let marker10 = new L.Marker([47.333882, 5.148400] , iconOptions).bindTooltip("10", { permanent: true, direction: 'top'}).addTo(map);
+            markers.push(marker10);
+
             let marker11 = new L.Marker([47.332713, 5.148748] , iconOptions).bindTooltip("11", { permanent: true, direction: 'top'}).addTo(map);
+            markers.push(marker11);
+
             let marker12 = new L.Marker([47.334905, 5.148384] , iconOptions).bindTooltip("12", { permanent: true, direction: 'top'}).addTo(map);
+            markers.push(marker12);
+
             let marker13 = new L.Marker([47.334862, 5.149969] , iconOptions).bindTooltip("13", { permanent: true, direction: 'top'}).addTo(map);
+            markers.push(marker13);
+
             let marker14 = new L.Marker([47.335400, 5.150589] , iconOptions).bindTooltip("14", { permanent: true, direction: 'top'}).addTo(map);
+            markers.push(marker14);
+
             let marker15 = new L.Marker([47.336126, 5.150325] , iconOptions).bindTooltip("15", { permanent: true, direction: 'top'}).addTo(map);
+            markers.push(marker15);
+
             let marker16 = new L.Marker([47.337448, 5.149531] , iconOptions).bindTooltip("16", { permanent: true, direction: 'top'}).addTo(map);
+            markers.push(marker16);
+
             let marker17 = new L.Marker([47.337738, 5.147247] , iconOptions).bindTooltip("17", { permanent: true, direction: 'top'}).addTo(map);
+            markers.push(marker17);        
 
             map.on('locationfound', onLocationFound);
             map.on('locationerror', onLocationError);
@@ -86,6 +121,30 @@
 
                 currentPositionMarker.setLatLng([lat,long]);
                 currentPositionCircle.setLatLng([lat,long]).setRadius(radius);
+
+                //vérification de distance aux points
+                markers.forEach(point => {
+                    var distance = getDistanceFromLocationInMeters(lat,long,point._latlng.lat,point._latlng.lng);
+
+                    if(distance <= 5) {
+                        alert("Tu chauffes... 🎃👻🕷️");
+                    }
+                });
+            }
+
+            function getDistanceFromLocationInMeters(currLat,currLong,destLat,destLong) { 
+                var R = 6371000;
+                var dLat = (destLat - currLat) * Math.PI / 180;
+                var dLong = (destLong - currLong) * Math.PI / 180;
+
+                var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + 
+                        Math.cos(currLat * Math.PI / 180) * Math.cos(destLat * Math.PI / 180) * 
+                        Math.sin(dLong / 2) * Math.sin(dLong / 2);
+                
+                var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+                var d = R * c;
+                return d;
+
             }
 
             if(navigator.geolocation) {
