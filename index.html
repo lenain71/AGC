@@ -28,16 +28,21 @@
                 attribution: '&copy; <a href="http://www.openstreetmap.org/copyright" title="map">OpenStreetMap</a>'
             }).addTo(map);
 
+            map.locate({setView: true, maxZoom: 16});
+
             let customIcon = {
                 iconUrl:"picto.png",
                 iconSize:[40,40]
                 }
             let myIcon = L.icon(customIcon);
 
+            let currentPositionMarker;
+            let currentPositionCircle;
+
             let iconOptions = {
             title:"citrouille",
             draggable:false,
-            icon:myIcon
+            icon:myIcon,
             }
             
             let marker1 = new L.Marker([47.331484, 5.156729] , iconOptions).bindTooltip("1", { permanent: true, direction: 'top'}).addTo(map);
@@ -57,6 +62,46 @@
             let marker15 = new L.Marker([47.336126, 5.150325] , iconOptions).bindTooltip("15", { permanent: true, direction: 'top'}).addTo(map);
             let marker16 = new L.Marker([47.337448, 5.149531] , iconOptions).bindTooltip("16", { permanent: true, direction: 'top'}).addTo(map);
             let marker17 = new L.Marker([47.337738, 5.147247] , iconOptions).bindTooltip("17", { permanent: true, direction: 'top'}).addTo(map);
+
+            map.on('locationfound', onLocationFound);
+            map.on('locationerror', onLocationError);
+
+            function onLocationFound(e) {
+                var radius = e.accuracy;
+
+                currentPositionMarker = L.marker(e.latlng,{zIndexOffset: 1000}).addTo(map);
+                    //.bindPopup("Je suis à " + radius + " mètre de ce point").openPopup();
+
+                    currentPositionCircle = L.circle(e.latlng, radius).addTo(map);
+            }
+
+            function onLocationError(e) {
+                alert(e.message);
+            }
+
+            function updatePosition(position) {
+                var lat = position.coords.latitude;
+                var long = position.coords.longitude;
+                var radius = position.coords.accuracy;
+
+                currentPositionMarker.setLatLng([lat,long]);
+                currentPositionCircle.setLatLng([lat,long]).setRadius(radius);
+            }
+
+            if(navigator.geolocation) {
+                navigator.geolocation.watchPosition(updatePosition,function(error) {
+                    console.log(error);
+                },
+                {
+                    enableHighAccuracy: true,
+                    maximumAge: 0,
+                    timeout: 27000
+                })
+            }
+            else
+             {
+                alert("La géolocalisation n'est pas disponible sur votre apparreil !");
+             }
         </script>
     </body>
 </html>
