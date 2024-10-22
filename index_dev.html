@@ -169,19 +169,6 @@
                 });
             }
 
-            function checkDistance(distance) {
-             
-                    if(distance <= 5 && !alertCooldown) {
-                        vibrateDevice();
-                        document.getElementById('message').style.display = 'block';
-                        alertCooldown = true;
-                        setTimeout(() => {
-                            alertCooldown = false;
-                            document.getElementById('message').style.display = 'none';
-                        }, 60000);
-                    }
-              
-            }
 
             function getDistanceFromLocationInMeters(currLat,currLong,destLat,destLong) { 
                 var R = 6371000;
@@ -222,9 +209,6 @@
              {
                 alert("La géolocalisation n'est pas disponible sur votre apparreil !");
              }
-
-              // Exemple d'utilisation
-        checkDistance(4); // Simule une distance de 4 mètres
         </script>
     </body>
 </html>
