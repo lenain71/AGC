@@ -16,8 +16,37 @@
         <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"
          integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM="
          crossorigin=""></script>
+
+         <style>
+            #message {
+            display: none;
+            background-color: violet;
+            padding: 20px;
+            border: 1px solid black;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1000; /* Assurez-vous que le message est au-dessus de la carte */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            }
+
+            #close-btn {
+                position: absolute;
+            top: 5px;
+            right: 0px;
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+        }
+        </style>
     </head>
     <body>
+        <div id="message">
+            Tu chauffes... 🎃👻🕷️
+            <button id="close-btn" onclick="closeMessage()">X</button>
+        </div>
         <div id="map" class="mapContainer" style="width: 100%; height: 100%; position: absolute;"></div>
         <script>
             //maps
@@ -130,13 +159,28 @@
 
                     if(distance <= 5 && !alertCooldown) {
                         vibrateDevice();
-                        alert("Tu chauffes... 🎃👻🕷️");
+                        document.getElementById('message').style.display = 'block';
                         alertCooldown = true;
                         setTimeout(() => {
                             alertCooldown = false;
+                            document.getElementById('message').style.display = 'none';
                         }, 60000);
                     }
                 });
+            }
+
+            function checkDistance(distance) {
+             
+                    if(distance <= 5 && !alertCooldown) {
+                        vibrateDevice();
+                        document.getElementById('message').style.display = 'block';
+                        alertCooldown = true;
+                        setTimeout(() => {
+                            alertCooldown = false;
+                            document.getElementById('message').style.display = 'none';
+                        }, 60000);
+                    }
+              
             }
 
             function getDistanceFromLocationInMeters(currLat,currLong,destLat,destLong) { 
@@ -160,6 +204,10 @@
                 }
             }
 
+            function closeMessage() {
+            document.getElementById('message').style.display = 'none';
+        }
+
             if(navigator.geolocation) {
                 navigator.geolocation.watchPosition(updatePosition,function(error) {
                     console.log(error);
@@ -174,6 +222,9 @@
              {
                 alert("La géolocalisation n'est pas disponible sur votre apparreil !");
              }
+
+              // Exemple d'utilisation
+        checkDistance(4); // Simule une distance de 4 mètres
         </script>
     </body>
 </html>
