@@ -82,11 +82,10 @@
             function updatePosition(position) {
                 var lat = position.coords.latitude;
                 var long = position.coords.longitude;
-                var radius = position.accuracy;
+                var radius = position.coords.accuracy;
 
                 currentPositionMarker.setLatLng([lat,long]);
-                currentPositionCircle.setLatLng([lat,long]);
-                //currentPositionCircle.setRadius(radius);
+                currentPositionCircle.setLatLng([lat,long]).setRadius(radius);
 
                 //map.setView([lat,long]);
             }
