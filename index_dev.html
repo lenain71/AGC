@@ -37,6 +37,7 @@
             let myIcon = L.icon(customIcon);
 
             let currentPositionMarker;
+            let currentPositionCircle;
 
             let iconOptions = {
             title:"citrouille",
@@ -68,10 +69,10 @@
             function onLocationFound(e) {
                 var radius = e.accuracy;
 
-                currentPositionMarker = L.marker(e.latlng).addTo(map)
-                    .bindPopup("Je suis à " + radius + " mètre de ce point").openPopup();
+                currentPositionMarker = L.marker(e.latlng).addTo(map);
+                    //.bindPopup("Je suis à " + radius + " mètre de ce point").openPopup();
 
-                L.circle(e.latlng, radius).addTo(map);
+                    currentPositionCircle = L.circle(e.latlng, radius).addTo(map);
             }
 
             function onLocationError(e) {
@@ -81,10 +82,13 @@
             function updatePosition(position) {
                 var lat = position.coords.latitude;
                 var long = position.coords.longitude;
+                var radius = position.accuracy;
 
                 currentPositionMarker.setLatLng([lat,long]);
+                currentPositionCircle.setLatLng([lat,long]);
+                currentPositionCircle.setRadius(radius);
 
-                map.setView([lat,long]);
+                //map.setView([lat,long]);
             }
 
             if(navigator.geolocation) {
