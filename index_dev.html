@@ -36,6 +36,8 @@
                 }
             let myIcon = L.icon(customIcon);
 
+            let currentPositionMarker;
+
             let iconOptions = {
             title:"citrouille",
             draggable:false,
@@ -66,7 +68,7 @@
             function onLocationFound(e) {
                 var radius = e.accuracy;
 
-                L.marker(e.latlng).addTo(map)
+                currentPositionMarker = L.marker(e.latlng).addTo(map)
                     .bindPopup("Je suis à " + radius + " mètre de ce point").openPopup();
 
                 L.circle(e.latlng, radius).addTo(map);
@@ -75,6 +77,30 @@
             function onLocationError(e) {
                 alert(e.message);
             }
+
+            function updatePosition(position) {
+                var lat = position.coords.latitude;
+                var long = position.coords.longitude;
+
+                currentPositionMarker.setLatLng([lat,long]);
+
+                map.setView([lat,long]);
+            }
+
+            if(navigator.geolocation) {
+                navigator.geolocation.watchPosition(updatePosition,function(error) {
+                    console.log(error);
+                },
+                {
+                    enableHighAccuracy: true,
+                    maximumAge: 0,
+                    timeout: 27000
+                })
+            }
+            else
+             {
+                alert("La géolocalisation n'est pas disponible sur votre apparreil !");
+             }
         </script>
     </body>
 </html>
