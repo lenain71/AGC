@@ -47,6 +47,8 @@
             
             let markers = [];
 
+            var alertCooldown = false;
+
             let marker1 = new L.Marker([47.331484, 5.156729] , iconOptions).bindTooltip("1", { permanent: true, direction: 'top'}).addTo(map);
             markers.push(marker1);
 
@@ -126,8 +128,13 @@
                 markers.forEach(point => {
                     var distance = getDistanceFromLocationInMeters(lat,long,point._latlng.lat,point._latlng.lng);
 
-                    if(distance <= 5) {
+                    if(distance <= 5 && !alertCooldown) {
+                        vibrateDevice();
                         alert("Tu chauffes... 🎃👻🕷️");
+                        alertCooldown = true;
+                        setTimeout(() => {
+                            alertCooldown = false;
+                        }, 60000);
                     }
                 });
             }
@@ -145,6 +152,12 @@
                 var d = R * c;
                 return d;
 
+            }
+
+            function vibrateDevice() {
+                if("vibrate" in navigator) {
+                    navigator.vibrate(200);
+                }
             }
 
             if(navigator.geolocation) {
