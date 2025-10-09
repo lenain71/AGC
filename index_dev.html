@@ -90,7 +90,7 @@
             <button id="close-btn" onclick="closeMessage()">X</button>
         </div> -->
          <!-- Popup temporaire ("Tu chauffes...") -->
-        <div id="temp-message">Tu chauffes... 🔥</div>
+        <div id="temp-message">Tu chauffes... 🔥🎃👻🕷️</div>
          <!-- Popup permanente (lettres/icônes) -->
         <div id="letter-message">
             <span id="letter-content"></span>
@@ -232,19 +232,24 @@ navigator.geolocation.watchPosition(position => {
                 currentPositionMarker.setLatLng([lat,long]);
                 currentPositionCircle.setLatLng([lat,long]).setRadius(radius);
 
-                //vérification de distance aux points
-                markers.forEach(point => {
-                    var distance = getDistanceFromLocationInMeters(lat,long,point._latlng.lat,point._latlng.lng);
+                //test
+                showLetterMessage(markerContents[marker.options.title]);
 
-                    //if (distance <= 8 && distance > 3 && !cooldown.temp) {
-                    if (distance <= 8 && distance > 3) {
+                //vérification de distance aux points
+                markers.forEach(marker => {
+                    var distance = getDistanceFromLocationInMeters(lat,long,marker._latlng.lat,marker._latlng.lng);
+
+                    console.log("Point " + marker.options.title + " : " + markerContents[marker.options.title]);
+
+                    if (distance <= 8 && distance > 3 && !cooldown.temp) {
+                    //if (distance <= 8 && distance > 3) {
                         vibrateDevice(100);
                         showTempMessage();
                         cooldown.temp = true;
                         setTimeout(() => { cooldown.temp = false; }, 5000);
                     }
-                    //else if (distance <= 3 && !cooldown.letter) {
-                    else if (distance <= 3) {
+                    else if (distance <= 3 && !cooldown.letter) {
+                    //else if (distance <= 3) {
                          vibrateDevice(300);
                         showLetterMessage(markerContents[marker.options.title]);
                         markAsVisited(marker.options.title);
