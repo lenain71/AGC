@@ -236,13 +236,15 @@ navigator.geolocation.watchPosition(position => {
                 markers.forEach(point => {
                     var distance = getDistanceFromLocationInMeters(lat,long,point._latlng.lat,point._latlng.lng);
 
-                    if (distance <= 8 && distance > 3 && !cooldown.temp) {
+                    //if (distance <= 8 && distance > 3 && !cooldown.temp) {
+                    if (distance <= 8 && distance > 3) {
                         vibrateDevice(100);
                         showTempMessage();
                         cooldown.temp = true;
                         setTimeout(() => { cooldown.temp = false; }, 5000);
                     }
-                    else if (distance <= 3 && !cooldown.letter) {
+                    //else if (distance <= 3 && !cooldown.letter) {
+                    else if (distance <= 3) {
                          vibrateDevice(300);
                         showLetterMessage(markerContents[marker.options.title]);
                         markAsVisited(marker.options.title);

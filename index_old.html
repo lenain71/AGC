@@ -160,7 +160,8 @@
                 markers.forEach(point => {
                     var distance = getDistanceFromLocationInMeters(lat,long,point._latlng.lat,point._latlng.lng);
 
-                    if(distance <= 5 && !alertCooldown) {
+                    //if(distance <= 5 && !alertCooldown) {
+                    if(distance <= 5) {
                         vibrateDevice();
                         document.getElementById('message').style.display = 'block';
                         alertCooldown = true;
@@ -174,7 +175,7 @@
 
             function test(distance) {
             
-                    if(distance <= 5 && !alertCooldown) {
+                    if(distance <= 5) {
                         vibrateDevice();
                         document.getElementById('message').style.display = 'block';
                         alertCooldown = true;
