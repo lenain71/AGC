@@ -1,107 +1,129 @@
 <!DOCTYPE html>
 <html lang="fr">
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
-        <meta name="Description" content="">
-        <!--outillage, soudure, robotique, conception 3D, robot, entreprise france-->
-        <meta name="keywords" content="">
-        <meta name="copyright" content="">
-        <link rel="icon" type="image/png" href="dist/images/favicon.png">
-        <title>AGC - Hallowen</title>
-        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css"
-         integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI="
-         crossorigin=""/>
-        <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"
-         integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM="
-         crossorigin=""></script>
-    </head>
-    <body>
-        <div id="map" class="mapContainer" style="width: 100%; height: 100%; position: absolute;"></div>
-        <script>
-            //maps
-            var map = L.map('map',{zoomControl: true}).setView([47.3361765,5.1518826], 16);
-            L.tileLayer('http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',
-             {
-                subdomains:['mt0','mt1','mt2','mt3'],
-                attribution: '&copy; <a href="http://www.openstreetmap.org/copyright" title="map">OpenStreetMap</a>'
-            }).addTo(map);
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AGC - Halloween | Bientôt disponible...</title>
+    <link href="https://fonts.googleapis.com/css2?family=Creepster&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background-color: #121212;
+            color: #fff;
+            font-family: 'Creepster', cursive;
+            height: 100vh;
+            overflow: hidden;
+            background-image: url('https://media.giphy.com/media/l0HlNaQ6gWfllcjDO/giphy.gif');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+        .overlay {
+            background-color: rgba(0, 0, 0, 0.7);
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+            position: relative;
+        }
+        h1 {
+            font-size: clamp(2rem, 8vw, 3.5rem);
+            margin-bottom: 15px;
+            color: #ff6b00;
+            text-shadow: 0 0 10px #ff00de, 0 0 20px #ff6b00;
+            animation: flicker 1.5s infinite alternate;
+            line-height: 1.2;
+        }
+        p {
+            font-size: clamp(1rem, 4vw, 1.5rem);
+            margin-bottom: 20px;
+            color: #fff;
+            font-family: 'Arial', sans-serif;
+            padding: 0 10px;
+        }
+        .pumpkin {
+            font-size: clamp(2.5rem, 12vw, 4rem);
+            margin-bottom: 15px;
+            animation: bounce 2s infinite;
+        }
+        .spider {
+            position: absolute;
+            animation: moveSpider linear infinite;
+            font-size: clamp(1.2rem, 6vw, 2rem);
+            z-index: 10;
+        }
+        .spider:nth-child(1) { animation-duration: 10s; }
+        .spider:nth-child(2) { animation-duration: 12s; }
+        @keyframes flicker {
+            0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { text-shadow: 0 0 10px #ff00de, 0 0 20px #ff6b00; }
+            20%, 24%, 55% { text-shadow: none; }
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+        @keyframes moveSpider {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            25% { transform: translate(calc(80vw - 20px), calc(40vh - 20px)) rotate(90deg); }
+            50% { transform: translate(calc(30vw - 20px), calc(80vh - 20px)) rotate(180deg); }
+            75% { transform: translate(calc(70vw - 20px), calc(20vh - 20px)) rotate(270deg); }
+            100% { transform: translate(0, 0) rotate(360deg); }
+        }
+        .countdown {
+            font-size: clamp(1rem, 4vw, 1.5rem);
+            margin-top: 15px;
+            color: #00ff7f;
+            font-family: 'Arial', sans-serif;
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 8px 15px;
+            border-radius: 10px;
+            border: 1px solid #ff6b00;
+        }
+        @media (max-width: 600px) {
+            .spider { font-size: 1.2rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="overlay">
+        <div class="spider">🕷️</div>
+        <div class="spider" style="top: 10%; right: 5%;">🕸️</div>
+        <div class="pumpkin">🎃</div>
+        <h1>La chasse<br>va commencer...</h1>
+        <p>Prépare-toi pour une aventure effrayante !<br>Notre jeu Halloween arrive très vite...</p>
+        <div class="countdown" id="countdown"></div>
+    </div>
 
-            map.locate({setView: true, maxZoom: 16});
+    <script>
+        function updateCountdown() {
+            const now = new Date();
+            const eventDate = new Date("Oct 14, 2025 10:00:00").getTime();
+            const diff = eventDate - now;
 
-            let customIcon = {
-                iconUrl:"picto.png",
-                iconSize:[40,40]
-                }
-            let myIcon = L.icon(customIcon);
-
-            let currentPositionMarker;
-            let currentPositionCircle;
-
-            let iconOptions = {
-            title:"citrouille",
-            draggable:false,
-            icon:myIcon,
+            if (diff <= 0) {
+                document.getElementById('countdown').textContent = "C'est l'heure ! Reviens bientôt !";
+                return;
             }
-            
-            let marker1 = new L.Marker([47.331484, 5.156729] , iconOptions).bindTooltip("1", { permanent: true, direction: 'top'}).addTo(map);
-            let marker2 = new L.Marker([47.331693, 5.154582] , iconOptions).bindTooltip("2", { permanent: true, direction: 'top'}).addTo(map);
-            let marker3 = new L.Marker([47.332244, 5.154542] , iconOptions).bindTooltip("3", { permanent: true, direction: 'top'}).addTo(map);
-            let marker4 = new L.Marker([47.332224, 5.153939] , iconOptions).bindTooltip("4", { permanent: true, direction: 'top'}).addTo(map);
-            let marker5 = new L.Marker([47.331878, 5.152650] , iconOptions).bindTooltip("5", { permanent: true, direction: 'top'}).addTo(map);
-            let marker6 = new L.Marker([47.331446, 5.152159] , iconOptions).bindTooltip("6", { permanent: true, direction: 'top'}).addTo(map);
-            let marker7 = new L.Marker([47.334267, 5.154304] , iconOptions).bindTooltip("7", { permanent: true, direction: 'top'}).addTo(map);
-            let marker8 = new L.Marker([47.334399, 5.149966] , iconOptions).bindTooltip("8", { permanent: true, direction: 'top'}).addTo(map);
-            let marker9 = new L.Marker([47.334338, 5.149016] , iconOptions).bindTooltip("9", { permanent: true, direction: 'top'}).addTo(map);
-            let marker10 = new L.Marker([47.333882, 5.148400] , iconOptions).bindTooltip("10", { permanent: true, direction: 'top'}).addTo(map);
-            let marker11 = new L.Marker([47.332713, 5.148748] , iconOptions).bindTooltip("11", { permanent: true, direction: 'top'}).addTo(map);
-            let marker12 = new L.Marker([47.334905, 5.148384] , iconOptions).bindTooltip("12", { permanent: true, direction: 'top'}).addTo(map);
-            let marker13 = new L.Marker([47.334862, 5.149969] , iconOptions).bindTooltip("13", { permanent: true, direction: 'top'}).addTo(map);
-            let marker14 = new L.Marker([47.335400, 5.150589] , iconOptions).bindTooltip("14", { permanent: true, direction: 'top'}).addTo(map);
-            let marker15 = new L.Marker([47.336126, 5.150325] , iconOptions).bindTooltip("15", { permanent: true, direction: 'top'}).addTo(map);
-            let marker16 = new L.Marker([47.337448, 5.149531] , iconOptions).bindTooltip("16", { permanent: true, direction: 'top'}).addTo(map);
-            let marker17 = new L.Marker([47.337738, 5.147247] , iconOptions).bindTooltip("17", { permanent: true, direction: 'top'}).addTo(map);
 
-            map.on('locationfound', onLocationFound);
-            map.on('locationerror', onLocationError);
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
 
-            function onLocationFound(e) {
-                var radius = e.accuracy;
+            document.getElementById('countdown').textContent =
+                days + "j " + hours + "h " + minutes + "m " + seconds + "s";
+        }
 
-                currentPositionMarker = L.marker(e.latlng,{zIndexOffset: 1000}).addTo(map);
-                    //.bindPopup("Je suis à " + radius + " mètre de ce point").openPopup();
-
-                    currentPositionCircle = L.circle(e.latlng, radius).addTo(map);
-            }
-
-            function onLocationError(e) {
-                alert(e.message);
-            }
-
-            function updatePosition(position) {
-                var lat = position.coords.latitude;
-                var long = position.coords.longitude;
-                var radius = position.coords.accuracy;
-
-                currentPositionMarker.setLatLng([lat,long]);
-                currentPositionCircle.setLatLng([lat,long]).setRadius(radius);
-            }
-
-            if(navigator.geolocation) {
-                navigator.geolocation.watchPosition(updatePosition,function(error) {
-                    console.log(error);
-                },
-                {
-                    enableHighAccuracy: true,
-                    maximumAge: 0,
-                    timeout: 27000
-                })
-            }
-            else
-             {
-                alert("La géolocalisation n'est pas disponible sur votre apparreil !");
-             }
-        </script>
-    </body>
+        setInterval(updateCountdown, 1000);
+        updateCountdown();
+    </script>
+</body>
 </html>
