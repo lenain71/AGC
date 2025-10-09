@@ -107,6 +107,11 @@
             }).addTo(map);
 
             map.locate({setView: true, maxZoom: 16});
+            const userMarker = L.marker([0, 0], { icon: L.icon({ iconUrl: 'https://cdn-icons-png.flaticon.com/512/684/684908.png', iconSize: [30, 30] }) }).addTo(map);
+navigator.geolocation.watchPosition(position => {
+    const { latitude, longitude } = position.coords;
+    userMarker.setLatLng([latitude, longitude]).bindTooltip(`Lat: ${latitude.toFixed(6)}, Lng: ${longitude.toFixed(6)}`).openTooltip();
+});
 
             let customIcon = {
                 iconUrl:"picto.png",
@@ -216,7 +221,7 @@
             }
 
         function onLocationError(e) {
-                alert("La géolocalisation n'est pas disponible sur votre appareil ou a été refusée !");
+                alert("La géolocalisation n'est pas disponible sur votre appareil ou a été refusée !" + e.message);
             }
 
         function updatePosition(position) {
@@ -230,26 +235,6 @@
                 //vérification de distance aux points
                 markers.forEach(point => {
                     var distance = getDistanceFromLocationInMeters(lat,long,point._latlng.lat,point._latlng.lng);
-
-                    if(distance <= 8 && !alertCooldown) {
-                        vibrateDevice();
-                        document.getElementById('message').style.display = 'block';
-                        alertCooldown = true;
-                        setTimeout(() => {
-                            alertCooldown = false;
-                            document.getElementById('message').style.display = 'none';
-                        }, 60000);
-                    }
-                     else if (distance <= 3) {
-                        vibrateDevice();
-                        showPopup(markerContents[marker.options.title], 5000);
-                        markAsVisited(marker.options.title);
-                        alertCooldown = true;
-                        setTimeout(() => { alertCooldown = false; }, 60000);
-                    }
-
-
-
 
                     if (distance <= 8 && distance > 3 && !cooldown.temp) {
                         vibrateDevice(100);
@@ -266,20 +251,6 @@
                     }
                 });
             }
-
-        // function test(distance) {
-            
-        //             if(distance <= 8 && !alertCooldown) {
-        //                 vibrateDevice();
-        //                 document.getElementById('message').style.display = 'block';
-        //                 alertCooldown = true;
-        //                 setTimeout(() => {
-        //                     alertCooldown = false;
-        //                     document.getElementById('message').style.display = 'none';
-        //                 }, 60000);
-        //             }
-        //     }
-
 
         function getDistanceFromLocationInMeters(currLat,currLong,destLat,destLong) { 
                 var R = 6371000;
@@ -345,9 +316,7 @@
                     console.log(error);
                 },
                 {
-                    enableHighAccuracy: true,
-                    maximumAge: 0,
-                    timeout: 27000
+                   enableHighAccuracy: true, timeout: 10000, maximumAge: 0
                 })
             }
             else
