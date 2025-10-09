@@ -18,6 +18,41 @@
          crossorigin=""></script>
 
          <style>
+
+             /* Popup pour "Tu chauffes..." (disparaît automatiquement) */
+            #temp-message {
+                display: none;
+                background-color: rgba(255, 165, 0, 0.9);
+                color: white;
+                padding: 20px;
+                border-radius: 10px;
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                z-index: 1000;
+                text-align: center;
+                font-size: 1.5rem;
+                font-family: Arial, sans-serif;
+                animation: pulse 1s infinite alternate;
+            }
+            /* Popup pour les lettres (doit être fermée manuellement) */
+            #letter-message {
+                display: none;
+                background-color: rgba(0, 0, 0, 0.85);
+                color: white;
+                padding: 30px;
+                border-radius: 10px;
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                z-index: 1001;
+                text-align: center;
+                font-size: 3rem;
+                font-family: Arial, sans-serif;
+            }
+
             #message {
             display: none;
             background-color: violet;
@@ -43,12 +78,23 @@
             font-size: 20px;
             cursor: pointer;
         }
+         @keyframes pulse {
+            from { transform: translate(-50%, -50%) scale(1); }
+            to { transform: translate(-50%, -50%) scale(1.05); }
+        }
         </style>
     </head>
     <body>
-        <div id="message">
+        <!-- <div id="message">
             Tu chauffes... 🎃👻🕷️
             <button id="close-btn" onclick="closeMessage()">X</button>
+        </div> -->
+         <!-- Popup temporaire ("Tu chauffes...") -->
+        <div id="temp-message">Tu chauffes... 🔥</div>
+         <!-- Popup permanente (lettres/icônes) -->
+        <div id="letter-message">
+            <span id="letter-content"></span>
+            <button id="close-btn" onclick="closeLetterMessage()">✕</button>
         </div>
         <div id="map" class="mapContainer" style="width: 100%; height: 100%; position: absolute;"></div>
         <script>
@@ -65,8 +111,15 @@
             let customIcon = {
                 iconUrl:"picto.png",
                 iconSize:[40,40]
-                }
+            }
+
+            let customIconVisited = {
+                iconUrl: "picto_visited.png", // Icône verte (pour les points visités)
+                iconSize: [40, 40]
+            };
+
             let myIcon = L.icon(customIcon);
+            let myIconVisited = L.icon(customIconVisited);
 
             let currentPositionMarker;
             let currentPositionCircle;
@@ -77,66 +130,82 @@
             icon:myIcon,
             zIndexOffset: 500
             }
-            
-            let markers = [];
-
             var alertCooldown = false;
 
-            let marker1 = new L.Marker([47.331484, 5.156729] , iconOptions).bindTooltip("1", { permanent: true, direction: 'top'}).addTo(map);
-            markers.push(marker1);
+        // Coordonnées des marqueurs (numéro => [lat, lng])
+        const markerCoords = {
+            "1": [47.331484, 5.156729],
+            "2": [47.331693, 5.154582],
+            "3": [47.332244, 5.154542],
+            "4": [47.332224, 5.153939],
+            "5": [47.331878, 5.152650],
+            "6": [47.331446, 5.152159],
+            "7": [47.334267, 5.154304],
+            "8": [47.334399, 5.149966],
+            "9": [47.334338, 5.149016],
+            "10": [47.333882, 5.148400],
+            "11": [47.332713, 5.148748],
+            "12": [47.334905, 5.148384],
+            "13": [47.334862, 5.149969],
+            "14": [47.335400, 5.150589],
+            "15": [47.336126, 5.150325],
+            "16": [47.337448, 5.149531],
+            "17": [47.337738, 5.147247]
+        };
 
-            let marker2 = new L.Marker([47.331693, 5.154582] , iconOptions).bindTooltip("2", { permanent: true, direction: 'top'}).addTo(map);
-            markers.push(marker2);
+         // Contenu des popups (phrase : "1 2 3 🎃 transforme toi en 👻")
+        const markerContents = {
+            "1": "1", "2": "2", "3": "3", "4": "🎃", "5": "t", "6": "r", "7": "a", "8": "n", "9": "s",
+            "10": "f", "11": "o", "12": "r", "13": "m", "14": "e", "15": " ", "16": "t", "17": "o",
+            "18": "i", "19": " "
+        };
 
-            let marker3 = new L.Marker([47.332244, 5.154542] , iconOptions).bindTooltip("3", { permanent: true, direction: 'top'}).addTo(map);
-            markers.push(marker3);
+          // Coordonnées du point caché (👻)
+        const hiddenMarkerCoords = [47.3366272, 5.1588904];
+        let hiddenMarker = null;
 
-            let marker4 = new L.Marker([47.332224, 5.153939] , iconOptions).bindTooltip("4", { permanent: true, direction: 'top'}).addTo(map);
-            markers.push(marker4);
+        // Récupère les points visités depuis le stockage local
+        let visitedMarkers = JSON.parse(localStorage.getItem('visitedMarkers')) || {};
 
-            let marker5 = new L.Marker([47.331878, 5.152650] , iconOptions).bindTooltip("5", { permanent: true, direction: 'top'}).addTo(map);
-            markers.push(marker5);
-
-            let marker6 = new L.Marker([47.331446, 5.152159] , iconOptions).bindTooltip("6", { permanent: true, direction: 'top'}).addTo(map);
-            markers.push(marker6);
-
-            let marker7 = new L.Marker([47.334267, 5.154304] , iconOptions).bindTooltip("7", { permanent: true, direction: 'top'}).addTo(map);
-            markers.push(marker7);
-
-            let marker8 = new L.Marker([47.334399, 5.149966] , iconOptions).bindTooltip("8", { permanent: true, direction: 'top'}).addTo(map);
-            markers.push(marker8);
-
-            let marker9 = new L.Marker([47.334338, 5.149016] , iconOptions).bindTooltip("9", { permanent: true, direction: 'top'}).addTo(map);
-            markers.push(marker9);
-
-            let marker10 = new L.Marker([47.333882, 5.148400] , iconOptions).bindTooltip("10", { permanent: true, direction: 'top'}).addTo(map);
-            markers.push(marker10);
-
-            let marker11 = new L.Marker([47.332713, 5.148748] , iconOptions).bindTooltip("11", { permanent: true, direction: 'top'}).addTo(map);
-            markers.push(marker11);
-
-            let marker12 = new L.Marker([47.334905, 5.148384] , iconOptions).bindTooltip("12", { permanent: true, direction: 'top'}).addTo(map);
-            markers.push(marker12);
-
-            let marker13 = new L.Marker([47.334862, 5.149969] , iconOptions).bindTooltip("13", { permanent: true, direction: 'top'}).addTo(map);
-            markers.push(marker13);
-
-            let marker14 = new L.Marker([47.335400, 5.150589] , iconOptions).bindTooltip("14", { permanent: true, direction: 'top'}).addTo(map);
-            markers.push(marker14);
-
-            let marker15 = new L.Marker([47.336126, 5.150325] , iconOptions).bindTooltip("15", { permanent: true, direction: 'top'}).addTo(map);
-            markers.push(marker15);
-
-            let marker16 = new L.Marker([47.337448, 5.149531] , iconOptions).bindTooltip("16", { permanent: true, direction: 'top'}).addTo(map);
-            markers.push(marker16);
-
-            let marker17 = new L.Marker([47.337738, 5.147247] , iconOptions).bindTooltip("17", { permanent: true, direction: 'top'}).addTo(map);
-            markers.push(marker17);        
+        // Création des marqueurs avec icône adaptée
+        let markers = [];
+        Object.keys(markerCoords).forEach(num => {
+            let iconOptions = {
+                title: num,
+                draggable: false,
+                icon: visitedMarkers[num] ? customIconVisited : customIcon,
+                zIndexOffset: 500
+            };
+            let marker = new L.Marker(markerCoords[num], iconOptions)
+                .bindTooltip(num, { permanent: true, direction: 'top' })
+                .addTo(map);
+            markers.push(marker);
+        });  
 
             map.on('locationfound', onLocationFound);
             map.on('locationerror', onLocationError);
 
-            function onLocationFound(e) {
+        let cooldown = { temp: false, letter: false };
+
+         // Fonction pour afficher "Tu chauffes..." (5 secondes)
+        function showTempMessage() {
+            const tempMsg = document.getElementById('temp-message');
+            tempMsg.style.display = 'block';
+            setTimeout(() => { tempMsg.style.display = 'none'; }, 5000);
+        }
+
+        // Fonction pour afficher la lettre (doit être fermée manuellement)
+        function showLetterMessage(content) {
+            document.getElementById('letter-content').textContent = content;
+            document.getElementById('letter-message').style.display = 'block';
+        }
+
+        // Fermer la popup de lettre
+        function closeLetterMessage() {
+            document.getElementById('letter-message').style.display = 'none';
+        }    
+
+        function onLocationFound(e) {
                 var radius = e.accuracy;
 
                 currentPositionMarker = L.marker(e.latlng,{zIndexOffset: 1000}).addTo(map);
@@ -144,11 +213,11 @@
                 currentPositionCircle = L.circle(e.latlng, radius).addTo(map);
             }
 
-            function onLocationError(e) {
+        function onLocationError(e) {
                 alert("La géolocalisation n'est pas disponible sur votre appareil ou a été refusée !");
             }
 
-            function updatePosition(position) {
+        function updatePosition(position) {
                 var lat = position.coords.latitude;
                 var long = position.coords.longitude;
                 var radius = position.coords.accuracy;
@@ -160,7 +229,7 @@
                 markers.forEach(point => {
                     var distance = getDistanceFromLocationInMeters(lat,long,point._latlng.lat,point._latlng.lng);
 
-                    if(distance <= 5 && !alertCooldown) {
+                    if(distance <= 8 && !alertCooldown) {
                         vibrateDevice();
                         document.getElementById('message').style.display = 'block';
                         alertCooldown = true;
@@ -168,25 +237,49 @@
                             alertCooldown = false;
                             document.getElementById('message').style.display = 'none';
                         }, 60000);
+                    }
+                     else if (distance <= 3) {
+                        vibrateDevice();
+                        showPopup(markerContents[marker.options.title], 5000);
+                        markAsVisited(marker.options.title);
+                        alertCooldown = true;
+                        setTimeout(() => { alertCooldown = false; }, 60000);
+                    }
+
+
+
+
+                    if (distance <= 8 && distance > 3 && !cooldown.temp) {
+                        vibrateDevice(100);
+                        showTempMessage();
+                        cooldown.temp = true;
+                        setTimeout(() => { cooldown.temp = false; }, 5000);
+                    }
+                    else if (distance <= 3 && !cooldown.letter) {
+                         vibrateDevice(300);
+                        showLetterMessage(markerContents[marker.options.title]);
+                        markAsVisited(marker.options.title);
+                        cooldown.letter = true;
+                        setTimeout(() => { cooldown.letter = false; }, 30000); // 30s de cooldown
                     }
                 });
             }
 
-            function test(distance) {
+        // function test(distance) {
             
-                    if(distance <= 5 && !alertCooldown) {
-                        vibrateDevice();
-                        document.getElementById('message').style.display = 'block';
-                        alertCooldown = true;
-                        setTimeout(() => {
-                            alertCooldown = false;
-                            document.getElementById('message').style.display = 'none';
-                        }, 60000);
-                    }
-            }
+        //             if(distance <= 8 && !alertCooldown) {
+        //                 vibrateDevice();
+        //                 document.getElementById('message').style.display = 'block';
+        //                 alertCooldown = true;
+        //                 setTimeout(() => {
+        //                     alertCooldown = false;
+        //                     document.getElementById('message').style.display = 'none';
+        //                 }, 60000);
+        //             }
+        //     }
 
 
-            function getDistanceFromLocationInMeters(currLat,currLong,destLat,destLong) { 
+        function getDistanceFromLocationInMeters(currLat,currLong,destLat,destLong) { 
                 var R = 6371000;
                 var dLat = (destLat - currLat) * Math.PI / 180;
                 var dLong = (destLong - currLong) * Math.PI / 180;
@@ -201,14 +294,48 @@
 
             }
 
-            function vibrateDevice() {
-                if("vibrate" in navigator) {
-                    navigator.vibrate(200);
-                }
-            }
+       // Vibration
+        function vibrateDevice(duration) {
+            if ("vibrate" in navigator) navigator.vibrate(duration);
+        }
 
-            function closeMessage() {
+        function closeMessage() {
             document.getElementById('message').style.display = 'none';
+        }
+
+        // Fonction pour marquer un point comme visité
+        function markAsVisited(markerNumber) {
+            if (!visitedMarkers[markerNumber]) {
+                visitedMarkers[markerNumber] = true;
+                localStorage.setItem('visitedMarkers', JSON.stringify(visitedMarkers));
+
+                // Mise à jour de l'icône
+                markers.forEach(marker => {
+                    if (marker.options.title === markerNumber) {
+                        marker.setIcon(myIconVisited);
+                    }
+                });
+
+                checkAllVisited();
+            }
+        }
+
+        // Vérifier si tous les points sont visités
+        function checkAllVisited() {
+            const allVisited = Object.keys(markerCoords).every(num => visitedMarkers[num]);
+            if (allVisited && !hiddenMarker) {
+                hiddenMarker = L.marker(hiddenMarkerCoords, { icon: iconHidden })
+                    .bindTooltip("👻", { permanent: true, direction: 'top' })
+                    .addTo(map);
+                //showLetterMessage("👻");
+            }
+        }
+
+        // Fonction pour afficher une popup
+        function showPopup(content, duration = 5000) {
+            document.getElementById('popup-content').textContent = content;
+            document.getElementById('message').style.display = 'block';
+            setTimeout(closeMessage, duration);
         }
 
             if(navigator.geolocation) {
