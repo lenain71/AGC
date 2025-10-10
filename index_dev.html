@@ -185,7 +185,7 @@
                     zIndexOffset: 500
                 };
                 let marker = new L.Marker(markerCoords[num], iconOptions)
-                    .bindTooltip(visitedMarkers[num] ? (num + " : lettre " + markerContents[num]) : num, { permanent: true, direction: 'top' })
+                    .bindTooltip(visitedMarkers[num] ? (num + " : lettre <strong>" + markerContents[num] + "</strong>") : num, { permanent: true, direction: 'top', html:true })
                     .addTo(map);
                 markers.push(marker);
                
@@ -254,15 +254,10 @@
                     markers.forEach(marker => {
                         var distance = getDistanceFromLocationInMeters(lat,long,marker._latlng.lat,marker._latlng.lng);
 
-                        // for(var i=1; i<=19; i++) {
-                        //     markAsVisited(i);
-                        // }
-                        markAsVisited(8);
-                        markAsVisited(13);
-                        markAsVisited(9);
-                        showTempMessage();
-                        showLetterMessage(markerContents[3]);
-
+                        for(var i=1; i<=19; i++) {
+                            markAsVisited(i);
+                        }
+                     
                         if (distance <= 8 && distance > 3 && !cooldown.temp) {
                         //if (distance <= 8 && distance > 3) {
                             vibrateDevice(100);
@@ -326,8 +321,7 @@
                                 draggable: false,
                                 icon: myIconVisited,
                                 zIndexOffset: 500
-                            //}).bindTooltip(markerNumber.toString(), { permanent: true, direction: 'top' }).addTo(map); // Recrée le marqueur avec la nouvelle icône
-                            }).bindTooltip((markerNumber.toString() + " : lettre " + markerContents[markerNumber]), { permanent: true, direction: 'top' }).addTo(map); // Recrée le marqueur avec la nouvelle icône
+                            }).bindTooltip((markerNumber.toString() + " : lettre <strong>" + markerContents[markerNumber] + "</strong>"), { permanent: true, direction: 'top', html:true }).addTo(map); // Recrée le marqueur avec la nouvelle icône
                             
                             // Remplace l'ancien marqueur par le nouveau dans le tableau
                             const index = markers.indexOf(marker);
