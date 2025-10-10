@@ -109,10 +109,10 @@
             map.locate({setView: true, maxZoom: 16});
             const userMarker = L.marker([0, 0], { icon: L.icon({ iconUrl: 'https://cdn-icons-png.flaticon.com/512/684/684908.png', iconSize: [30, 30] }) }).addTo(map);
            //debug
-            navigator.geolocation.watchPosition(position => {
-                const { latitude, longitude } = position.coords;
-                userMarker.setLatLng([latitude, longitude]).bindTooltip(`Lat: ${latitude.toFixed(6)}, Lng: ${longitude.toFixed(6)}`).openTooltip();
-            });
+            // navigator.geolocation.watchPosition(position => {
+            //     const { latitude, longitude } = position.coords;
+            //     userMarker.setLatLng([latitude, longitude]).bindTooltip(`Lat: ${latitude.toFixed(6)}, Lng: ${longitude.toFixed(6)}`).openTooltip();
+            // });
             //fin debug
 
             let customIcon = {
@@ -166,11 +166,10 @@
             const hiddenMarkerCoords = [47.3366272, 5.1588904];
             let hiddenMarker = null;
 
-            // Contenu des popups (phrase : "1 2 3 🎃 transforme toi en 👻")
+            // Contenu des popups
             const markerContents = {
-                "1": "1", "2": "2", "3": "3", "4": "🎃", "5": "t", "6": "r", "7": "a", "8": "n", "9": "s",
-                "10": "f", "11": "o", "12": "r", "13": "m", "14": "e", "15": "t", "16": "o", "17": "i",
-                "18": "e", "19": "n"
+                "1": "s", "2": "3", "3": "🎃", "4": "e", "5": "t", "6": "1", "7": "o", "8": "i", "9": "r",
+                "10": "a", "11": "n", "12": "2", "13": "f", "14": "m", "15": "e", "16": "t", "17": "r", "18": "o", "19": "n"
             };
 
             // Récupère les points visités depuis le stockage local
@@ -186,7 +185,7 @@
                     zIndexOffset: 500
                 };
                 let marker = new L.Marker(markerCoords[num], iconOptions)
-                    .bindTooltip(num, { permanent: true, direction: 'top' })
+                    .bindTooltip(visitedMarkers[num] ? (num + " : lettre " + markerContents[num]) : num, { permanent: true, direction: 'top' })
                     .addTo(map);
                 markers.push(marker);
                
@@ -255,11 +254,14 @@
                     markers.forEach(marker => {
                         var distance = getDistanceFromLocationInMeters(lat,long,marker._latlng.lat,marker._latlng.lng);
 
-                        for(var i=1; i<=19; i++) {
-                            markAsVisited(i);
-                        }
-
-                         showLetterMessage('👻');
+                        // for(var i=1; i<=19; i++) {
+                        //     markAsVisited(i);
+                        // }
+                        markAsVisited(8);
+                        markAsVisited(13);
+                        markAsVisited(9);
+                        showTempMessage();
+                        showLetterMessage(markerContents[3]);
 
                         if (distance <= 8 && distance > 3 && !cooldown.temp) {
                         //if (distance <= 8 && distance > 3) {
@@ -324,8 +326,9 @@
                                 draggable: false,
                                 icon: myIconVisited,
                                 zIndexOffset: 500
-                            }).bindTooltip(markerNumber.toString(), { permanent: true, direction: 'top' }).addTo(map); // Recrée le marqueur avec la nouvelle icône
-
+                            //}).bindTooltip(markerNumber.toString(), { permanent: true, direction: 'top' }).addTo(map); // Recrée le marqueur avec la nouvelle icône
+                            }).bindTooltip((markerNumber.toString() + " : lettre " + markerContents[markerNumber]), { permanent: true, direction: 'top' }).addTo(map); // Recrée le marqueur avec la nouvelle icône
+                            
                             // Remplace l'ancien marqueur par le nouveau dans le tableau
                             const index = markers.indexOf(marker);
                             if (index !== -1) {
