@@ -255,12 +255,6 @@
                     markers.forEach(marker => {
                         var distance = getDistanceFromLocationInMeters(lat,long,marker._latlng.lat,marker._latlng.lng);
 
-                        for(var i=1; i<=19; i++) {
-                            markAsVisited(i);
-                        }
-
-                         showLetterMessage('👻');
-
                         if (distance <= 8 && distance > 3 && !cooldown.temp) {
                         //if (distance <= 8 && distance > 3) {
                             vibrateDevice(100);
