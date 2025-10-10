@@ -90,7 +90,9 @@
             <button id="close-btn" onclick="closeMessage()">X</button>
         </div> -->
          <!-- Popup temporaire ("Tu chauffes...") -->
-        <div id="temp-message">Tu chauffes... 🔥🎃👻🕷️</div>
+        <div id="temp-message">
+            <span id="temp-content"></span>
+        </div>
          <!-- Popup permanente (lettres/icônes) -->
         <div id="letter-message">
             <span id="letter-content"></span>
@@ -208,8 +210,9 @@
             }
 
             // Fonction pour afficher "Tu chauffes..." (5 secondes)
-            function showTempMessage() {
-                const tempMsg = document.getElementById('temp-message');
+            function showTempMessage(content) {
+                document.getElementById('temp-content').textContent = content;
+                let tempMsg = document.getElementById('temp-message');
                 tempMsg.style.display = 'block';
                 setTimeout(() => { tempMsg.style.display = 'none'; }, 5000);
             }
@@ -242,34 +245,52 @@
                     var long = position.coords.longitude;
                     var radius = position.coords.accuracy;
 
+                    // Ajuste les seuils dynamiquement
+                    const closeThreshold = radius > 15 ? 15 : 8;
+                    const veryCloseThreshold = radius > 15 ? 10 : 3;
+
                     currentPositionMarker.setLatLng([lat,long]);
                     currentPositionCircle.setLatLng([lat,long]).setRadius(radius);
+
+                    // Affiche un avertissement si la précision est mauvaise
+                    if (radius > 20) {
+                        showTempMessage(`Précision : ${radius.toFixed(1)}m. Approche-toi bien !`);
+                    }
 
                     //vérification de distance aux points
                     markers.forEach(marker => {
                         var distance = getDistanceFromLocationInMeters(lat,long,marker._latlng.lat,marker._latlng.lng);
 
-                        if (distance <= 8 && distance > 3 && !cooldown.temp && visitedMarkers[marker.options.title] !== true) {
-                        //if (distance <= 8 && distance > 3) {
+                        if (distance <= closeThreshold && distance > veryCloseThreshold && !cooldown.temp && visitedMarkers[marker.options.title] !== true) {
                             vibrateDevice(100);
-                            showTempMessage();
+                            showTempMessage("Tu chauffes... 🔥🎃👻🕷️");
                             cooldown.temp = true;
                             setTimeout(() => { cooldown.temp = false; }, 5000);
                         }
-                        else if (distance <= 3 && !cooldown.letter && visitedMarkers[marker.options.title] !== true) {
-                        //else if (distance <= 3) {
+                        else if (distance <= veryCloseThreshold && !cooldown.letter && visitedMarkers[marker.options.title] !== true) {
                             vibrateDevice(300);
-                            if(marker.options.title === 'Point secret') {
-                                showLetterMessage('👻');
-                            }
-                            else {
-                                showLetterMessage(markerContents[marker.options.title]);
-                                markAsVisited(marker.options.title);
-                            }
+                            showLetterMessage(markerContents[marker.options.title]);
+                            markAsVisited(marker.options.title);
+                            
                             cooldown.letter = true;
                             setTimeout(() => { cooldown.letter = false; }, 30000); // 30s de cooldown
                         }
                     });
+
+                     // Vérifie le point mystère S'IL EXISTE
+                    if (hiddenMarker) {
+                        const distance = getDistanceFromLocationInMeters(lat, long, hiddenMarker._latlng.lat, hiddenMarker._latlng.lng);
+                        if(distance <= closeThreshold && distance > veryCloseThreshold && !cooldown.temp) {
+                            vibrateDevice(100);
+                            showTempMessage("Tu chauffes... 🔥🎃👻🕷️");
+                            cooldown.temp = true;
+                            setTimeout(() => { cooldown.temp = false; }, 5000);
+                        }else if (distance <= veryCloseThreshold && !cooldown.letter) {
+                            showLetterMessage('👻');
+                            cooldown.letter = true;
+                            setTimeout(() => { cooldown.letter = false; }, 30000);
+                        }
+                    }
                 }
 
             function getDistanceFromLocationInMeters(currLat,currLong,destLat,destLong) { 
@@ -333,7 +354,6 @@
                     hiddenMarker = L.marker(hiddenMarkerCoords, { icon: myIconHidden })
                         .bindTooltip("Point secret", { permanent: true, direction: 'top' })
                         .addTo(map);
-                    //showLetterMessage("👻");
                 }
             }
 
