@@ -18,7 +18,6 @@
          crossorigin=""></script>
 
          <style>
-
              /* Popup pour "Tu chauffes..." (disparaît automatiquement) */
             #temp-message {
                 display: none;
@@ -52,7 +51,6 @@
                 font-size: 3rem;
                 font-family: Arial, sans-serif;
             }
-
             #message {
             display: none;
             background-color: violet;
@@ -68,7 +66,6 @@
             z-index: 1000; /* Assurez-vous que le message est au-dessus de la carte */
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
             }
-
             #close-btn {
                 position: absolute;
             top: 5px;
@@ -77,7 +74,22 @@
             border: none;
             font-size: 20px;
             cursor: pointer;
-        }
+            }
+            .geo-info {
+                 background-color: rgba(0, 0, 0, 0.8) !important;
+                color: white !important;
+                padding: 8px !important;
+                font-family: Arial, sans-serif !important;
+                font-size: 12px !important;
+                border-radius: 4px !important;
+                position: absolute !important;
+                bottom: 50px !important; /* Descend pour éviter les conflits */
+                left: 10px !important;
+                z-index: 1005 !important; /* Assure une valeur élevée */
+                border: 1px solid #ff6b00 !important;
+                max-width: 200px !important;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.5) !important; /* Ombre pour mieux voir */
+            }
          @keyframes pulse {
             from { transform: translate(-50%, -50%) scale(1); }
             to { transform: translate(-50%, -50%) scale(1.05); }
@@ -90,7 +102,9 @@
             <button id="close-btn" onclick="closeMessage()">X</button>
         </div> -->
          <!-- Popup temporaire ("Tu chauffes...") -->
-        <div id="temp-message">Tu chauffes... 🔥🎃👻🕷️</div>
+        <div id="temp-message">
+            <span id="temp-content"></span>
+        </div>
          <!-- Popup permanente (lettres/icônes) -->
         <div id="letter-message">
             <span id="letter-content"></span>
@@ -108,13 +122,16 @@
 
             map.locate({setView: true, maxZoom: 16});
             const userMarker = L.marker([0, 0], { icon: L.icon({ iconUrl: 'https://cdn-icons-png.flaticon.com/512/684/684908.png', iconSize: [30, 30] }) }).addTo(map);
-           //debug
-            // navigator.geolocation.watchPosition(position => {
-            //     const { latitude, longitude } = position.coords;
-            //     userMarker.setLatLng([latitude, longitude]).bindTooltip(`Lat: ${latitude.toFixed(6)}, Lng: ${longitude.toFixed(6)}`).openTooltip();
-            // });
-            //fin debug
-
+          
+            // 1. Créer le contrôle de debug
+            const geoInfo = L.control({ position: 'bottomleft' }); // Position en bas à gauche
+            geoInfo.onAdd = function(map) {
+                this._div = L.DomUtil.create('div', 'geo-info');
+                this._div.innerHTML = 'En attente de position...';
+                return this._div;
+            };
+            geoInfo.addTo(map);
+            
             let customIcon = {
                 iconUrl:"picto.png",
                 iconSize:[40,40]
@@ -166,7 +183,8 @@
             const hiddenMarkerCoords = [47.3366272, 5.1588904];
             let hiddenMarker = null;
 
-            // Contenu des popups
+            // Contenu des popups (phrase : "1 2 3 🎃 transforme toi en 👻")
+             // Contenu des popups
             const markerContents = {
                 "1": "s", "2": "3", "3": "🎃", "4": "e", "5": "t", "6": "1", "7": "o", "8": "i", "9": "r",
                 "10": "a", "11": "n", "12": "2", "13": "f", "14": "m", "15": "e", "16": "t", "17": "r", "18": "o", "19": "n"
@@ -184,7 +202,7 @@
                     icon: visitedMarkers[num] ? myIconVisited : myIcon,
                     zIndexOffset: 500
                 };
-                let marker = new L.Marker(markerCoords[num], iconOptions)
+                 let marker = new L.Marker(markerCoords[num], iconOptions)
                     .bindTooltip(visitedMarkers[num] ? (num + " : lettre <strong>" + markerContents[num] + "</strong>") : num, { permanent: true, direction: 'top', html:true })
                     .addTo(map);
                 markers.push(marker);
@@ -213,8 +231,9 @@
             }
 
             // Fonction pour afficher "Tu chauffes..." (5 secondes)
-            function showTempMessage() {
-                const tempMsg = document.getElementById('temp-message');
+            function showTempMessage(content) {
+                document.getElementById('temp-content').textContent = content;
+                let tempMsg = document.getElementById('temp-message');
                 tempMsg.style.display = 'block';
                 setTimeout(() => { tempMsg.style.display = 'none'; }, 5000);
             }
@@ -247,38 +266,65 @@
                     var long = position.coords.longitude;
                     var radius = position.coords.accuracy;
 
-                    currentPositionMarker.setLatLng([lat,long]);
+                    // Ajuste les seuils dynamiquement
+                    const closeThreshold = radius > 15 ? 15 : 8;
+                    const veryCloseThreshold = radius > 15 ? 10 : 3;
+
+                     // Met à jour le contrôle avec les infos de géolocalisation
+                     geoInfo._div.innerHTML = `
+                            <strong>Position:</strong><br>
+                            Lat: ${lat.toFixed(6)}<br>
+                            Long: ${long.toFixed(6)}<br>
+                            Précision: ${radius.toFixed(1)}m
+    `;
+
+                    currentPositionMarker.setLatLng([lat,long]).bindTooltip(`Lat: ${lat.toFixed(6)}, Lng: ${long.toFixed(6)}`).openTooltip();
                     currentPositionCircle.setLatLng([lat,long]).setRadius(radius);
+
+                    // Affiche un avertissement si la précision est mauvaise
+                    if (radius > 20) {
+                        showTempMessage(`Précision : ${radius.toFixed(1)}m. Approche-toi bien !`);
+                    }
+
+                    //marked all as visited for testing
+                      for(var i=1; i<=19; i++) {
+                            markAsVisited(i);
+                        }
 
                     //vérification de distance aux points
                     markers.forEach(marker => {
                         var distance = getDistanceFromLocationInMeters(lat,long,marker._latlng.lat,marker._latlng.lng);
 
-                        for(var i=1; i<=19; i++) {
-                            markAsVisited(i);
-                        }
-                     
-                        if (distance <= 8 && distance > 3 && !cooldown.temp) {
-                        //if (distance <= 8 && distance > 3) {
+                        if (distance <= closeThreshold && distance > veryCloseThreshold && !cooldown.temp) {
                             vibrateDevice(100);
-                            showTempMessage();
+                            showTempMessage("Tu chauffes... 🔥🎃👻🕷️");
                             cooldown.temp = true;
                             setTimeout(() => { cooldown.temp = false; }, 5000);
                         }
-                        else if (distance <= 3 && !cooldown.letter) {
-                        //else if (distance <= 3) {
+                        else if (distance <= veryCloseThreshold && !cooldown.letter) {
                             vibrateDevice(300);
-                            if(marker.options.title === 'Point secret') {
-                                showLetterMessage('👻');
-                            }
-                            else {
-                                showLetterMessage(markerContents[marker.options.title]);
-                                markAsVisited(marker.options.title);
-                            }
+                            showLetterMessage(markerContents[marker.options.title]);
+                            markAsVisited(marker.options.title);
+                            
                             cooldown.letter = true;
                             setTimeout(() => { cooldown.letter = false; }, 30000); // 30s de cooldown
                         }
                     });
+
+                     // Vérifie le point mystère S'IL EXISTE
+                    if (hiddenMarker) {
+                        const distance = getDistanceFromLocationInMeters(lat, long, hiddenMarker._latlng.lat, hiddenMarker._latlng.lng);
+                        if(distance <= closeThreshold && distance > veryCloseThreshold && !cooldown.temp) {
+                            vibrateDevice(100);
+                            showTempMessage("Tu chauffes... 🔥🎃👻🕷️");
+                            cooldown.temp = true;
+                            setTimeout(() => { cooldown.temp = false; }, 5000);
+                        }else if (distance <= veryCloseThreshold && !cooldown.letter) {
+                            showLetterMessage('👻');
+                            cooldown.letter = true;
+                            setTimeout(() => { cooldown.letter = false; }, 30000);
+                        }
+                    }
                 }
 
             function getDistanceFromLocationInMeters(currLat,currLong,destLat,destLong) { 
@@ -321,8 +367,8 @@
                                 draggable: false,
                                 icon: myIconVisited,
                                 zIndexOffset: 500
-                            }).bindTooltip((markerNumber.toString() + " : lettre <strong>" + markerContents[markerNumber] + "</strong>"), { permanent: true, direction: 'top', html:true }).addTo(map); // Recrée le marqueur avec la nouvelle icône
-                            
+                            }).bindTooltip((markerNumber.toString() + " : lettre <strong>"+markerContents[markerNumber]+"</strong>"), { permanent: true, direction: 'top', html:true }).addTo(map); // Recrée le marqueur avec la nouvelle icône
+                           
                             // Remplace l'ancien marqueur par le nouveau dans le tableau
                             const index = markers.indexOf(marker);
                             if (index !== -1) {
@@ -342,7 +388,6 @@
                     hiddenMarker = L.marker(hiddenMarkerCoords, { icon: myIconHidden })
                         .bindTooltip("Point secret", { permanent: true, direction: 'top' })
                         .addTo(map);
-                    //showLetterMessage("👻");
                 }
             }
 
