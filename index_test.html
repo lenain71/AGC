@@ -249,14 +249,14 @@
                     markers.forEach(marker => {
                         var distance = getDistanceFromLocationInMeters(lat,long,marker._latlng.lat,marker._latlng.lng);
 
-                        if (distance <= 8 && distance > 3 && !cooldown.temp) {
+                        if (distance <= 8 && distance > 3 && !cooldown.temp && visitedMarkers[marker.options.title] !== true) {
                         //if (distance <= 8 && distance > 3) {
                             vibrateDevice(100);
                             showTempMessage();
                             cooldown.temp = true;
                             setTimeout(() => { cooldown.temp = false; }, 5000);
                         }
-                        else if (distance <= 3 && !cooldown.letter) {
+                        else if (distance <= 3 && !cooldown.letter && visitedMarkers[marker.options.title] !== true) {
                         //else if (distance <= 3) {
                             vibrateDevice(300);
                             if(marker.options.title === 'Point secret') {
