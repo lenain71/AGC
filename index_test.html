@@ -77,11 +77,155 @@
             border: none;
             font-size: 20px;
             cursor: pointer;
-        }
-         @keyframes pulse {
-            from { transform: translate(-50%, -50%) scale(1); }
-            to { transform: translate(-50%, -50%) scale(1.05); }
-        }
+            }
+
+            @keyframes pulse {
+                from { transform: translate(-50%, -50%) scale(1); }
+                to { transform: translate(-50%, -50%) scale(1.05); }
+            }
+
+            /* Pop-up finale (responsive) */
+            #final-popup {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.95);
+                z-index: 9999;
+                justify-content: center;
+                align-items: center;
+                flex-direction: column;
+                font-family: 'Creepster', cursive;
+                color: white;
+                text-align: center;
+                overflow: hidden;
+                padding: 10px;
+                box-sizing: border-box;
+            }
+
+            #final-popup-content {
+                background: linear-gradient(to bottom, #ff6b00, #d64500);
+                padding: 20px;
+                border-radius: 10px;
+                border: 2px solid #fff;
+                box-shadow: 0 0 20px #ff6b00;
+                width: 90%;
+                max-width: 400px; /* Limite la largeur sur desktop */
+                animation: pulse 1.5s infinite alternate, fadeIn 0.5s;
+                position: relative;
+                overflow: hidden;
+            }
+
+            #final-title {
+                font-size: clamp(1.8rem, 5vw, 2.5rem); /* Taille adaptative */
+                margin-bottom: 15px;
+                color: #fff;
+                text-shadow: 0 0 10px #ff00de;
+                line-height: 1.2;
+            }
+
+            #final-phrase {
+                font-size: clamp(1.2rem, 4vw, 1.8rem); /* Taille adaptative */
+                margin: 15px 0;
+                text-shadow: 0 0 8px #000;
+                min-height: 80px;
+                word-break: break-word; /* Évite le débordement */
+                padding: 0 10px;
+            }
+
+            .pumpkin-icon {
+                font-size: clamp(2rem, 8vw, 3.5rem); /* Icône citrouille responsive */
+                margin: 10px 0;
+                animation: float 2s infinite;
+            }
+
+            #close-final {
+                margin-top: 20px;
+                padding: 10px 25px;
+                background: #000;
+                color: white;
+                border: none;
+                border-radius: 5px;
+                font-size: clamp(1rem, 3vw, 1.2rem);
+                cursor: pointer;
+                transition: all 0.3s;
+                width: 60%; /* Bouton plus large sur mobile */
+                max-width: 200px;
+            }
+
+            #close-final:hover {
+                background: #fff;
+                color: #ff6b00;
+            }
+
+            /* Animations */
+            @keyframes pulse {
+                from { transform: scale(1); }
+                to { transform: scale(1.03); }
+            }
+
+            @keyframes fadeIn {
+                from { opacity: 0; transform: translateY(30px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+
+            @keyframes float {
+                0%, 100% { transform: translateY(0); }
+                50% { transform: translateY(-15px); }
+            }
+
+            /* Confettis et feux d'artifice (optimisés) */
+            .confetti {
+                position: absolute;
+                width: 8px;
+                height: 8px;
+                top: -10px;
+                opacity: 0;
+            }
+
+            .firework {
+                position: absolute;
+                width: 4px;
+                height: 4px;
+                border-radius: 50%;
+            }
+
+            /* Media queries pour ajustements spécifiques */
+            @media (max-width: 600px) {
+                #final-popup-content {
+                    width: 95%; /* Prend presque toute la largeur */
+                    padding: 15px;
+                }
+
+                #final-title {
+                    font-size: 1.8rem;
+                }
+
+                #final-phrase {
+                    font-size: 1.4rem;
+                }
+
+                #close-final {
+                    width: 70%;
+                    padding: 12px 20px;
+                }
+            }
+
+            @media (max-width: 400px) {
+                #final-title {
+                    font-size: 1.5rem;
+                }
+
+                #final-phrase {
+                    font-size: 1.2rem;
+                }
+
+                .pumpkin-icon {
+                    font-size: 2.5rem;
+                }
+            }
         </style>
     </head>
     <body>
@@ -97,6 +241,15 @@
         <div id="letter-message">
             <span id="letter-content"></span>
             <button id="close-btn" onclick="closeLetterMessage()">✕</button>
+        </div>
+        <div id="final-popup">
+            <div id="final-popup-content">
+                <h1 id="final-title">🎃 FÉLICITATIONS ! 🎃</h1>
+                <div class="pumpkin-icon">🎃</div>
+                <h2>Tu as découvert la phrase secrète :</h2>
+                <div id="final-phrase"></div>
+                <button id="close-final">Fermer</button>
+            </div>
         </div>
         <div id="map" class="mapContainer" style="width: 100%; height: 100%; position: absolute;"></div>
         <script>
@@ -162,7 +315,6 @@
             const hiddenMarkerCoords = [47.3366272, 5.1588904];
             let hiddenMarker = null;
 
-            // Contenu des popups (phrase : "1 2 3 🎃 transforme toi en 👻")
              // Contenu des popups
             const markerContents = {
                 "1": "s", "2": "3", "3": "🎃", "4": "e", "5": "t", "6": "1", "7": "o", "8": "i", "9": "r",
@@ -287,6 +439,7 @@
                             setTimeout(() => { cooldown.temp = false; }, 5000);
                         }else if (distance <= veryCloseThreshold && !cooldown.letter) {
                             showLetterMessage('👻');
+                            markAsVisited('20');
                             cooldown.letter = true;
                             setTimeout(() => { cooldown.letter = false; }, 30000);
                         }
@@ -349,11 +502,19 @@
 
             // Vérifier si tous les points sont visités
             function checkAllVisited() {
-                const allVisited = Object.keys(markerCoords).every(num => visitedMarkers[num]);
-                if (allVisited && !hiddenMarker) {
+                 // 1. Vérifie si tous les points NORMAUX sont visités
+                const allNormalPointsVisited = Object.keys(markerCoords).every(num => visitedMarkers[num]);
+
+                if (allNormalPointsVisited && !hiddenMarker) {
                     hiddenMarker = L.marker(hiddenMarkerCoords, { icon: myIconHidden })
                         .bindTooltip("Point secret", { permanent: true, direction: 'top' })
                         .addTo(map);
+                }
+
+                // 3. Vérifie si TOUS les points (normaux + secret) sont visités
+                const allPointsVisited = allNormalPointsVisited;
+                if (allPointsVisited && !document.getElementById('final-popup').style.display) {
+                    revealFinalPhrase();
                 }
             }
 
@@ -362,6 +523,107 @@
                 document.getElementById('popup-content').textContent = content;
                 document.getElementById('message').style.display = 'block';
                 setTimeout(closeMessage, duration);
+            }
+
+              // Fonction pour révéler la phrase secrète
+            function revealFinalPhrase() {
+                // Récupère la phrase complète depuis markerContents (dans l'ordre des points)
+                const phraseOrder = ["6", "12", "2", "3", "5", "9", "10", "11", "1", "13", "7", "17", "14", "15", "16", "18", "8", "15", "19"];
+
+                const phraseParts = phraseOrder.map(key => markerContents[key]);
+                let finalPhrase = phraseParts.join("");
+                if(visitedMarkers["20"]) {
+                    finalPhrase += "👻";
+                }
+
+                document.getElementById('final-phrase').textContent = finalPhrase;
+
+                // Affiche la pop-up
+                document.getElementById('final-popup').style.display = 'flex';
+
+                // Lance les animations
+                launchConfetti();
+                launchFireworks();
+
+                // Gère la fermeture
+                document.getElementById('close-final').onclick = () => {
+                    document.getElementById('final-popup').style.display = 'none';
+                };
+            }
+
+            // Animation de confettis
+            function launchConfetti() {
+                const colors = ['#ff6b00', '#ff00de', '#00ff7f', '#ffff00', '#ff0000'];
+                const popup = document.getElementById('final-popup-content');
+
+                for (let i = 0; i < 100; i++) {
+                    const confetti = document.createElement('div');
+                    confetti.classList.add('confetti');
+                    confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.left = Math.random() * 100 + '%';
+                    confetti.style.top = '-10px';
+                    confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+                    popup.appendChild(confetti);
+
+                    // Animation de chute
+                    const fallDuration = 2 + Math.random() * 3;
+                    confetti.style.animation = `fall ${fallDuration}s linear forwards`;
+
+                    // Animation CSS pour la chute
+                    const style = document.createElement('style');
+                    style.textContent = `
+                        @keyframes fall {
+                            to { transform: translateY(100vh) rotate(${Math.random() * 360}deg); }
+                        }
+                    `;
+                    document.head.appendChild(style);
+
+                    // Supprime les confettis après l'animation
+                    setTimeout(() => {
+                        confetti.remove();
+                    }, fallDuration * 1000);
+                }
+            }
+
+                    // Animation de feux d'artifice
+                    // Animation de feux d'artifice
+            function launchFireworks() {
+                const popup = document.getElementById('final-popup');
+                const centerX = popup.offsetWidth / 2;
+                const centerY = popup.offsetHeight / 2;
+
+                for (let i = 0; i < 20; i++) {
+                    const firework = document.createElement('div');
+                    firework.classList.add('firework');
+                    firework.style.left = centerX + 'px';
+                    firework.style.top = centerY + 'px';
+                    firework.style.backgroundColor = `hsl(${Math.random() * 60 + 20}, 100%, 50%)`;
+                    popup.appendChild(firework);
+
+                    // Animation aléatoire
+                    const angle = Math.random() * Math.PI * 2;
+                    const velocity = 2 + Math.random() * 3;
+                    const xVel = Math.cos(angle) * velocity;
+                    const yVel = Math.sin(angle) * velocity;
+
+                    let posX = centerX;
+                    let posY = centerY;
+                    let opacity = 1;
+
+                    const animate = setInterval(() => {
+                        posX += xVel;
+                        posY += yVel;
+                        opacity -= 0.01;
+                        firework.style.left = posX + 'px';
+                        firework.style.top = posY + 'px';
+                        firework.style.opacity = opacity;
+
+                        if (opacity <= 0) {
+                            clearInterval(animate);
+                            firework.remove();
+                        }
+                    }, 16);
+                }
             }
         </script>
     </body>

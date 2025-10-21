@@ -547,7 +547,7 @@
                 }
 
                 // 3. Vérifie si TOUS les points (normaux + secret) sont visités
-                const allPointsVisited = allNormalPointsVisited && visitedMarkers["20"];
+                const allPointsVisited = allNormalPointsVisited;
                 if (allPointsVisited && !document.getElementById('final-popup').style.display) {
                     revealFinalPhrase();
                 }
