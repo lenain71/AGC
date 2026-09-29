@@ -50,16 +50,16 @@
 <body>
     <main class="admin">
         <p class="aide" style="margin:6px 0 14px">
-            Page réservée aux organisateurs. Dépose les fichiers <code>hallo-village-propositions-….json</code> reçus par mail,
+            Page réservée aux organisateurs. Dépose les fichiers <code>hallo-village-propositions-…</code> (.json ou .txt) reçus par mail,
             coche les lieux à publier, puis exporte. Rien n'est envoyé sur Internet : tout se passe dans ce navigateur.
         </p>
         <div class="admin-grille">
             <div id="carte-admin"></div>
             <div>
                 <label class="depot" id="depot">
-                    <input type="file" id="fichiers" accept=".json,application/json" multiple hidden>
+                    <input type="file" id="fichiers" accept=".json,.txt,application/json,text/plain" multiple hidden>
                     <i class="fa-solid fa-file-import"></i>
-                    Déposer ou choisir les fichiers JSON reçus
+                    Déposer ou choisir les fichiers reçus (.json ou .txt)
                     <small>Plusieurs fichiers à la fois, c'est possible</small>
                 </label>
                 <div class="resume" id="resume"></div>

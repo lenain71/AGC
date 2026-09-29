@@ -81,13 +81,15 @@
     };
 
     /* ---------- Envoi des propositions ---------- */
-    function nomFichier() {
+    function nomFichier(ext) {
         const d = new Date(), p = n => String(n).padStart(2, "0");
         return "hallo-village-propositions-" + d.getFullYear() + p(d.getMonth() + 1) + p(d.getDate()) +
-            "-" + p(d.getHours()) + p(d.getMinutes()) + ".json";
+            "-" + p(d.getHours()) + p(d.getMinutes()) + "." + ext;
     }
 
-    AGC.fichierPropositions = function (propositions, auteur) {
+    /* Fichier des propositions (contenu JSON). ext "txt" : même contenu, pour les navigateurs qui refusent de partager du .json */
+    AGC.fichierPropositions = function (propositions, auteur, ext) {
+        ext = ext || "json";
         const contenu = {
             format: "hallo-village/propositions",
             version: 1,
@@ -99,45 +101,44 @@
                 coords: p.coords, accord: !!p.accord, photo: p.photo || null, creeLe: p.creeLe
             }))
         };
-        return new File([JSON.stringify(contenu, null, 2)], nomFichier(), { type: "application/json" });
+        return new File([JSON.stringify(contenu, null, 2)], nomFichier(ext),
+            { type: ext === "txt" ? "text/plain" : "application/json" });
     };
 
-    function telecharger(fichier) {
-        const url = URL.createObjectURL(fichier);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = fichier.name;
-        document.body.appendChild(a);
-        a.click();
-        setTimeout(() => { a.remove(); URL.revokeObjectURL(url); }, 0);
-    }
-
     /*
-     * Envoie le fichier : menu de partage du téléphone (le fichier est joint au mail),
-     * sinon téléchargement + mail pré-rempli à joindre manuellement.
-     * Retourne "partage" | "mail" | "annule".
+     * Envoi des propositions.
+     * 1. Menu de partage du téléphone, fichier joint automatiquement. Chrome Android refuse le .json :
+     *    on retente alors avec le même contenu en .txt.
+     * 2. Sinon, retourne de quoi proposer un envoi manuel en 2 gestes (télécharger, puis ouvrir le mail) :
+     *    les navigateurs mobiles bloquent l'ouverture du mail si elle ne suit pas directement un toucher.
+     * Retourne { mode: "partage" | "annule" | "manuel", fichier, mailto }.
      */
     AGC.envoyerPropositions = async function (propositions, auteur) {
-        const fichier = AGC.fichierPropositions(propositions, auteur);
         const email = AGC.config.contact.email;
         const sujet = "Hallo' Village — " + propositions.length + " lieu(x) proposé(s)" + (auteur.prenom ? " par " + auteur.prenom : "");
-        const texte = "Bonjour,\n\nVoici mes propositions de lieux pour la carte d'Halloween (" +
+        const corps = nom => "Bonjour,\n\nVoici mes propositions de lieux pour la carte d'Halloween (" +
             propositions.map(p => AGC.TYPES_LIEUX[p.type].nom + " : " + p.nom).join(", ") +
-            ").\nLe fichier " + fichier.name + " est en pièce jointe.\n\n" + (auteur.prenom || "");
+            ").\nLe fichier " + nom + " est en pièce jointe.\n\n" + (auteur.prenom || "");
 
-        if (navigator.canShare && navigator.canShare({ files: [fichier] })) {
-            try {
-                await navigator.share({ files: [fichier], title: sujet, text: texte + "\n\nÀ envoyer à : " + email });
-                return "partage";
-            } catch (e) {
-                if (e.name === "AbortError") return "annule";
-                // partage refusé par le navigateur : on bascule sur le téléchargement
+        if (navigator.canShare) {
+            for (const ext of ["json", "txt"]) {
+                const fichier = AGC.fichierPropositions(propositions, auteur, ext);
+                if (!navigator.canShare({ files: [fichier] })) continue;
+                try {
+                    await navigator.share({ files: [fichier], title: sujet, text: corps(fichier.name) + "\n\nÀ envoyer à : " + email });
+                    return { mode: "partage", fichier };
+                } catch (e) {
+                    if (e.name === "AbortError") return { mode: "annule" };
+                    break;   // partage refusé : envoi manuel
+                }
             }
         }
-        telecharger(fichier);
-        location.href = "mailto:" + encodeURIComponent(email) +
-            "?subject=" + encodeURIComponent(sujet) +
-            "&body=" + encodeURIComponent(texte + "\n\n(N'oubliez pas de joindre le fichier téléchargé : " + fichier.name + ")");
-        return "mail";
+        const fichier = AGC.fichierPropositions(propositions, auteur, "json");
+        return {
+            mode: "manuel",
+            fichier,
+            mailto: "mailto:" + email + "?subject=" + encodeURIComponent(sujet) +
+                "&body=" + encodeURIComponent(corps(fichier.name) + "\n\n(Pensez à joindre le fichier téléchargé : " + fichier.name + ")")
+        };
     };
 })();

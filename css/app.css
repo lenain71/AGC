@@ -499,3 +499,4 @@ body.nuit .fenetre-boite, body.nuit .phrase, body.nuit .gps, body.nuit .rond { b
 .cone-sonar.disparait { opacity: 0; }
 @keyframes cone-apparait { from { opacity: 0; } }
 @keyframes cone-pulse { to { fill-opacity: .15; } }
+.formulaire a.bouton + a.bouton { margin-top: 10px; }

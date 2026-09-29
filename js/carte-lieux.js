@@ -235,18 +235,51 @@
         ouvrirFormulaire(p);
     });
 
-    formEnvoi.addEventListener("submit", async e => {
-        e.preventDefault();
-        const auteur = AGC.auteur({ prenom: formEnvoi.prenom.value.trim(), contact: formEnvoi.contact.value.trim() });
-        const resultat = await AGC.envoyerPropositions(propositions, auteur);
-        if (resultat === "annule") return;
+    function marquerEnvoye() {
         const maintenant = new Date().toISOString();
         propositions = propositions.map(p => Object.assign({}, p, { envoyeLe: maintenant }));
         AGC.sauverPropositions(propositions);
         afficherMiens();
+    }
+
+    /* Envoi manuel en 2 gestes : chaque bouton est un vrai lien touché par l'utilisateur,
+       que le navigateur ne peut pas bloquer (contrairement à une ouverture automatique du mail). */
+    function envoiManuel(r) {
+        const url = URL.createObjectURL(r.fichier);
+        const el = document.createElement("div");
+        el.className = "fenetre";
+        el.setAttribute("role", "dialog");
+        el.innerHTML = '<div class="fenetre-boite formulaire">' +
+            "<h2>Envoi en 2 étapes</h2>" +
+            "<p>Ton téléphone ne permet pas de joindre le fichier automatiquement. Deux gestes suffisent :</p>" +
+            '<a class="bouton" href="' + url + '" download="' + AGC.echap(r.fichier.name) + '" data-etape="1"><i class="fa-solid fa-download"></i> ① Télécharger le fichier</a>' +
+            '<a class="bouton violet" href="' + AGC.echap(r.mailto) + '" data-etape="2"><i class="fa-solid fa-envelope"></i> ② Ouvrir le mail</a>' +
+            '<p class="form-note"><i class="fa-solid fa-paperclip"></i><span>Dans le mail, ajoute en pièce jointe le fichier <b>' +
+            AGC.echap(r.fichier.name) + "</b> (dans tes téléchargements), puis envoie.</span></p>" +
+            '<button type="button" class="bouton" data-fait><i class="fa-solid fa-check"></i> C\'est envoyé</button>' +
+            '<button type="button" class="bouton discret" data-fermer>Plus tard</button>' +
+            "</div>";
+        const fermer = () => { el.remove(); URL.revokeObjectURL(url); };
+        el.addEventListener("click", e => {
+            if (e.target.closest("[data-fait]")) {
+                marquerEnvoye();
+                fermer();
+                toast("Merci ! Tes propositions vont être étudiées 🎃", 5000);
+            } else if (e.target.closest("[data-fermer]")) {
+                fermer();
+            }
+        });
+        document.body.appendChild(el);
+    }
+
+    formEnvoi.addEventListener("submit", async e => {
+        e.preventDefault();
+        const auteur = AGC.auteur({ prenom: formEnvoi.prenom.value.trim(), contact: formEnvoi.contact.value.trim() });
+        const r = await AGC.envoyerPropositions(propositions, auteur);
+        if (r.mode === "annule") return;
         $("panneau-envoi").hidden = true;
-        toast(resultat === "partage"
-            ? "Merci ! Tes propositions vont être étudiées 🎃"
-            : "Fichier téléchargé : joins-le au mail qui vient de s'ouvrir.", 6000);
+        if (r.mode === "manuel") return envoiManuel(r);
+        marquerEnvoye();
+        toast("Merci ! Tes propositions vont être étudiées 🎃", 6000);
     });
 })();
