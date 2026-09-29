@@ -9,7 +9,6 @@
     let ctx = null, sortie = null, cfg = null, actif = false;
     const tampons = {};
     let ambiance = [], murmures = null, coeur = null;
-    let minuteurs = [];
     let intensite = 0;
 
     const hasard = (min, max) => min + Math.random() * (max - min);
@@ -56,15 +55,27 @@
         src.start();
     };
 
-    function planifier(liste, [min, max], volume) {
-        const t = setTimeout(async () => {
+    /* Sons aléatoires : cle = "etranges" | "cris". L'intervalle dépend de la phase (normale / finale). */
+    let finale = false;
+    const VOLUMES = { etranges: .8, cris: 1 };
+    const prochains = {};
+    function planifier(cle) {
+        const [min, max] = ((finale && cfg.intervallesFinale) || cfg.intervalles)[cle];
+        clearTimeout(prochains[cle]);
+        prochains[cle] = setTimeout(async () => {
             if (actif && document.visibilityState === "visible") {
-                await Nuit.jouer(choisir(liste), volume, hasard(-.9, .9));
+                await Nuit.jouer(choisir(cfg.sons[cle]), VOLUMES[cle], hasard(-.9, .9));
             }
-            planifier(liste, [min, max], volume);
+            if (actif) planifier(cle);
         }, hasard(min, max) * 1000);
-        minuteurs.push(t);
     }
+
+    /* Passe en cadence « finale » (ou revient en normale) ; replanifie tout de suite */
+    Nuit.finale = function (oui) {
+        if (finale === !!oui) return;
+        finale = !!oui;
+        if (actif && cfg) Object.keys(VOLUMES).forEach(planifier);
+    };
 
     Nuit.demarrer = function (config, avecFlash) {
         cfg = config;
@@ -97,8 +108,8 @@
                 murmures = boucle(m, 0);
                 coeur = boucle(c, 0);
                 Nuit.proximite(intensite);
-                planifier(S.etranges, cfg.intervalles.etranges, .8);
-                planifier(S.cris, cfg.intervalles.cris, 1);
+                planifier("etranges");
+                planifier("cris");
                 // précharge les sons ponctuels
                 S.etranges.concat(S.cris, [S.trouve]).forEach(charger);
                 return true;
@@ -178,8 +189,7 @@
 
     Nuit.arreter = function () {
         actif = false;
-        minuteurs.forEach(clearTimeout);
-        minuteurs = [];
+        Object.values(prochains).forEach(clearTimeout);
         if (ctx) ctx.close();
         ctx = null;
         Flash.fermer();

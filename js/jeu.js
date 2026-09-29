@@ -248,6 +248,7 @@
             }).bindTooltip("Zone maudite — " + c.nom, { direction: "center", className: "info-zone" }).addTo(coucheZones);
         });
         if (N) {
+            AGC.Nuit.finale(cachees.length > 0);   // sons aléatoires plus fréquents pendant la finale
             document.getElementById("sonar").hidden = !cachees.length;
             document.getElementById("enigmes").hidden = !cachees.length;
             const reste = N.sonar.cris - (etat.sonar || 0);

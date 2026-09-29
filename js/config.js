@@ -137,6 +137,10 @@ AGC.config = {
                     etranges: [35, 80],
                     cris: [150, 300]
                 },
+                intervallesFinale: { // idem pendant la finale (cibles cachées) : la tension monte
+                    etranges: [20, 45],
+                    cris: [90, 180]
+                },
                 sons: {             // fichiers de sons/ (sans .mp3) ; ambiance : [fichier, volume]
                     ambiance: [["ambiance-cimetiere", .55], ["ambiance-voix", .22]],
                     murmures: "proche-murmures",
