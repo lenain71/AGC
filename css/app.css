@@ -219,7 +219,8 @@ button.barre-btn:hover, a.barre-btn:hover { background: rgba(255, 255, 255, .06)
 /* ---------- Profil ---------- */
 .progres { height: 10px; border-radius: 99px; background: rgba(255, 255, 255, .08); overflow: hidden; margin: 10px 0 12px; }
 .progres span { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--orange), #ffc062); }
-.profil-ligne { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.profil-ligne { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 10px; }
+.profil-ligne .etat { white-space: nowrap; }
 .profil-ligne h2 { font-family: var(--titre); font-weight: 400; font-size: 1.15rem; letter-spacing: .03em; }
 .profil-actions { display: flex; gap: 10px; }
 .profil-actions .bouton { padding: 11px 14px; font-size: .95rem; }
