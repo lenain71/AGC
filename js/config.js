@@ -46,7 +46,7 @@ AGC.config = {
 
     /* Adresse qui reçoit les propositions de lieux (fichier JSON envoyé par mail) */
     contact: {
-        email: "halloween.couternon@example.fr"   // À COMPLÉTER
+        email: "charly.delarche@idea-design.fr"   // provisoire
     },
 
     /* Lieux fixes ajoutés à la « Carte du village » (en plus du lieu de la soirée et de data/lieux.json).
