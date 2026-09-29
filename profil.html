@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#080a1a">
+    <title>Ma progression — Hallo' Village</title>
+    <link rel="icon" href="picto.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+    <main class="page">
+        <p class="soiree-desc" style="margin-top:8px">
+            Ta progression est enregistrée sur ce téléphone uniquement.
+        </p>
+        <div id="liste"></div>
+    </main>
+
+    <script src="js/config.js"></script>
+    <script src="js/common.js"></script>
+    <script>
+        AGC.coque({ page: "profil.html", titre: "Ma progression" });
+
+        function afficher() {
+            const P = AGC.config.parcours;
+            document.getElementById("liste").innerHTML = Object.keys(P).map(id => {
+                const pr = AGC.progression(id), e = AGC.etatParcours(id);
+                return '<section class="bloc"><div class="profil-ligne"><h2>' + P[id].nom + "</h2>" +
+                    '<span class="etat">' + e.texte + "</span></div>" +
+                    '<div class="progres"><span style="width:' + Math.round(100 * pr.trouves / pr.total) + '%"></span></div>' +
+                    '<div class="profil-actions">' +
+                    '<a class="bouton violet" href="' + AGC.lien("jeu.html?p=" + id) + '">' + (pr.trouves ? "Reprendre" : "Jouer") + "</a>" +
+                    (pr.trouves ? '<button class="bouton discret" data-effacer="' + id + '"><i class="fa-solid fa-rotate-left"></i> Recommencer</button>' : "") +
+                    "</div></section>";
+            }).join("");
+        }
+        document.getElementById("liste").addEventListener("click", e => {
+            const b = e.target.closest("[data-effacer]");
+            if (b && confirm("Effacer ta progression pour « " + AGC.config.parcours[b.dataset.effacer].nom + " » ?")) {
+                AGC.effacer(b.dataset.effacer);
+                afficher();
+            }
+        });
+        afficher();
+        AGC.animerRebours();
+    </script>
+</body>
+</html>

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="theme-color" content="#080a1a">
+    <title>Validation des lieux — Hallo' Village</title>
+    <link rel="icon" href="picto.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+    <link rel="stylesheet" href="css/app.css">
+    <style>
+        .barre { max-width: 1100px; }
+        .admin { max-width: 1100px; margin: 0 auto; padding: 0 16px 40px; }
+        .admin-grille { display: grid; gap: 16px; }
+        @media (min-width: 900px) {
+            .admin-grille { grid-template-columns: 1fr 1fr; align-items: start; }
+            #carte-admin { position: sticky; top: 76px; height: calc(100vh - 100px) !important; }
+        }
+        #carte-admin { height: 42vh; border-radius: var(--rayon); border: 1px solid var(--bord); }
+        .depot {
+            display: block; text-align: center; padding: 22px 16px; margin-bottom: 14px;
+            border: 2px dashed rgba(255, 255, 255, .25); border-radius: var(--rayon); cursor: pointer; font-weight: 800;
+        }
+        .depot.survol { border-color: var(--orange); background: rgba(255, 138, 0, .1); }
+        .depot i { font-size: 1.8rem; color: var(--orange); display: block; margin-bottom: 6px; }
+        .depot small { display: block; font-weight: 400; color: var(--texte-2); margin-top: 4px; }
+        .resume { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+        .resume .etat { background: var(--carte); border: 1px solid var(--bord); }
+        .fiche { display: grid; grid-template-columns: 88px 1fr; gap: 12px; padding: 14px; }
+        .fiche.retenue { border-color: var(--vert); }
+        .fiche-photo { width: 88px; height: 88px; border-radius: 12px; object-fit: cover; background: rgba(255,255,255,.05); display: grid; place-items: center; color: var(--texte-2); }
+        .fiche .champ { margin-bottom: 8px; }
+        .fiche .champ input, .fiche .champ textarea, .fiche select { padding: 8px 10px; font-size: .92rem; }
+        .fiche select { width: 100%; border-radius: 12px; border: 1px solid rgba(255,255,255,.15); background: #1c1f3d; color: var(--texte); font: inherit; }
+        .fiche-meta { font-size: .8rem; color: var(--texte-2); }
+        .fiche-meta .alerte { color: #ffb366; font-weight: 800; }
+        .fiche-actions { grid-column: 1 / -1; display: flex; gap: 10px; align-items: center; }
+        .fiche-actions label { display: flex; gap: 8px; align-items: center; font-weight: 800; flex: 1; cursor: pointer; }
+        .fiche-actions input { width: 20px; height: 20px; accent-color: var(--vert); }
+        .fiche-actions .bouton { width: auto; padding: 8px 14px; font-size: .85rem; }
+        .aide { font-size: .88rem; color: var(--texte-2); }
+        .aide code { background: rgba(255,255,255,.08); padding: 1px 6px; border-radius: 6px; color: var(--texte); }
+    </style>
+</head>
+<body>
+    <main class="admin">
+        <p class="aide" style="margin:6px 0 14px">
+            Page réservée aux organisateurs. Dépose les fichiers <code>hallo-village-propositions-….json</code> reçus par mail,
+            coche les lieux à publier, puis exporte. Rien n'est envoyé sur Internet : tout se passe dans ce navigateur.
+        </p>
+        <div class="admin-grille">
+            <div id="carte-admin"></div>
+            <div>
+                <label class="depot" id="depot">
+                    <input type="file" id="fichiers" accept=".json,application/json" multiple hidden>
+                    <i class="fa-solid fa-file-import"></i>
+                    Déposer ou choisir les fichiers JSON reçus
+                    <small>Plusieurs fichiers à la fois, c'est possible</small>
+                </label>
+                <div class="resume" id="resume"></div>
+                <div id="fiches"></div>
+                <button class="bouton" id="exporter" style="margin-top:16px"><i class="fa-solid fa-file-zipper"></i> Exporter les lieux publiés</button>
+                <p class="aide" style="margin-top:10px">
+                    L'export donne <code>lieux-valides.zip</code>. Dézippe-le dans le dossier <code>data/</code> du site
+                    (remplace <code>lieux.json</code> et ajoute les photos dans <code>photos/</code>), puis publie le site (commit + push).
+                </p>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/common.js"></script>
+    <script src="js/carte.js"></script>
+    <script src="js/lieux.js"></script>
+    <script src="js/admin.js"></script>
+</body>
+</html>

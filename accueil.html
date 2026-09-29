@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#080a1a">
+    <title>Hallo' Village — Halloween à Couternon</title>
+    <meta name="description" content="L'application d'Halloween de Couternon : la soirée, la chasse aux citrouilles des enfants et des adultes.">
+    <link rel="icon" href="picto.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+    <main class="page">
+        <section class="heros" id="heros">
+            <p class="heros-sur">Bienvenue à</p>
+            <h1 class="heros-titre" id="village"></h1>
+            <span class="pastille" id="habitants"></span>
+        </section>
+
+        <div class="tuiles">
+            <a class="tuile orange" data-href="soiree.html">
+                <i class="fa-solid fa-calendar-days"></i>
+                <span class="tuile-nom">La soirée</span>
+                <span class="tuile-info" id="info-soiree"></span>
+            </a>
+            <a class="tuile violet" data-href="enfants.html">
+                <i class="fa-solid fa-candy-cane"></i>
+                <span class="tuile-nom">Chasse des enfants</span>
+                <span class="tuile-info">Petits &amp; grands</span>
+            </a>
+            <a class="tuile violet" data-href="carte.html">
+                <i class="fa-solid fa-map-location-dot"></i>
+                <span class="tuile-nom">Carte du village</span>
+                <span class="tuile-info">Lieux &amp; animations</span>
+            </a>
+            <a class="tuile orange" data-href="jeu.html?p=adultes">
+                <span class="tuile-nouveau">NOUVEAU</span>
+                <i class="fa-solid fa-user-group"></i>
+                <span class="tuile-nom">Chasse des adultes</span>
+                <span class="tuile-info">Pour les parents</span>
+            </a>
+        </div>
+
+        <div class="bloc rebours" id="rebours"></div>
+
+        <div class="bandeau">
+            <div><b id="nb-habitants"></b><span>habitants</span></div>
+            <div><b>1</b><span>village à explorer</span></div>
+            <div><b>100%</b><span>esprit Halloween</span></div>
+        </div>
+    </main>
+
+    <script src="js/config.js"></script>
+    <script src="js/common.js"></script>
+    <script>
+        const C = AGC.config;
+        const S = C.soiree;
+        AGC.coque({ page: "accueil.html" });
+
+        document.getElementById("heros").insertAdjacentHTML("afterbegin", AGC.village());
+        document.getElementById("village").textContent = C.village;
+        document.getElementById("habitants").textContent = C.habitants + " habitants";
+        document.getElementById("nb-habitants").textContent = C.habitants;
+        document.getElementById("info-soiree").textContent =
+            new Date(S.date).getDate() + " oct. · " + AGC.heure(S.date);
+        document.querySelectorAll("[data-href]").forEach(a => { a.href = AGC.lien(a.dataset.href); });
+
+        const rebours = document.getElementById("rebours");
+        if (Date.now() < new Date(S.date).getTime()) {
+            rebours.innerHTML = AGC.citrouille(46) +
+                '<p class="rebours-texte">La soirée commence dans<b data-rebours="' + S.date + '">' + AGC.texteRebours(S.date) + "</b></p>";
+        } else {
+            rebours.innerHTML = AGC.citrouille(46) +
+                '<p class="rebours-texte">C\'est le grand soir !<b>Joyeux Halloween 🎃</b></p>';
+        }
+        AGC.animerRebours();
+    </script>
+</body>
+</html>

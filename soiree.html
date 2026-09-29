@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#080a1a">
+    <title>La soirée — Hallo' Village</title>
+    <link rel="icon" href="picto.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+    <main class="page">
+        <section class="heros" id="heros"></section>
+
+        <h2 class="soiree-titre" id="titre"></h2>
+        <ul class="infos-liste">
+            <li><i class="fa-solid fa-calendar-days"></i><span id="date"></span></li>
+            <li><i class="fa-solid fa-clock"></i><span id="heure"></span></li>
+            <li><i class="fa-solid fa-location-dot"></i><span id="lieu"></span></li>
+        </ul>
+        <p class="soiree-desc" id="description"></p>
+        <a class="bouton" id="inscription" target="_blank" rel="noopener">
+            <i class="fa-solid fa-ticket"></i> Je participe
+        </a>
+
+        <h2 class="section-titre"><i class="fa-solid fa-hourglass-half"></i> Au programme</h2>
+        <ul class="programme bloc" id="programme"></ul>
+
+        <h2 class="section-titre"><i class="fa-solid fa-wand-magic-sparkles"></i> Petites astuces</h2>
+        <ul class="tips bloc" id="tips"></ul>
+    </main>
+
+    <script src="js/config.js"></script>
+    <script src="js/common.js"></script>
+    <script>
+        const S = AGC.config.soiree;
+        AGC.coque({ page: "soiree.html", titre: "La soirée", retour: "accueil.html" });
+
+        const texte = (id, v) => { document.getElementById(id).textContent = v; };
+        document.getElementById("heros").innerHTML = AGC.village();
+        texte("titre", S.titre);
+        texte("date", AGC.dateLongue(S.date));
+        texte("heure", AGC.heure(S.date));
+        texte("lieu", S.lieu + (S.adresse ? " — " + S.adresse : ""));
+        texte("description", S.description);
+        document.getElementById("inscription").href = S.helloasso;
+
+        const echap = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+        document.getElementById("programme").innerHTML = S.programme.map(e =>
+            '<li><span class="heure">' + echap(e.heure) + "</span><div><b>" + echap(e.titre) + "</b><p>" + echap(e.texte) + "</p></div></li>").join("");
+        document.getElementById("tips").innerHTML = S.tips.map(t =>
+            '<li><i class="fa-solid ' + echap(t.icone) + '"></i><p>' + echap(t.texte) + "</p></li>").join("");
+    </script>
+</body>
+</html>

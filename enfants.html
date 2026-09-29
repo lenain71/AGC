@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#080a1a">
+    <title>Chasse des enfants — Hallo' Village</title>
+    <link rel="icon" href="picto.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+    <main class="page">
+        <p class="soiree-desc" style="margin-top:8px">
+            Choisis ton parcours, suis la carte et approche-toi des citrouilles :
+            chacune cache un morceau de la phrase secrète&nbsp;!
+        </p>
+        <div id="choix"></div>
+
+        <h2 class="section-titre"><i class="fa-solid fa-circle-question"></i> Comment ça marche ?</h2>
+        <ul class="tips bloc">
+            <li><i class="fa-solid fa-location-crosshairs"></i><p>Autorise la localisation : ta position apparaît sur la carte.</p></li>
+            <li><i class="fa-solid fa-fire"></i><p>Quand tu t'approches d'une citrouille, le téléphone vibre et te dit « Tu chauffes ! ».</p></li>
+            <li><i class="fa-solid fa-font"></i><p>Tout près, un morceau de la phrase secrète s'affiche.</p></li>
+            <li><i class="fa-solid fa-ghost"></i><p>Quand tout est trouvé, un point secret apparaît…</p></li>
+        </ul>
+    </main>
+
+    <script src="js/config.js"></script>
+    <script src="js/common.js"></script>
+    <script>
+        AGC.coque({ page: "enfants.html", titre: "Chasse des enfants", retour: "accueil.html" });
+
+        const P = AGC.config.parcours;
+        const cartes = [
+            { id: "petits", emoji: "🧒", couleur: "orange" },
+            { id: "grands", emoji: "🧙", couleur: "violet" }
+        ];
+        document.getElementById("choix").innerHTML = cartes.map(c => {
+            const p = P[c.id], e = AGC.etatParcours(c.id);
+            return '<a class="parcours-carte ' + c.couleur + '" href="' + AGC.lien("jeu.html?p=" + c.id) + '">' +
+                '<span class="emoji">' + c.emoji + "</span><div>" +
+                "<h2>" + p.nom + "</h2><p>" + p.public + "<br>" + p.description + "</p>" +
+                '<span class="etat">' + e.texte + "</span></div></a>";
+        }).join("");
+        AGC.animerRebours();
+    </script>
+</body>
+</html>

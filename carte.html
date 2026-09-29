@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#080a1a">
+    <title>Carte du village — Hallo' Village</title>
+    <link rel="icon" href="picto.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+    <link rel="stylesheet" href="css/app.css">
+</head>
+<body class="plein-ecran">
+    <div id="carte"></div>
+
+    <!-- Consultation -->
+    <div id="mode-voir">
+        <div class="legende">
+            <span><i class="fa-solid fa-star" style="color:var(--orange)"></i>La soirée</span>
+            <span><i class="fa-solid fa-house-chimney" style="color:var(--orange-clair)"></i>Maisons décorées</span>
+            <span><i class="fa-solid fa-ghost" style="color:var(--violet-clair)"></i>Lieux hantés</span>
+            <span><i class="fa-solid fa-circle" style="color:var(--orange)"></i>Vous êtes ici</span>
+        </div>
+        <div class="carte-actions">
+            <button class="rond" id="recentrer" aria-label="Me recentrer"><i class="fa-solid fa-location-crosshairs"></i></button>
+            <button class="bouton fab" id="proposer"><i class="fa-solid fa-plus"></i> Proposer un lieu</button>
+        </div>
+        <button class="puce-propositions" id="mes-propositions" hidden></button>
+    </div>
+
+    <!-- Placement d'un nouveau lieu : viseur fixe au centre, on déplace la carte dessous -->
+    <div id="mode-placer" hidden>
+        <div class="consigne"><i class="fa-solid fa-hand-pointer"></i> Déplace la carte pour placer le viseur sur le lieu</div>
+        <div class="viseur" aria-hidden="true"><i class="fa-solid fa-location-dot"></i></div>
+        <div class="placer-actions">
+            <button class="bouton discret" id="placer-annuler">Annuler</button>
+            <button class="rond" id="placer-ici" aria-label="Utiliser ma position"><i class="fa-solid fa-location-crosshairs"></i></button>
+            <button class="bouton" id="placer-valider">Placer ici</button>
+        </div>
+    </div>
+
+    <!-- Formulaire de proposition -->
+    <div class="fenetre" id="formulaire" hidden>
+        <form class="fenetre-boite formulaire" id="form-lieu" novalidate>
+            <h2 id="form-titre">Proposer un lieu</h2>
+            <div class="choix-type">
+                <label><input type="radio" name="type" value="maison"><span><i class="fa-solid fa-house-chimney"></i>Maison décorée</span></label>
+                <label><input type="radio" name="type" value="hante"><span><i class="fa-solid fa-ghost"></i>Lieu hanté</span></label>
+            </div>
+            <label class="champ">
+                <span>Nom du lieu</span>
+                <input name="nom" maxlength="60" required placeholder="Ex : La maison aux squelettes">
+            </label>
+            <label class="champ">
+                <span>Description <em>(facultatif)</em></span>
+                <textarea name="description" rows="3" maxlength="400" placeholder="Adresse, horaires, ce qu'on peut y voir, bonbons distribués…"></textarea>
+            </label>
+            <div class="champ">
+                <span>Photo <em>(facultatif)</em></span>
+                <div class="photo-zone">
+                    <img id="photo-apercu" alt="" hidden>
+                    <label class="bouton discret photo-ajout">
+                        <input type="file" id="photo" accept="image/*" hidden>
+                        <i class="fa-solid fa-camera"></i> <span id="photo-texte">Ajouter une photo</span>
+                    </label>
+                    <button type="button" class="bouton discret" id="photo-retirer" hidden aria-label="Retirer la photo"><i class="fa-solid fa-trash"></i></button>
+                </div>
+            </div>
+            <label class="case-accord" id="bloc-accord">
+                <input type="checkbox" name="accord">
+                <span>J'habite ici, ou les habitants sont d'accord pour que leur maison apparaisse sur la carte.</span>
+            </label>
+            <p class="form-note"><i class="fa-solid fa-circle-info"></i> Ta proposition reste sur ton téléphone jusqu'à ce que tu l'envoies. Elle apparaîtra pour tout le monde après validation par les organisateurs.</p>
+            <p class="form-erreur" id="form-erreur" role="alert"></p>
+            <button type="submit" class="bouton">Enregistrer</button>
+            <button type="button" class="bouton discret" id="form-supprimer" hidden><i class="fa-solid fa-trash"></i> Supprimer</button>
+            <button type="button" class="bouton discret" id="form-annuler">Annuler</button>
+        </form>
+    </div>
+
+    <!-- Mes propositions + envoi -->
+    <div class="fenetre" id="panneau-envoi" hidden>
+        <form class="fenetre-boite formulaire" id="form-envoi" novalidate>
+            <h2>Mes propositions</h2>
+            <ul class="liste-propositions" id="liste-propositions"></ul>
+            <label class="champ">
+                <span>Ton prénom <em>(facultatif)</em></span>
+                <input name="prenom" maxlength="40" autocomplete="given-name">
+            </label>
+            <label class="champ">
+                <span>Téléphone ou e-mail <em>(facultatif, pour te recontacter)</em></span>
+                <input name="contact" maxlength="80">
+            </label>
+            <p class="form-note"><i class="fa-solid fa-paper-plane"></i> Un fichier va être créé et joint à un mail destiné à <b id="email-orga"></b>.</p>
+            <button type="submit" class="bouton"><i class="fa-solid fa-paper-plane"></i> Envoyer mes propositions</button>
+            <button type="button" class="bouton discret" id="envoi-fermer">Fermer</button>
+        </form>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/common.js"></script>
+    <script src="js/carte.js"></script>
+    <script src="js/lieux.js"></script>
+    <script src="js/carte-lieux.js"></script>
+</body>
+</html>
