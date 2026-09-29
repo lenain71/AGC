@@ -20,10 +20,13 @@
     }
 
     /* ---------- Marqueurs ---------- */
-    function icone(type, enAttente) {
+    /* decalage : rang du marqueur parmi ceux qui partagent exactement le même point (-0.5, +0.5…),
+       pour les afficher côte à côte au lieu de les superposer */
+    function icone(type, enAttente, decalage) {
         const t = T[type] || T.evenement;
+        const dx = Math.round((decalage || 0) * 38);
         return L.divIcon({
-            className: "marqueur", iconSize: [34, 34], iconAnchor: [17, 17], popupAnchor: [0, -18],
+            className: "marqueur", iconSize: [34, 34], iconAnchor: [17 - dx, 17], popupAnchor: [dx, -18],
             html: '<div class="marqueur-lieu' + (enAttente ? " en-attente" : "") + '" style="background:' + t.fond + '">' +
                 '<i class="fa-solid ' + t.icone + '"></i></div>'
         });
@@ -55,9 +58,12 @@
         .addTo(map);
 
     const publies = C.lieux.concat(await AGC.chargerLieuxPublies());
-    publies.forEach(l => {
-        L.marker(l.coords, { icon: icone(l.type) }).bindPopup(contenuPopup(l)).addTo(coucheLieux);
-    });
+    const memePoint = {};
+    publies.forEach(l => { const k = l.coords.join(","); (memePoint[k] = memePoint[k] || []).push(l); });
+    Object.values(memePoint).forEach(groupe => groupe.forEach((l, i) => {
+        L.marker(l.coords, { icon: icone(l.type, false, i - (groupe.length - 1) / 2) })
+            .bindPopup(contenuPopup(l)).addTo(coucheLieux);
+    }));
 
     let propositions = AGC.mesPropositions();
 

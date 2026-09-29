@@ -1,11 +1,22 @@
 {
   "format": "hallo-village/lieux",
   "version": 1,
-  "misAJourLe": "2026-09-29T17:43:32.492Z",
+  "misAJourLe": "2026-09-29T18:58:18.266Z",
   "lieux": [
     {
       "id": "e2974ac6-1a92-4f13-9782-583b06c88236",
       "type": "maison",
+      "nom": "Charly",
+      "description": "Maison borderolle delarche",
+      "coords": [
+        47.334451,
+        5.149171
+      ],
+      "photo": null
+    },
+    {
+      "id": "8f272813-3c32-4610-9404-fcb4b225813d",
+      "type": "hante",
       "nom": "Charly",
       "description": "Maison borderolle delarche",
       "coords": [
