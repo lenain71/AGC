@@ -162,14 +162,16 @@
                     if (!Ctx) return;
                     try { if (navigator.audioSession) navigator.audioSession.type = "playback"; } catch (e) { /* non géré */ }
                     ctx = new Ctx();
-                    Object.values(P.sons).forEach(charger);
+                    [].concat(...Object.values(P.sons)).forEach(charger);
                 }
                 if (ctx.state !== "running") ctx.resume();
             },
+            /* P.sons[cle] : un fichier, ou une liste dont on tire un élément au hasard */
             async jouer(cle) {
                 if (!ctx || !P.sons || !P.sons[cle]) return;
+                const liste = [].concat(P.sons[cle]);
                 const src = ctx.createBufferSource();
-                src.buffer = await charger(P.sons[cle]);
+                src.buffer = await charger(liste[Math.floor(Math.random() * liste.length)]);
                 src.connect(ctx.destination);
                 src.start();
             }
