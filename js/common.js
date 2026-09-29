@@ -8,6 +8,9 @@
 
     AGC.debug = params.get("debug") === "1";
 
+    AGC.echap = s => String(s == null ? "" : s).replace(/[&<>"']/g, c =>
+        ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+
     /* ---------- Progression (localStorage, une clé par année et par parcours) ---------- */
     function key(id) { return "agc" + C.annee + ":" + id; }
 

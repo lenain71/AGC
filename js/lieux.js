@@ -16,9 +16,6 @@
     };
     AGC.TYPES_PROPOSABLES = ["maison", "hante"];
 
-    AGC.echap = s => String(s == null ? "" : s).replace(/[&<>"']/g, c =>
-        ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
-
     AGC.uuid = function () {
         if (crypto.randomUUID) return crypto.randomUUID();
         return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, c => {

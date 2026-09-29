@@ -109,17 +109,17 @@ AGC.config = {
             couleur: "violet",
             // À COMPLÉTER : lieux différents des enfants ; provisoirement, les 8 points de 2025 non repris par les grands
             points: {
-                "1": { coords: [47.3402597, 5.1522895], lettre: "LA" },
-                "2": { coords: [47.332244, 5.154542],   lettre: "COR" },
-                "3": { coords: [47.332224, 5.153939],   lettre: "NUIT" },
-                "4": { coords: [47.331446, 5.152159],   lettre: "DOUILLE" },
-                "5": { coords: [47.334862, 5.149969],   lettre: "RÔDE" },
-                "6": { coords: [47.337738, 5.147247],   lettre: "BI" },
-                "7": { coords: [47.3384608, 5.1449500], lettre: "DANS" },
-                "8": { coords: [47.3389617, 5.1486665], lettre: "NE" }
+                "1": { coords: [47.3402597, 5.1522895], lettre: "LA", enigme: "À COMPLÉTER : énigme du lieu n°1" },
+                "2": { coords: [47.332244, 5.154542],   lettre: "COR", enigme: "À COMPLÉTER : énigme du lieu n°2" },
+                "3": { coords: [47.332224, 5.153939],   lettre: "NUIT", enigme: "À COMPLÉTER : énigme du lieu n°3" },
+                "4": { coords: [47.331446, 5.152159],   lettre: "DOUILLE", enigme: "À COMPLÉTER : énigme du lieu n°4" },
+                "5": { coords: [47.334862, 5.149969],   lettre: "RÔDE", enigme: "À COMPLÉTER : énigme du lieu n°5" },
+                "6": { coords: [47.337738, 5.147247],   lettre: "BI", enigme: "À COMPLÉTER : énigme du lieu n°6" },
+                "7": { coords: [47.3384608, 5.1449500], lettre: "DANS", enigme: "À COMPLÉTER : énigme du lieu n°7" },
+                "8": { coords: [47.3389617, 5.1486665], lettre: "NE", enigme: "À COMPLÉTER : énigme du lieu n°8" }
             },
             // À COMPLÉTER : point final provisoire devant la salle des fêtes
-            secret: { coords: [47.3331368, 5.1557851], lettre: "🦇" },
+            secret: { coords: [47.3331368, 5.1557851], lettre: "🦇", enigme: "À COMPLÉTER : énigme du point final" },
             // À COMPLÉTER : phrase dérivée provisoire « Cornebidouille rôde dans la nuit 🦇 »
             phrase: ["2", "8", "6", "4", " ", "5", " ", "7", " ", "1", " ", "3", " ", "secret"],
             messageFinal: "Tu as survécu à la nuit de Cornebidouille… Garde cet écran comme preuve de ta bravoure 🦇",
@@ -127,6 +127,9 @@ AGC.config = {
             nuit: {
                 audioSeul: 3,       // les 3 dernières cibles restantes disparaissent de la carte : on les trouve au son
                 rayonSon: 60,       // m : distance à partir de laquelle on entend la citrouille
+                rayonSonAudio: 100, // m : idem, une fois les cibles cachées (pour entendre dès l'entrée dans la zone)
+                zone: 120,          // m : rayon de la « zone maudite » affichée autour d'une cible cachée (décalée, la cible n'est pas au centre)
+                sonar: { cris: 5, portee: 400 },  // cris de chauve-souris disponibles pour la finale ; au-delà de la portée, écho le plus faible
                 rayonFlash: 25,     // m : distance à partir de laquelle le flash clignote (Android)
                 intervalles: {      // secondes entre deux sons aléatoires (min, max)
                     etranges: [35, 80],

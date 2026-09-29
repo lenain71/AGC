@@ -129,6 +129,48 @@
 
     Nuit.proximiteFlash = function (i) { Flash.proximite(i); };
 
+    /* Cri de chauve-souris synthétisé : 3 « chirps » aigus descendants. L'écho passe par un filtre (plus sourd). */
+    function cri(debut, volume, echo) {
+        let entree = sortie;
+        if (echo) {
+            const filtre = ctx.createBiquadFilter();
+            filtre.type = "lowpass";
+            filtre.frequency.value = 3200;
+            filtre.connect(sortie);
+            entree = filtre;
+        }
+        for (let k = 0; k < 3; k++) {
+            const t = debut + k * .13;
+            const osc = ctx.createOscillator();
+            const env = ctx.createGain();
+            osc.type = "sine";
+            osc.frequency.setValueAtTime(echo ? 5200 : 6200, t);
+            osc.frequency.exponentialRampToValueAtTime(echo ? 2000 : 2400, t + .09);
+            env.gain.setValueAtTime(.0001, t);
+            env.gain.exponentialRampToValueAtTime(.45 * volume, t + .006);
+            env.gain.exponentialRampToValueAtTime(.0001, t + .1);
+            osc.connect(env);
+            env.connect(entree);
+            osc.start(t);
+            osc.stop(t + .12);
+        }
+    }
+
+    /*
+     * Radar : cri immédiat puis écho, d'autant plus tardif et faible que la cible est loin.
+     * Retourne le délai de l'écho en secondes (pour synchroniser l'affichage).
+     */
+    Nuit.sonar = function (distance, portee) {
+        const ratio = Math.min(1, distance / portee);
+        const delai = .25 + 2.5 * ratio;
+        if (ctx) {
+            const t = ctx.currentTime + .02;
+            cri(t, 1, false);
+            cri(t + delai, Math.max(.12, 1 - ratio), true);
+        }
+        return delai;
+    };
+
     Nuit.trouve = function () {
         if (cfg) Nuit.jouer(cfg.sons.trouve, 1);
         Flash.rafale();

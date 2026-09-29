@@ -478,3 +478,19 @@ body.nuit .phrase-finale { background: linear-gradient(160deg, #b3121b, #3b0508)
 body.nuit .lettre-geante { color: #ff3b3b; text-shadow: 0 0 24px rgba(255, 30, 30, .6); }
 body.nuit .marqueur-citrouille { filter: drop-shadow(0 0 10px rgba(255, 40, 40, .8)) saturate(.7) brightness(.8); }
 body.nuit .fenetre-boite, body.nuit .phrase, body.nuit .gps, body.nuit .rond { background: rgba(14, 9, 16, .96); }
+
+/* Finale du mode nuit : radar chauve-souris, énigmes, zones maudites */
+.rond.sonar { position: relative; font-size: 1.5rem; border-color: rgba(224, 38, 46, .6); }
+.rond.sonar b {
+    position: absolute; top: -4px; right: -4px; min-width: 20px; height: 20px; padding: 0 5px;
+    border-radius: 10px; background: #e0262e; color: #fff; font-size: .72rem; display: grid; place-items: center;
+}
+.rond.sonar:disabled { opacity: .45; }
+.rond.sonar.onde::after {
+    content: ""; position: absolute; inset: -2px; border-radius: 50%;
+    border: 2px solid #ff4d4d; animation: onde 1.2s ease-out forwards; pointer-events: none;
+}
+@keyframes onde { to { transform: scale(4); opacity: 0; } }
+.regles.enigmes span { color: var(--texte); }
+.regles.enigmes b { color: var(--orange-clair); }
+.leaflet-tooltip.info-zone { background: rgba(14, 9, 16, .9); color: #ff9a9a; border: 1px solid #7d0d12; font-weight: 800; box-shadow: none; }

@@ -60,6 +60,33 @@
     /* Mode nuit : quand il ne reste que N.audioSeul cibles, elles ne sont plus affichées */
     const modeAudio = () => !!N && !fini() && restantes() <= N.audioSeul;
 
+    /* Cibles cachées du mode audio, avec leur énigme */
+    function ciblesCachees() {
+        if (!modeAudio()) return [];
+        const liste = idsPoints.filter(n => !etat.visites[n])
+            .map(n => ({ cle: n, coords: P.points[n].coords, enigme: P.points[n].enigme, nom: "Citrouille n°" + n }));
+        if (secretActif() && !etat.secret) liste.push({ cle: "secret", coords: P.secret.coords, enigme: P.secret.enigme, nom: "L'esprit" });
+        return liste;
+    }
+
+    /* Centre de la « zone maudite » : décalé de la cible, toujours de la même façon pour une cible donnée */
+    function centreZone(cle, coords) {
+        let h = 2166136261;
+        for (const c of id + ":" + cle) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619); }
+        h >>>= 0;
+        const angle = (h % 360) * Math.PI / 180;
+        const dist = N.zone * .65 * Math.sqrt(((h >>> 9) % 1000) / 1000);
+        return [
+            coords[0] + dist * Math.cos(angle) / 111320,
+            coords[1] + dist * Math.sin(angle) / (111320 * Math.cos(coords[0] * Math.PI / 180))
+        ];
+    }
+
+    function texteEnigmes(liste) {
+        return '<ul class="regles enigmes">' + liste.map(c =>
+            '<li><i class="fa-solid fa-scroll"></i><span><b>' + c.nom + "</b><br>" + AGC.echap(c.enigme || "Aucun indice… écoute.") + "</span></li>").join("") + "</ul>";
+    }
+
     function afficherPhrase() {
         const mots = [[]];
         jetons.forEach(j => {
@@ -147,6 +174,7 @@
     const map = AGC.creerCarte("carte", P.points[idsPoints[0]].coords, 16);
     const marqueurs = {};
     let marqueurSecret = null;
+    const coucheZones = L.layerGroup().addTo(map);
 
     function iconePoint(n) {
         const html = etat.visites[n]
@@ -176,11 +204,29 @@
                 })
             }).addTo(map);
         }
+
+        // zones maudites + outils de la finale (radar, énigmes)
+        coucheZones.clearLayers();
+        const cachees = ciblesCachees();
+        cachees.forEach(c => {
+            L.circle(centreZone(c.cle, c.coords), {
+                radius: N.zone, color: "#e0262e", weight: 2, dashArray: "6 8",
+                fillColor: "#e0262e", fillOpacity: .12, interactive: true
+            }).bindTooltip("Zone maudite — " + c.nom, { direction: "center", className: "info-zone" }).addTo(coucheZones);
+        });
+        if (N) {
+            document.getElementById("sonar").hidden = !cachees.length;
+            document.getElementById("enigmes").hidden = !cachees.length;
+            const reste = N.sonar.cris - (etat.sonar || 0);
+            document.getElementById("sonar-reste").textContent = Math.max(0, reste);
+            document.getElementById("sonar").disabled = reste <= 0;
+        }
     }
 
     function cadrerTout() {
         const coords = idsPoints.filter(n => map.hasLayer(marqueurs[n])).map(n => P.points[n].coords);
         if (marqueurSecret) coords.push(P.secret.coords);
+        ciblesCachees().forEach(c => coords.push(centreZone(c.cle, c.coords)));
         if (!coords.length) idsPoints.forEach(n => coords.push(P.points[n].coords));
         map.fitBounds(coords, { paddingTopLeft: [20, 170], paddingBottomRight: [20, 90], maxZoom: 18 });
     }
@@ -213,8 +259,10 @@
             AGC.sauver(id, etat);
             fenetre(
                 '<div class="lettre-geante">👂</div><h2>Elles se sont évanouies…</h2>' +
-                "<p>Les " + restantes() + " dernières cibles ont disparu de la carte. " +
-                "Tends l'oreille : les murmures et les battements de cœur s'intensifient quand tu t'en approches.</p>",
+                "<p>Les " + restantes() + " dernières cibles ont disparu de la carte. Il ne reste que des <b>zones maudites</b> : " +
+                "la citrouille s'y cache, mais pas forcément en son centre. Tends l'oreille, les murmures et les battements de cœur s'intensifient à son approche.</p>" +
+                texteEnigmes(ciblesCachees()) +
+                "<p>🦇 Tu disposes de <b>" + N.sonar.cris + " cris de chauve-souris</b> : plus l'écho revient vite et fort, plus tu es proche.</p>",
                 [{ texte: "J'écoute…" }]
             );
         }
@@ -223,7 +271,8 @@
             AGC.sauver(id, etat);
             fenetre(modeAudio()
                 ? '<div class="lettre-geante">👻</div><h2>Un dernier esprit rôde…</h2>' +
-                  "<p>Toutes les citrouilles sont trouvées. Un esprit se cache quelque part, invisible sur la carte : suis sa voix.</p>"
+                  "<p>Toutes les citrouilles sont trouvées. Un esprit se cache dans une nouvelle zone maudite : suis sa voix.</p>" +
+                  texteEnigmes(ciblesCachees().filter(c => c.cle === "secret"))
                 : '<div class="lettre-geante">👻</div><h2>Un point secret est apparu !</h2>' +
                   "<p>Toutes les citrouilles sont trouvées. Un fantôme se cache quelque part sur la carte : trouve-le pour compléter la phrase.</p>",
                 modeAudio()
@@ -276,7 +325,7 @@
 
         let son = 0, lumiere = 0;
         if (N && plusProche) {
-            son = borne(1 - plusProche.d / N.rayonSon);
+            son = borne(1 - plusProche.d / (modeAudio() ? N.rayonSonAudio || N.rayonSon : N.rayonSon));
             lumiere = borne(1 - plusProche.d / N.rayonFlash);
             AGC.Nuit.proximite(son);
             AGC.Nuit.proximiteFlash(lumiere);
@@ -331,6 +380,33 @@
         else toast("Position pas encore trouvée…", "info", 2500);
     };
     document.getElementById("voir-tout").onclick = cadrerTout;
+
+    /* ---------- Finale du mode nuit : radar « cri de chauve-souris » et énigmes ---------- */
+    if (N) {
+        const boutonSonar = document.getElementById("sonar");
+        boutonSonar.onclick = () => {
+            const pos = suivi.position();
+            const cachees = ciblesCachees();
+            if (!pos || !cachees.length) return toast("Position pas encore trouvée…", "info", 2500);
+            if ((etat.sonar || 0) >= N.sonar.cris) return;
+            const d = Math.min(...cachees.map(c => AGC.distance([pos.lat, pos.lng], c.coords)));
+            etat.sonar = (etat.sonar || 0) + 1;
+            AGC.sauver(id, etat);
+            majMarqueurs();
+            boutonSonar.classList.remove("onde");
+            void boutonSonar.offsetWidth;   // relance l'animation
+            boutonSonar.classList.add("onde");
+            const delai = AGC.Nuit.sonar(d, N.sonar.portee);
+            setTimeout(() => {
+                const texte = d > 250 ? "Écho très lointain…" : d > 120 ? "Écho lointain…" : d > 50 ? "L'écho se rapproche…" : "L'écho claque : tout près !";
+                const reste = N.sonar.cris - etat.sonar;
+                toast(texte + (reste ? "" : " (plus aucun cri)"), "", 3500);
+            }, delai * 1000);
+        };
+        document.getElementById("enigmes").onclick = () => {
+            fenetre("<h2>Les énigmes</h2>" + texteEnigmes(ciblesCachees()), [{ texte: "Fermer" }]);
+        };
+    }
 
     if (AGC.debug) {
         map.on("click", e => suivi.simuler([e.latlng.lat, e.latlng.lng]));
