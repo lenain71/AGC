@@ -36,12 +36,26 @@
     };
 
     /* ---------- Dates ---------- */
+    /* L'heure de référence est celle du serveur (en-tête Date), pour qu'avancer l'horloge du téléphone ne serve à rien */
+    AGC.decalage = 0;
+    AGC.maintenant = () => Date.now() + AGC.decalage;
+    AGC.heureSync = fetch(location.href, { method: "HEAD", cache: "no-store" })
+        .then(r => {
+            const d = Date.parse(r.headers.get("Date"));
+            if (d) AGC.decalage = d - Date.now();
+        })
+        .catch(() => { /* hors ligne : heure du téléphone */ });
+
+    AGC.estTermine = function (id) {
+        const f = C.parcours[id].fermeture;
+        return !AGC.debug && !!f && AGC.maintenant() >= new Date(f).getTime();
+    };
     AGC.estOuvert = function (id) {
-        return AGC.debug || Date.now() >= new Date(C.parcours[id].ouverture).getTime();
+        return AGC.debug || (AGC.maintenant() >= new Date(C.parcours[id].ouverture).getTime() && !AGC.estTermine(id));
     };
 
     AGC.compteARebours = function (iso) {
-        let s = Math.max(0, Math.floor((new Date(iso).getTime() - Date.now()) / 1000));
+        let s = Math.max(0, Math.floor((new Date(iso).getTime() - AGC.maintenant()) / 1000));
         const j = Math.floor(s / 86400); s %= 86400;
         const h = Math.floor(s / 3600); s %= 3600;
         const m = Math.floor(s / 60); s %= 60;
@@ -196,6 +210,7 @@
     /* Libellé d'état d'un parcours (pour les tuiles, la page enfants et le profil) */
     AGC.etatParcours = function (id) {
         const p = C.parcours[id];
+        if (AGC.estTermine(id)) return { classe: "ferme", texte: '<i class="fa-solid fa-moon"></i> Terminé pour cette année' };
         if (!AGC.estOuvert(id)) return { classe: "ferme", texte: '<i class="fa-solid fa-lock"></i> Ouverture dans <b data-rebours="' + p.ouverture + '">' + AGC.texteRebours(p.ouverture) + "</b>" };
         const pr = AGC.progression(id);
         if (pr.fini) return { classe: "fini", texte: '<i class="fa-solid fa-trophy"></i> Terminé !' };

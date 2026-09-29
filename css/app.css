@@ -460,3 +460,21 @@ button.barre-btn:hover, a.barre-btn:hover { background: rgba(255, 255, 255, .06)
 .popup-type { font-size: .75rem; font-weight: 800; color: var(--orange-clair); }
 .popup-attente { font-size: .8rem; color: var(--violet-clair) !important; }
 .popup-lieu .bouton { margin-top: 8px; padding: 9px; font-size: .88rem; }
+
+/* ---------- Mode nuit (chasse adulte) ---------- */
+body.nuit {
+    --orange: #e0262e;
+    --orange-fonce: #7d0d12;
+    --orange-clair: #ff7a7a;
+    background: #040308;
+}
+body.nuit .tuiles-nuit { filter: invert(1) hue-rotate(170deg) saturate(.5) brightness(.6) contrast(1.1) sepia(.35); }
+body.nuit .barre { background: linear-gradient(#040308 60%, rgba(4, 3, 8, 0)); }
+body.nuit .toast { background: linear-gradient(160deg, #b3121b, #4a050a); box-shadow: 0 10px 40px rgba(179, 18, 27, .5); }
+body.nuit .toast.info { background: rgba(17, 12, 20, .96); box-shadow: 0 10px 30px rgba(0, 0, 0, .5); }
+body.nuit .bouton:not(.discret) { background: linear-gradient(180deg, #c81e26, #6e0a10); box-shadow: 0 8px 20px rgba(200, 30, 38, .35); }
+body.nuit .case.trouvee { background: #b3121b; border-color: #b3121b; }
+body.nuit .phrase-finale { background: linear-gradient(160deg, #b3121b, #3b0508); }
+body.nuit .lettre-geante { color: #ff3b3b; text-shadow: 0 0 24px rgba(255, 30, 30, .6); }
+body.nuit .marqueur-citrouille { filter: drop-shadow(0 0 10px rgba(255, 40, 40, .8)) saturate(.7) brightness(.8); }
+body.nuit .fenetre-boite, body.nuit .phrase, body.nuit .gps, body.nuit .rond { background: rgba(14, 9, 16, .96); }

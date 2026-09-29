@@ -101,23 +101,47 @@ AGC.config = {
 
         adultes: {
             nom: "Chasse des adultes",
-            public: "Nouveauté 2026 — pour les parents",
-            description: "Un parcours plus long et plus corsé, réservé aux grands enfants… de plus de 18 ans.",
-            ouverture: "2026-10-31T17:00:00",    // À COMPLÉTER
+            public: "Nouveauté 2026 — de nuit, pour les parents",
+            description: "La nuit tombée, suis les murmures jusqu'aux citrouilles… Les dernières ne se trouvent qu'à l'oreille.",
+            // Uniquement de nuit (heure contrôlée avec l'horloge du serveur, pas celle du téléphone)
+            ouverture: "2026-10-31T21:00:00",
+            fermeture: "2026-11-01T01:00:00",
             couleur: "violet",
-            // À COMPLÉTER : parcours adulte provisoire (reprend 8 points du grand parcours)
+            // À COMPLÉTER : lieux différents des enfants ; provisoirement, les 8 points de 2025 non repris par les grands
             points: {
-                "1": { coords: [47.334267, 5.154304], lettre: "S" },
-                "2": { coords: [47.334399, 5.149966], lettre: "O" },
-                "3": { coords: [47.334338, 5.149016], lettre: "R" },
-                "4": { coords: [47.333882, 5.148400], lettre: "C" },
-                "5": { coords: [47.332713, 5.148748], lettre: "I" },
-                "6": { coords: [47.334905, 5.148384], lettre: "E" },
-                "7": { coords: [47.335400, 5.150589], lettre: "R" },
-                "8": { coords: [47.337738, 5.147247], lettre: "E" }
+                "1": { coords: [47.3402597, 5.1522895], lettre: "LA" },
+                "2": { coords: [47.332244, 5.154542],   lettre: "COR" },
+                "3": { coords: [47.332224, 5.153939],   lettre: "NUIT" },
+                "4": { coords: [47.331446, 5.152159],   lettre: "DOUILLE" },
+                "5": { coords: [47.334862, 5.149969],   lettre: "RÔDE" },
+                "6": { coords: [47.337738, 5.147247],   lettre: "BI" },
+                "7": { coords: [47.3384608, 5.1449500], lettre: "DANS" },
+                "8": { coords: [47.3389617, 5.1486665], lettre: "NE" }
             },
-            secret: { coords: [47.3366272, 5.1588904], lettre: "🦇" },
-            phrase: ["1", "2", "3", "4", "5", "6", "7", "8", " ", "secret"]
+            // À COMPLÉTER : point final provisoire devant la salle des fêtes
+            secret: { coords: [47.3331368, 5.1557851], lettre: "🦇" },
+            // À COMPLÉTER : phrase dérivée provisoire « Cornebidouille rôde dans la nuit 🦇 »
+            phrase: ["2", "8", "6", "4", " ", "5", " ", "7", " ", "1", " ", "3", " ", "secret"],
+            messageFinal: "Tu as survécu à la nuit de Cornebidouille… Garde cet écran comme preuve de ta bravoure 🦇",
+
+            nuit: {
+                audioSeul: 3,       // les 3 dernières cibles restantes disparaissent de la carte : on les trouve au son
+                rayonSon: 60,       // m : distance à partir de laquelle on entend la citrouille
+                rayonFlash: 25,     // m : distance à partir de laquelle le flash clignote (Android)
+                intervalles: {      // secondes entre deux sons aléatoires (min, max)
+                    etranges: [35, 80],
+                    cris: [150, 300]
+                },
+                sons: {             // fichiers de sons/ (sans .mp3) ; ambiance : [fichier, volume]
+                    ambiance: [["ambiance-cimetiere", .55], ["ambiance-voix", .22]],
+                    murmures: "proche-murmures",
+                    coeur: "proche-coeur",
+                    etranges: ["etrange-porte", "etrange-rire", "etrange-chouette", "etrange-loup", "etrange-corbeaux",
+                               "etrange-chaines", "etrange-derriere-toi", "etrange-cloche", "etrange-rire-homme"],
+                    cris: ["cri-femme-1", "cri-femme-2", "cri-aigu", "cri-homme"],
+                    trouve: "trouve"
+                }
+            }
         }
     }
 };
