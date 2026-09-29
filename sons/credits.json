@@ -63,13 +63,6 @@
   "licence": "CC0 1.0"
  },
  {
-  "fichier": "etrange-chaines.mp3",
-  "titre": "Chains.wav",
-  "auteur": "cribbler",
-  "url": "https://freesound.org/people/cribbler/sounds/370877/",
-  "licence": "CC0 1.0"
- },
- {
   "fichier": "etrange-derriere-toi.mp3",
   "titre": "\"Behind you\" whisper",
   "auteur": "pjhodson",
@@ -165,6 +158,27 @@
   "titre": "Magic spell (small positive)",
   "auteur": "Nakhas",
   "url": "https://freesound.org/people/Nakhas/sounds/506939/",
+  "licence": "CC0 1.0"
+ },
+ {
+  "fichier": "etrange-chaines.mp3",
+  "titre": "Ghostly Moan.mp3",
+  "auteur": "SnowFightStudios",
+  "url": "https://freesound.org/people/SnowFightStudios/sounds/643741/",
+  "licence": "CC0 1.0"
+ },
+ {
+  "fichier": "etrange-chaines.mp3",
+  "titre": "Steel Chain Dragged, Hard Reverb",
+  "auteur": "ani_music",
+  "url": "https://freesound.org/people/ani_music/sounds/167912/",
+  "licence": "CC0 1.0"
+ },
+ {
+  "fichier": "etrange-chaines.mp3",
+  "titre": "Steel chain dragged, shower reverb",
+  "auteur": "ani_music",
+  "url": "https://freesound.org/people/ani_music/sounds/167914/",
   "licence": "CC0 1.0"
  }
 ]
