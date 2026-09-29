@@ -494,3 +494,7 @@ body.nuit .fenetre-boite, body.nuit .phrase, body.nuit .gps, body.nuit .rond { b
 .regles.enigmes span { color: var(--texte); }
 .regles.enigmes b { color: var(--orange-clair); }
 .leaflet-tooltip.info-zone { background: rgba(14, 9, 16, .9); color: #ff9a9a; border: 1px solid #7d0d12; font-weight: 800; box-shadow: none; }
+.cone-sonar { animation: cone-apparait .35s ease-out, cone-pulse 1.2s ease-in-out .35s infinite alternate; transition: opacity .6s; }
+.cone-sonar.disparait { opacity: 0; }
+@keyframes cone-apparait { from { opacity: 0; } }
+@keyframes cone-pulse { to { fill-opacity: .15; } }

@@ -418,13 +418,42 @@
 
     /* ---------- Finale du mode nuit : radar « cri de chauve-souris » et énigmes ---------- */
     if (N) {
+        /* Cône de direction du sonar : part du joueur vers la cible, longueur fixe (ne révèle pas la distance) */
+        let cone = null, coneMinuteurs = [];
+        function afficherCone(depart, arrivee, dureeS) {
+            if (cone) map.removeLayer(cone);
+            coneMinuteurs.forEach(clearTimeout);
+            const rad = Math.PI / 180, kLat = 111320, kLng = 111320 * Math.cos(depart[0] * rad);
+            const cap = Math.atan2((arrivee[1] - depart[1]) * kLng, (arrivee[0] - depart[0]) * kLat);   // 0 = nord
+            // longueur minimale à l'écran (150 px) pour rester lisible quand la carte est dézoomée
+            const metresParPx = map.distance(map.containerPointToLatLng([0, 0]), map.containerPointToLatLng([100, 0])) / 100;
+            const ouverture = (N.sonar.angle || 40) * rad, longueur = Math.max(N.sonar.longueur || 120, 150 * metresParPx);
+            const points = [depart];
+            for (let k = 0; k <= 8; k++) {
+                const a = cap - ouverture / 2 + ouverture * k / 8;
+                points.push([depart[0] + longueur * Math.cos(a) / kLat, depart[1] + longueur * Math.sin(a) / kLng]);
+            }
+            cone = L.polygon(points, {
+                className: "cone-sonar", interactive: false,
+                color: "#ff3b3b", weight: 2, fillColor: "#e0262e", fillOpacity: .45
+            }).addTo(map);
+            if (!map.getBounds().contains(depart)) map.panTo(depart);
+            const el = cone.getElement ? cone.getElement() : null;
+            coneMinuteurs = [
+                setTimeout(() => { if (el) el.classList.add("disparait"); }, dureeS * 1000 - 600),
+                setTimeout(() => { if (cone) { map.removeLayer(cone); cone = null; } }, dureeS * 1000)
+            ];
+        }
+
         const boutonSonar = document.getElementById("sonar");
         boutonSonar.onclick = () => {
             const pos = suivi.position();
             const cachees = ciblesCachees();
             if (!pos || !cachees.length) return toast("Position pas encore trouvée…", "info", 2500);
             if ((etat.sonar || 0) >= N.sonar.cris) return;
-            const d = Math.min(...cachees.map(c => AGC.distance([pos.lat, pos.lng], c.coords)));
+            const ici = [pos.lat, pos.lng];
+            const cible = cachees.map(c => ({ c, d: AGC.distance(ici, c.coords) })).sort((a, b) => a.d - b.d)[0];
+            const d = cible.d;
             etat.sonar = (etat.sonar || 0) + 1;
             AGC.sauver(id, etat);
             majMarqueurs();
@@ -432,6 +461,7 @@
             void boutonSonar.offsetWidth;   // relance l'animation
             boutonSonar.classList.add("onde");
             const delai = AGC.Nuit.sonar(d, N.sonar.portee);
+            afficherCone(ici, cible.c.coords, delai + (N.sonar.duree || 3));
             setTimeout(() => {
                 const texte = d > 250 ? "Écho très lointain…" : d > 120 ? "Écho lointain…" : d > 50 ? "L'écho se rapproche…" : "L'écho claque : tout près !";
                 const reste = N.sonar.cris - etat.sonar;

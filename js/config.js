@@ -131,7 +131,7 @@ AGC.config = {
                 rayonSon: 60,       // m : distance à partir de laquelle on entend la citrouille
                 rayonSonAudio: 100, // m : idem, une fois les cibles cachées (pour entendre dès l'entrée dans la zone)
                 zone: 120,          // m : rayon de la « zone maudite » affichée autour d'une cible cachée (décalée, la cible n'est pas au centre)
-                sonar: { cris: 5, portee: 400 },  // cris de chauve-souris disponibles pour la finale ; au-delà de la portée, écho le plus faible
+                sonar: { cris: 5, portee: 400, angle: 40, longueur: 120, duree: 3 },  // cris de chauve-souris de la finale ; portée (m) de l'écho ; cône de direction : ouverture (°), longueur (m), durée après l'écho (s)
                 rayonFlash: 25,     // m : distance à partir de laquelle le flash clignote (Android)
                 intervalles: {      // secondes entre deux sons aléatoires (min, max)
                     etranges: [35, 80],
