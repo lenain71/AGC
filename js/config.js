@@ -22,9 +22,9 @@ AGC.config = {
     soiree: {
         titre: "Soirée d'Halloween",
         date: "2026-10-31T18:30:00",           // À COMPLÉTER
-        lieu: "Place de la Mairie",            // À COMPLÉTER
-        adresse: "Couternon",                  // À COMPLÉTER
-        coords: [47.3361765, 5.1518826],       // À COMPLÉTER
+        lieu: "Salle des fêtes",
+        adresse: "Couternon",
+        coords: [47.3331368, 5.1557851],
         helloasso: "https://www.helloasso.com/", // À COMPLÉTER : lien d'inscription
         description: "Défilé costumé, chasse aux citrouilles, musique, maquillage et surprises pour petits et grands !", // À COMPLÉTER
         programme: [                           // À COMPLÉTER
@@ -32,15 +32,17 @@ AGC.config = {
             { heure: "19:00", titre: "Départ des chasses aux citrouilles", texte: "Parcours petits, grands et adultes." },
             { heure: "20:00", titre: "Défilé costumé", texte: "Dans les rues du village." },
             { heure: "20:30", titre: "Soupe & remise des bonbons", texte: "Pour tous les chasseurs qui ont trouvé la phrase secrète." }
-        ],
-        tips: [                                // À COMPLÉTER
-            { icone: "fa-battery-full", texte: "Charge ton téléphone à fond : le GPS consomme beaucoup de batterie." },
-            { icone: "fa-location-crosshairs", texte: "Autorise la localisation quand le navigateur te la demande." },
-            { icone: "fa-lightbulb", texte: "Prends une lampe torche et un gilet ou un accessoire lumineux." },
-            { icone: "fa-person-walking", texte: "Les enfants restent accompagnés d'un adulte et marchent sur les trottoirs." },
-            { icone: "fa-satellite-dish", texte: "Si le GPS est imprécis, reste immobile quelques secondes à découvert." }
         ]
     },
+
+    /* Petites astuces affichées sur la page « Chasse des enfants » */
+    astuces: [                             // À COMPLÉTER
+        { icone: "fa-battery-full", texte: "Charge ton téléphone à fond : le GPS consomme beaucoup de batterie." },
+        { icone: "fa-location-crosshairs", texte: "Autorise la localisation quand le navigateur te la demande." },
+        { icone: "fa-lightbulb", texte: "Prends une lampe torche et un gilet ou un accessoire lumineux." },
+        { icone: "fa-person-walking", texte: "Les enfants restent accompagnés d'un adulte et marchent sur les trottoirs." },
+        { icone: "fa-satellite-dish", texte: "Si le GPS est imprécis, reste immobile quelques secondes à découvert." }
+    ],
 
     /* Adresse qui reçoit les propositions de lieux (fichier JSON envoyé par mail) */
     contact: {

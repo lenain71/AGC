@@ -29,9 +29,6 @@
 
         <h2 class="section-titre"><i class="fa-solid fa-hourglass-half"></i> Au programme</h2>
         <ul class="programme bloc" id="programme"></ul>
-
-        <h2 class="section-titre"><i class="fa-solid fa-wand-magic-sparkles"></i> Petites astuces</h2>
-        <ul class="tips bloc" id="tips"></ul>
     </main>
 
     <script src="js/config.js"></script>
@@ -52,8 +49,6 @@
         const echap = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
         document.getElementById("programme").innerHTML = S.programme.map(e =>
             '<li><span class="heure">' + echap(e.heure) + "</span><div><b>" + echap(e.titre) + "</b><p>" + echap(e.texte) + "</p></div></li>").join("");
-        document.getElementById("tips").innerHTML = S.tips.map(t =>
-            '<li><i class="fa-solid ' + echap(t.icone) + '"></i><p>' + echap(t.texte) + "</p></li>").join("");
     </script>
 </body>
 </html>

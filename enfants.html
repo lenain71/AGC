@@ -27,6 +27,9 @@
             <li><i class="fa-solid fa-font"></i><p>Tout près, un morceau de la phrase secrète s'affiche.</p></li>
             <li><i class="fa-solid fa-ghost"></i><p>Quand tout est trouvé, un point secret apparaît…</p></li>
         </ul>
+
+        <h2 class="section-titre"><i class="fa-solid fa-wand-magic-sparkles"></i> Petites astuces</h2>
+        <ul class="tips bloc" id="astuces"></ul>
     </main>
 
     <script src="js/config.js"></script>
@@ -46,6 +49,10 @@
                 "<h2>" + p.nom + "</h2><p>" + p.public + "<br>" + p.description + "</p>" +
                 '<span class="etat">' + e.texte + "</span></div></a>";
         }).join("");
+
+        const echap = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+        document.getElementById("astuces").innerHTML = AGC.config.astuces.map(t =>
+            '<li><i class="fa-solid ' + echap(t.icone) + '"></i><p>' + echap(t.texte) + "</p></li>").join("");
         AGC.animerRebours();
     </script>
 </body>
