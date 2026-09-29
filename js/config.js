@@ -61,6 +61,7 @@ AGC.config = {
             // 8 points maximum
             ouverture: "2026-10-31T17:00:00",   // À COMPLÉTER
             couleur: "orange",
+            fond: "plan",   // fond de carte par défaut : "plan" (nuit) ou "satellite" ; le joueur peut basculer avec le bouton
             sons: { trouve: ["enfant-trouve-1", "enfant-trouve-2", "enfant-trouve-3"], final: "enfant-final" },   // sons/ : citrouille trouvée (au hasard), phrase complète
             // À COMPLÉTER : phrase courte à choisir ; points provisoires (5 points proches les uns des autres)
             points: {
@@ -80,6 +81,7 @@ AGC.config = {
             description: "11 citrouilles cachent chacune une syllabe. Retrouve-les toutes, puis le point secret !",
             ouverture: "2026-10-31T17:00:00",    // À COMPLÉTER
             couleur: "violet",
+            fond: "plan",   // fond de carte par défaut : "plan" (nuit) ou "satellite" ; le joueur peut basculer avec le bouton
             sons: { trouve: ["enfant-trouve-1", "enfant-trouve-2", "enfant-trouve-3"], final: "enfant-final" },   // sons/ : citrouille trouvée (au hasard), phrase complète
             // À COMPLÉTER : tracé provisoire = 11 des 19 points de 2025, à valider sur le terrain
             // Chaque point donne une syllabe ; elles sont mélangées pour que l'ordre de marche ne dévoile pas la phrase.

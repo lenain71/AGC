@@ -2,16 +2,32 @@
  * Hallo' Village — outils Leaflet partagés (fond de carte sombre, position de l'utilisateur)
  */
 (function () {
-    AGC.creerCarte = function (idElement, centre, zoom) {
+    /*
+     * Fonds de carte Google (déjà utilisés en 2025, sans clé) :
+     *  - plan : plan routier passé en mode nuit par le filtre CSS .tuiles-nuit
+     *  - satellite : vue aérienne réelle avec le nom des rues (hybride)
+     */
+    const FONDS = {
+        plan: { url: "https://{s}.google.com/vt/lyrs=m&hl=fr&x={x}&y={y}&z={z}", className: "tuiles-nuit" },
+        satellite: { url: "https://{s}.google.com/vt/lyrs=y&hl=fr&x={x}&y={y}&z={z}", className: "" }
+    };
+
+    AGC.creerCarte = function (idElement, centre, zoom, fond) {
         const map = L.map(idElement, { zoomControl: false, attributionControl: true }).setView(centre, zoom);
-        // Plan Google (déjà utilisé en 2025, sans clé) passé en mode nuit par le filtre CSS .tuiles-nuit
-        L.tileLayer("https://{s}.google.com/vt/lyrs=m&hl=fr&x={x}&y={y}&z={z}", {
+        AGC.changerFond(map, fond || "plan");
+        return map;
+    };
+
+    AGC.changerFond = function (map, fond) {
+        const f = FONDS[fond] || FONDS.plan;
+        if (map._fond) map.removeLayer(map._fond);
+        map._fond = L.tileLayer(f.url, {
             subdomains: ["mt0", "mt1", "mt2", "mt3"],
             maxZoom: 20,
-            className: "tuiles-nuit",
+            className: f.className,
             attribution: "&copy; Google"
         }).addTo(map);
-        return map;
+        map._nomFond = FONDS[fond] ? fond : "plan";
     };
 
     AGC.distance = function (a, b) {

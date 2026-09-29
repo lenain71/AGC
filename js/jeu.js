@@ -204,7 +204,29 @@
     });
 
     /* ---------- Carte et marqueurs ---------- */
-    const map = AGC.creerCarte("carte", P.points[idsPoints[0]].coords, 16);
+    /* Fond de carte : plan nuit ou satellite réel. Le joueur peut basculer (sauf en mode nuit) ; son choix est mémorisé. */
+    const CLE_FOND = "agc:fond";
+    let fondChoisi = null;
+    try { fondChoisi = localStorage.getItem(CLE_FOND); } catch (e) { /* stockage indisponible */ }
+    const fondInitial = N ? "plan" : (fondChoisi || P.fond || "plan");
+    const map = AGC.creerCarte("carte", P.points[idsPoints[0]].coords, 16, fondInitial);
+    if (!N) {
+        const bouton = document.getElementById("fond");
+        const majBouton = () => {
+            const sat = map._nomFond === "satellite";
+            bouton.innerHTML = '<i class="fa-solid ' + (sat ? "fa-map" : "fa-satellite") + '"></i>';
+            bouton.setAttribute("aria-label", sat ? "Passer au plan" : "Passer à la vue satellite");
+        };
+        bouton.hidden = false;
+        majBouton();
+        bouton.onclick = () => {
+            const suivant = map._nomFond === "satellite" ? "plan" : "satellite";
+            AGC.changerFond(map, suivant);
+            try { localStorage.setItem(CLE_FOND, suivant); } catch (e) { /* ignoré */ }
+            majBouton();
+            toast(suivant === "satellite" ? "Vue satellite 🛰️" : "Plan de nuit 🌙", "info", 1500);
+        };
+    }
     const marqueurs = {};
     let marqueurSecret = null;
     const coucheZones = L.layerGroup().addTo(map);
