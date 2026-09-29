@@ -146,6 +146,37 @@
 
     function vibrer(motif) { if ("vibrate" in navigator) navigator.vibrate(motif); }
 
+    /* Sons courts des parcours enfants (P.sons). Le navigateur n'autorise le son qu'après un geste :
+       il est débloqué au premier toucher de l'écran (bouton, carte…). */
+    const Son = (() => {
+        let ctx = null;
+        const tampons = {};
+        const charger = nom => tampons[nom] || (tampons[nom] = fetch("sons/" + nom + ".mp3")
+            .then(r => r.arrayBuffer())
+            .then(b => new Promise((ok, ko) => ctx.decodeAudioData(b, ok, ko))));
+        return {
+            debloquer() {
+                if (!P.sons) return;
+                if (!ctx) {
+                    const Ctx = window.AudioContext || window.webkitAudioContext;
+                    if (!Ctx) return;
+                    try { if (navigator.audioSession) navigator.audioSession.type = "playback"; } catch (e) { /* non géré */ }
+                    ctx = new Ctx();
+                    Object.values(P.sons).forEach(charger);
+                }
+                if (ctx.state !== "running") ctx.resume();
+            },
+            async jouer(cle) {
+                if (!ctx || !P.sons || !P.sons[cle]) return;
+                const src = ctx.createBufferSource();
+                src.buffer = await charger(P.sons[cle]);
+                src.connect(ctx.destination);
+                src.start();
+            }
+        };
+    })();
+    if (!N) document.addEventListener("pointerdown", () => Son.debloquer(), { passive: true });
+
     function confettis() {
         const couleurs = N ? ["#b3121b", "#6a4bff", "#ffd27a", "#3b0a0e", "#ffffff"] : ["#ff8a00", "#6a4bff", "#ffd27a", "#b7a6ff", "#ffffff"];
         for (let i = 0; i < 90; i++) {
@@ -238,6 +269,7 @@
         AGC.sauver(id, etat);
         vibrer([200, 100, 200]);
         if (N) { AGC.Nuit.trouve(); AGC.Nuit.proximite(0); AGC.Nuit.proximiteFlash(0); }
+        else Son.jouer("trouve");
 
         if (cible !== "secret") marqueurs[cible].setIcon(iconePoint(cible));
         majMarqueurs();
@@ -288,6 +320,7 @@
 
     function fenetreFinale() {
         confettis();
+        if (!N) Son.jouer("final");
         vibrer([300, 100, 300, 100, 500]);
         fenetre(
             AGC.citrouille(64) + "<h2>Bravo, tu as trouvé la phrase secrète !</h2>" +
