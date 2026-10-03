@@ -23,6 +23,7 @@
             <li><i class="fa-solid fa-location-dot"></i><span id="lieu"></span></li>
         </ul>
         <p class="soiree-desc" id="description"></p>
+        <p class="alerte-repas" id="repas" hidden><i class="fa-solid fa-utensils"></i><span></span></p>
         <a class="bouton" id="inscription" target="_blank" rel="noopener">
             <i class="fa-solid fa-ticket"></i> Je participe
         </a>
@@ -41,14 +42,20 @@
         document.getElementById("heros").innerHTML = AGC.village();
         texte("titre", S.titre);
         texte("date", AGC.dateLongue(S.date));
-        texte("heure", AGC.heure(S.date));
+        texte("heure", AGC.heure(S.date) + (S.fin ? " – " + AGC.heure(S.fin) : ""));
         texte("lieu", S.lieu + (S.adresse ? " — " + S.adresse : ""));
         texte("description", S.description);
         document.getElementById("inscription").href = S.helloasso;
+        if (S.repas) {
+            const repas = document.getElementById("repas");
+            repas.querySelector("span").textContent = S.repas;
+            repas.hidden = false;
+        }
 
-        const echap = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+        const echap = AGC.echap;
         document.getElementById("programme").innerHTML = S.programme.map(e =>
-            '<li><span class="heure">' + echap(e.heure) + "</span><div><b>" + echap(e.titre) + "</b><p>" + echap(e.texte) + "</p></div></li>").join("");
+            "<li>" + (e.heure ? '<span class="heure">' + echap(e.heure.replace(":", "h")) + "</span>" : '<span class="heure suite">puis</span>') +
+            "<div><b>" + echap(e.titre) + "</b>" + (e.texte ? "<p>" + echap(e.texte) + "</p>" : "") + "</div></li>").join("");
     </script>
 </body>
 </html>

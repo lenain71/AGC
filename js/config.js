@@ -21,17 +21,20 @@ AGC.config = {
 
     soiree: {
         titre: "Soirée d'Halloween",
-        date: "2026-10-31T18:30:00",           // À COMPLÉTER
+        date: "2026-10-31T19:00:00",
+        fin: "2026-10-31T22:30:00",
         lieu: "Salle des fêtes",
         adresse: "Couternon",
         coords: [47.3331368, 5.1557851],
         helloasso: "https://www.helloasso.com/", // À COMPLÉTER : lien d'inscription
-        description: "Défilé costumé, chasse aux citrouilles, musique, maquillage et surprises pour petits et grands !", // À COMPLÉTER
-        programme: [                           // À COMPLÉTER
-            { heure: "18:30", titre: "Accueil & maquillage", texte: "Rendez-vous sur la place, stand maquillage pour les enfants." },
-            { heure: "19:00", titre: "Départ des chasses aux citrouilles", texte: "Parcours petits, grands et adultes." },
-            { heure: "20:00", titre: "Défilé costumé", texte: "Dans les rues du village." },
-            { heure: "20:30", titre: "Soupe & remise des bonbons", texte: "Pour tous les chasseurs qui ont trouvé la phrase secrète." }
+        description: "Train fantôme sensoriel, défilé des monstres, animations des horreurs et soirée musicale : venez frissonner en famille !",
+        // Encadré affiché sur la page Soirée, au-dessus du bouton d'inscription (vide = pas d'encadré)
+        repas: "Commande des repas obligatoire : réservez-les lors de votre inscription sur HelloAsso.",
+        programme: [                           // heure facultative : sans heure, l'étape s'affiche « puis »
+            { heure: "19:00", titre: "Entrée dans la soirée", texte: "Avec le train fantôme sensoriel… frissons garantis !" },
+            { titre: "Défilé déguisé des monstres" },
+            { titre: "Animation des horreurs" },
+            { titre: "Soirée musicale des monstres" }
         ]
     },
 

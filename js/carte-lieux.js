@@ -53,7 +53,7 @@
     L.marker(C.soiree.coords, { icon: icone("soiree"), zIndexOffset: 400 })
         .bindPopup(contenuPopup({
             type: "soiree", nom: C.soiree.titre,
-            description: AGC.dateLongue(C.soiree.date) + " à " + AGC.heure(C.soiree.date) + " — " + C.soiree.lieu
+            description: AGC.dateLongue(C.soiree.date) + ", " + AGC.heure(C.soiree.date) + (C.soiree.fin ? " – " + AGC.heure(C.soiree.fin) : "") + " — " + C.soiree.lieu
         }))
         .addTo(map);
 

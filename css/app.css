@@ -500,3 +500,14 @@ body.nuit .fenetre-boite, body.nuit .phrase, body.nuit .gps, body.nuit .rond { b
 @keyframes cone-apparait { from { opacity: 0; } }
 @keyframes cone-pulse { to { fill-opacity: .15; } }
 .formulaire a.bouton + a.bouton { margin-top: 10px; }
+
+/* Soirée : encadré repas obligatoire, étapes du programme sans horaire */
+.alerte-repas {
+    display: flex; gap: 12px; align-items: flex-start;
+    margin: 0 0 14px; padding: 12px 14px; border-radius: 14px;
+    background: rgba(255, 138, 0, .14); border: 1px solid rgba(255, 138, 0, .55);
+    font-weight: 800; font-size: .92rem;
+}
+.alerte-repas i { color: var(--orange); margin-top: 3px; }
+.programme .heure.suite { background: rgba(106, 75, 255, .18); color: var(--violet-clair); font-weight: 800; font-size: .8rem; }
+.programme li { align-items: center; }
