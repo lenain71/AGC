@@ -21,6 +21,7 @@
             <li><i class="fa-solid fa-calendar-days"></i><span id="date"></span></li>
             <li><i class="fa-solid fa-clock"></i><span id="heure"></span></li>
             <li><i class="fa-solid fa-location-dot"></i><span id="lieu"></span></li>
+            <li id="ligne-services" hidden><i class="fa-solid fa-mug-hot"></i><span id="services"></span></li>
         </ul>
         <p class="soiree-desc" id="description"></p>
         <p class="alerte-repas" id="repas" hidden><i class="fa-solid fa-utensils"></i><span></span></p>
@@ -45,6 +46,7 @@
         texte("heure", AGC.heure(S.date) + (S.fin ? " – " + AGC.heure(S.fin) : ""));
         texte("lieu", S.lieu + (S.adresse ? " — " + S.adresse : ""));
         texte("description", S.description);
+        if (S.services) { texte("services", S.services); document.getElementById("ligne-services").hidden = false; }
         document.getElementById("inscription").href = S.helloasso;
         if (S.repas) {
             const repas = document.getElementById("repas");
