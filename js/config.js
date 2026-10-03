@@ -28,9 +28,9 @@ AGC.config = {
         coords: [47.3331368, 5.1557851],
         helloasso: "https://www.helloasso.com/", // À COMPLÉTER : lien d'inscription
         description: "Train fantôme sensoriel, défilé des monstres, animations des horreurs et soirée musicale : venez frissonner en famille !",
-        services: "Buvette et repas sur place",   // ligne d'info pratique sous le lieu (vide = masquée)
+        services: "Buvette, repas sur place ou à emporter",   // ligne d'info pratique sous le lieu (vide = masquée)
         // Encadré affiché sur la page Soirée, au-dessus du bouton d'inscription (vide = pas d'encadré)
-        repas: "Commande des repas obligatoire : réservez-les lors de votre inscription sur HelloAsso.",
+        repas: "Commande des repas obligatoire, sur place ou à emporter : réservez-les lors de votre inscription sur HelloAsso.",
         programme: [                           // heure facultative : sans heure, l'étape s'affiche « puis »
             { heure: "19:00", titre: "Entrée dans la soirée", texte: "Avec le train fantôme sensoriel… frissons garantis !" },
             { titre: "Défilé déguisé des monstres" },
