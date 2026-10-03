@@ -13,6 +13,7 @@
     const id = new URLSearchParams(location.search).get("p");
     const P = C.parcours[id];
     if (!P) { location.replace(AGC.lien("accueil.html")); return; }
+    await AGC.parcoursPret;   // points, secret et phrase éventuellement remplacés par data/parcours.json
     const N = P.nuit || null;
 
     document.title = P.nom + " — Hallo' Village";

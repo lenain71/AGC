@@ -60,9 +60,9 @@ AGC.config = {
     parcours: {
         petits: {
             nom: "Chasse des petits",
-            public: "Enfants — jusqu'à 7 ans",   // À COMPLÉTER
-            description: "Un petit parcours pour trouver une phrase courte.",
-            // 8 points maximum
+            public: "Conseillé jusqu'à 5-6 ans",
+            description: "Un petit parcours tout près, pour trouver une phrase courte.",
+            // 7 citrouilles maximum
             ouverture: "2026-10-31T17:00:00",   // À COMPLÉTER
             couleur: "orange",
             fond: "plan",   // fond de carte par défaut : "plan" (nuit) ou "satellite" ; le joueur peut basculer avec le bouton
@@ -81,8 +81,8 @@ AGC.config = {
 
         grands: {
             nom: "Chasse des grands",
-            public: "Enfants — 8 ans et plus",    // À COMPLÉTER
-            description: "11 citrouilles cachent chacune une syllabe. Retrouve-les toutes, puis le point secret !",
+            public: "Enfants — 7 ans et plus",
+            description: "Chaque citrouille cache une syllabe : retrouve-les toutes, puis le point secret !",
             ouverture: "2026-10-31T17:00:00",    // À COMPLÉTER
             couleur: "violet",
             fond: "plan",   // fond de carte par défaut : "plan" (nuit) ou "satellite" ; le joueur peut basculer avec le bouton

@@ -511,3 +511,63 @@ body.nuit .fenetre-boite, body.nuit .phrase, body.nuit .gps, body.nuit .rond { b
 .alerte-repas i { color: var(--orange); margin-top: 3px; }
 .programme .heure.suite { background: rgba(106, 75, 255, .18); color: var(--violet-clair); font-weight: 800; font-size: .8rem; }
 .programme li { align-items: center; }
+
+/* ---------- Admin : préparation des parcours ---------- */
+.ap-haut {
+    position: fixed; z-index: 900; left: 50%; transform: translateX(-50%);
+    top: calc(62px + env(safe-area-inset-top));
+    width: calc(100% - 20px); max-width: 560px;
+    background: rgba(17, 20, 43, .95); backdrop-filter: blur(10px);
+    border: 1px solid var(--bord); border-radius: 18px; padding: 8px;
+}
+.ap-onglets { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+.ap-onglets button {
+    border: 0; border-radius: 12px; padding: 8px 4px; background: rgba(255, 255, 255, .06);
+    font-weight: 900; font-size: .85rem; text-transform: capitalize;
+}
+.ap-onglets button.actif { background: var(--violet); }
+.ap-pastille { display: inline-block; min-width: 20px; padding: 0 6px; border-radius: 10px; font-size: .72rem; margin-left: 2px; }
+.ap-pastille.ok { background: var(--vert); color: #04210f; }
+.ap-pastille.moyen { background: #ffc400; color: #2b2000; }
+.ap-pastille.ko { background: #ff4d4d; }
+.ap-resume { margin-top: 8px; }
+.ap-syllabes { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; }
+.ap-syllabes .case { min-width: 0; height: 26px; font-size: .8rem; }
+.ap-espace { width: 8px; }
+.ap-vide { color: var(--texte-2); font-size: .85rem; }
+.ap-etat { margin-top: 6px; font-size: .78rem; font-weight: 800; color: var(--texte-2); }
+.ok { color: var(--vert); } .moyen { color: #ffc400; } .ko { color: #ff6b6b; }
+.ap-viseur {
+    position: fixed; z-index: 850; left: 50%; top: 50%; transform: translate(-50%, -50%);
+    color: #fff; font-size: 22px; pointer-events: none; text-shadow: 0 0 4px #000, 0 0 8px #000;
+}
+.ap-barre {
+    position: fixed; z-index: 900; left: 0; right: 0; bottom: 0;
+    display: grid; grid-template-columns: repeat(5, 1fr);
+    padding: 6px 6px calc(6px + env(safe-area-inset-bottom));
+    background: rgba(17, 20, 43, .96); backdrop-filter: blur(12px); border-top: 1px solid var(--bord);
+}
+.ap-barre button {
+    border: 0; background: none; display: flex; flex-direction: column; align-items: center; gap: 4px;
+    padding: 6px 0; font-weight: 800; font-size: .7rem;
+}
+.ap-barre button i { font-size: 1.25rem; color: var(--orange); }
+.ap-barre #ajout-gps { background: var(--orange); border-radius: 14px; }
+.ap-barre #ajout-gps i { color: #fff; }
+.admin-parcours .jeu-actions, .admin-parcours .gps { bottom: calc(80px + env(safe-area-inset-bottom)); }
+.admin-parcours .gps { left: 14px; }
+.marqueur-citrouille.incomplete { filter: grayscale(.8) brightness(.8); }
+.leaflet-tooltip.ap-etiquette {
+    background: rgba(8, 10, 26, .85); color: #fff; border: 0; box-shadow: none;
+    font-weight: 900; font-size: .72rem; padding: 1px 6px;
+}
+.leaflet-tooltip.ap-etiquette::before { display: none; }
+.ap-boutons { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
+.ap-boutons .bouton { margin-top: 0; padding: 10px 6px; font-size: .85rem; }
+.ap-danger { color: #ff8a8a; }
+.ap-controles { list-style: none; text-align: left; font-size: .85rem; font-weight: 700; margin: 8px 0; display: grid; gap: 4px; }
+.ap-import { cursor: pointer; }
+.formulaire select {
+    width: 100%; padding: 12px 14px; border-radius: 12px; font: inherit; font-size: 1rem;
+    border: 1px solid rgba(255, 255, 255, .15); background: #1c1f3d; color: var(--texte);
+}

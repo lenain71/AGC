@@ -37,6 +37,7 @@
     <script>
         AGC.coque({ page: "enfants.html", titre: "Chasse des enfants", retour: "accueil.html" });
 
+        AGC.parcoursPret.then(() => {
         const P = AGC.config.parcours;
         const cartes = [
             { id: "petits", emoji: "🧒", couleur: "orange" },
@@ -46,13 +47,15 @@
             const p = P[c.id], e = AGC.etatParcours(c.id);
             return '<a class="parcours-carte ' + c.couleur + '" href="' + AGC.lien("jeu.html?p=" + c.id) + '">' +
                 '<span class="emoji">' + c.emoji + "</span><div>" +
-                "<h2>" + p.nom + "</h2><p>" + p.public + "<br>" + p.description + "</p>" +
+                "<h2>" + p.nom + "</h2><p>" + p.public + "<br>🎃 " + Object.keys(p.points).length + " citrouilles" +
+                (p.secret ? " + un point secret" : "") + "<br>" + p.description + "</p>" +
                 '<span class="etat">' + e.texte + "</span></div></a>";
         }).join("");
 
         const echap = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
         document.getElementById("astuces").innerHTML = AGC.config.astuces.map(t =>
             '<li><i class="fa-solid ' + echap(t.icone) + '"></i><p>' + echap(t.texte) + "</p></li>").join("");
+        });
         AGC.animerRebours();
     </script>
 </body>

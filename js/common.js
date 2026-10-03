@@ -11,6 +11,23 @@
     AGC.echap = s => String(s == null ? "" : s).replace(/[&<>"']/g, c =>
         ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 
+    /* ---------- Parcours publiés (data/parcours.json, produit par admin-parcours.html) ----------
+       Remplace les points, le point secret et la phrase de la configuration pour chaque parcours présent. */
+    AGC.appliquerParcours = function (json) {
+        if (!json || json.format !== "hallo-village/parcours" || !json.parcours) return;
+        Object.keys(json.parcours).forEach(id => {
+            const src = json.parcours[id], P = C.parcours[id];
+            if (!P || !src || !src.points || !Array.isArray(src.phrase)) return;
+            P.points = src.points;
+            P.secret = src.secret || null;
+            P.phrase = src.phrase;
+        });
+    };
+    AGC.parcoursPret = fetch("data/parcours.json", { cache: "no-cache" })
+        .then(r => r.ok ? r.json() : null)
+        .then(AGC.appliquerParcours)
+        .catch(() => { /* pas de fichier : configuration par défaut */ });
+
     /* ---------- Progression (localStorage, une clé par année et par parcours) ---------- */
     function key(id) { return "agc" + C.annee + ":" + id; }
 
