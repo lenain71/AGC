@@ -26,7 +26,7 @@ AGC.config = {
         lieu: "Salle des fêtes",
         adresse: "Couternon",
         coords: [47.3331368, 5.1557851],
-        helloasso: "https://www.helloasso.com/", // À COMPLÉTER : lien d'inscription
+        helloasso: "https://www.helloasso.com/associations/association-grandir-a-couternon/evenements/soiree-d-halloween",   // inscription et commande des repas
         description: "Train fantôme sensoriel, défilé des monstres, animations des horreurs et soirée musicale : venez frissonner en famille !",
         services: "Buvette, repas sur place ou à emporter",   // ligne d'info pratique sous le lieu (vide = masquée)
         // Encadré affiché sur la page Soirée, au-dessus du bouton d'inscription (vide = pas d'encadré)

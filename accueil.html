@@ -66,7 +66,7 @@
         document.getElementById("habitants").textContent = C.habitants + " habitants";
         document.getElementById("nb-habitants").textContent = C.habitants;
         document.getElementById("info-soiree").textContent =
-            new Date(S.date).getDate() + " oct. · " + AGC.heure(S.date);
+            new Date(S.date).getDate() + " oct. · " + AGC.heure(S.date).replace("h00", "h") + (S.fin ? " – " + AGC.heure(S.fin) : "");
         document.querySelectorAll("[data-href]").forEach(a => { a.href = AGC.lien(a.dataset.href); });
 
         const rebours = document.getElementById("rebours");
