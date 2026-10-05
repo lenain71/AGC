@@ -344,6 +344,14 @@
         }
     }
 
+    /* Surprise à récupérer pendant la soirée ; une fois la soirée passée, plus de récupération possible */
+    function messageFinalEnfants() {
+        const finSoiree = new Date(C.soiree.fin || C.soiree.date).getTime();
+        return AGC.maintenant() < finSoiree
+            ? "Montre cet écran aux organisateurs de la soirée pour récupérer ta surprise 🍬"
+            : "Bravo ! À l'année prochaine 🎃";
+    }
+
     function fenetreFinale() {
         confettis();
         if (!N) Son.jouer("final");
@@ -351,7 +359,7 @@
         fenetre(
             AGC.citrouille(64) + "<h2>Bravo, tu as trouvé la phrase secrète !</h2>" +
             '<div class="phrase-finale">' + phraseComplete() + "</div>" +
-            "<p>" + (P.messageFinal || "Montre cet écran aux organisateurs de la soirée pour récupérer ta surprise 🍬") + "</p>",
+            "<p>" + (P.messageFinal || messageFinalEnfants()) + "</p>",
             [{ texte: "Fermer" }]
         );
     }
