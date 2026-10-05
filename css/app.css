@@ -571,3 +571,5 @@ body.nuit .fenetre-boite, body.nuit .phrase, body.nuit .gps, body.nuit .rond { b
     width: 100%; padding: 12px 14px; border-radius: 12px; font: inherit; font-size: 1rem;
     border: 1px solid rgba(255, 255, 255, .15); background: #1c1f3d; color: var(--texte);
 }
+.rebours-texte .rebours-ligne { display: block; margin-top: 6px; font-weight: 800; color: var(--orange-clair); }
+.rebours-texte .rebours-ligne b { display: inline; font-size: 1rem; }

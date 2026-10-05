@@ -535,18 +535,27 @@
 
     const retour = () => history.length > 1 ? history.back() : location.assign(AGC.lien("accueil.html"));
 
+    // ex. « chaque soir de 21h00 à 1h00 » / « jusqu'au mercredi 4 novembre 2026 »
+    const plageTexte = P.plage ? "chaque soir de " + AGC.hhmm(P.plage.debut) + " à " + AGC.hhmm(P.plage.fin) : "";
+    const jusquau = AGC.dernierJour(id) ? "jusqu'au " + AGC.dateLongue(AGC.dernierJour(id)) : "";
+
     if (AGC.estTermine(id)) {
         fenetre(
-            '<div class="lettre-geante">🌅</div><h2>La nuit est terminée</h2>' +
-            "<p>La chasse a fermé le " + AGC.dateLongue(P.fermeture) + " à " + AGC.heure(P.fermeture) + ". Rendez-vous l'année prochaine…</p>",
+            '<div class="lettre-geante">🌅</div><h2>La chasse est terminée</h2>' +
+            "<p>Elle était ouverte " + jusquau + ". Merci à tous les chasseurs, et rendez-vous l'année prochaine…</p>",
             [{ texte: "Retour", action: retour }]
         );
     } else if (!AGC.estOuvert(id)) {
+        const prochaine = AGC.prochaineOuverture(id);
+        const dejaOuverte = AGC.maintenant() >= new Date(P.ouverture).getTime();
+        const heureOuverture = AGC.heure(P.ouverture) === "0h00" ? "" : " à " + AGC.heure(P.ouverture);
         fenetre(
             AGC.citrouille(64) + "<h2>" + (N ? "Pas avant la nuit…" : "Patience, petit monstre…") + "</h2>" +
-            "<p>La chasse ouvre le " + AGC.dateLongue(P.ouverture) + " à " + AGC.heure(P.ouverture) +
-            (P.fermeture ? " et ferme à " + AGC.heure(P.fermeture) : "") + ".<br>" +
-            'Encore <b data-rebours="' + P.ouverture + '">' + AGC.texteRebours(P.ouverture) + "</b></p>",
+            "<p>" + (dejaOuverte
+                ? "La chasse a lieu " + plageTexte + ", " + jusquau + "."
+                : "La chasse ouvre le " + AGC.dateLongue(P.ouverture) + heureOuverture +
+                  (plageTexte ? ", puis " + plageTexte : "") + (jusquau ? ", " + jusquau : "") + ".") +
+            '<br>Prochaine ouverture dans <b data-rebours="' + prochaine + '">' + AGC.texteRebours(prochaine) + "</b></p>",
             [{ texte: "Retour", action: retour }]
         );
         AGC.animerRebours();
@@ -555,7 +564,7 @@
         // Mode nuit : une fenêtre à chaque ouverture, car le son ne peut démarrer qu'après un geste
         const regles = etat.introVue ? "" :
             '<ul class="regles">' +
-            '<li><i class="fa-solid fa-moon"></i><span>La chasse n\'existe que la nuit' + (P.fermeture ? ", jusqu'à " + AGC.heure(P.fermeture) : "") + ".</span></li>" +
+            '<li><i class="fa-solid fa-moon"></i><span>La chasse n\'existe que la nuit' + (plageTexte ? ", " + plageTexte : "") + (jusquau ? ", " + jusquau : "") + ".</span></li>" +
             '<li><i class="fa-solid fa-headphones"></i><span>Monte le son, ou mieux : mets des écouteurs. Murmures et battements de cœur trahissent les citrouilles… et la nuit n\'est jamais silencieuse.</span></li>' +
             '<li><i class="fa-solid fa-ear-listen"></i><span>Les ' + N.audioSeul + " dernières cibles disparaissent de la carte : seule ton oreille pourra les trouver.</span></li>" +
             '<li><i class="fa-solid fa-ban"></i><span>Lampe torche interdite ! C\'est la règle du jeu.</span></li>' +
@@ -602,15 +611,17 @@
         if (fini() && !etat.finalVu) apresDecouverte();
     }
 
-    // fin de la nuit pendant la partie
-    if (P.fermeture) {
+    // fin de la plage du soir (ou de la chasse) pendant la partie
+    if (P.fermeture || P.plage) {
         setInterval(() => {
-            if (jeuOuvert && AGC.estTermine(id)) {
-                jeuOuvert = false;
-                if (N) AGC.Nuit.arreter();
-                fenetre('<div class="lettre-geante">🌅</div><h2>Le jour se lève…</h2><p>La chasse est terminée pour cette année.</p>',
-                    [{ texte: "Retour", action: retour }]);
-            }
+            if (!jeuOuvert || AGC.estOuvert(id)) return;
+            jeuOuvert = false;
+            if (N) AGC.Nuit.arreter();
+            fenetre(AGC.estTermine(id)
+                ? '<div class="lettre-geante">🌅</div><h2>Le jour se lève…</h2><p>La chasse est terminée pour cette année.</p>'
+                : '<div class="lettre-geante">🌅</div><h2>Le jour se lève…</h2><p>La chasse reprend ' +
+                  (P.plage ? "ce soir à " + AGC.hhmm(P.plage.debut) : "bientôt") + ". Ta progression est gardée sur ce téléphone.</p>",
+                [{ texte: "Retour", action: retour }]);
         }, 30000);
     }
 })();

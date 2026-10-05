@@ -70,12 +70,24 @@
         document.querySelectorAll("[data-href]").forEach(a => { a.href = AGC.lien(a.dataset.href); });
 
         const rebours = document.getElementById("rebours");
-        if (Date.now() < new Date(S.date).getTime()) {
+        const finSoiree = new Date(S.fin || S.date).getTime();
+        // état des chasses enfants (même calendrier pour petits et grands)
+        const E = C.parcours.grands;
+        const debutChasse = new Date(E.ouverture).getTime(), finChasse = new Date(E.fermeture).getTime();
+        const ligneChasse = AGC.maintenant() < debutChasse
+            ? '<span class="rebours-ligne">🎃 Chasses aux citrouilles : ouverture dans <b data-rebours="' + E.ouverture + '">' + AGC.texteRebours(E.ouverture) + "</b></span>"
+            : AGC.maintenant() < finChasse
+                ? '<span class="rebours-ligne">🎃 Chasses aux citrouilles ouvertes jusqu\'au ' + AGC.dateLongue(E.fermeture).replace(/ \d{4}$/, "") + "</span>"
+                : "";
+        if (AGC.maintenant() < new Date(S.date).getTime()) {
             rebours.innerHTML = AGC.citrouille(46) +
-                '<p class="rebours-texte">La soirée commence dans<b data-rebours="' + S.date + '">' + AGC.texteRebours(S.date) + "</b></p>";
+                '<p class="rebours-texte">La soirée commence dans<b data-rebours="' + S.date + '">' + AGC.texteRebours(S.date) + "</b>" + ligneChasse + "</p>";
+        } else if (AGC.maintenant() < finSoiree) {
+            rebours.innerHTML = AGC.citrouille(46) +
+                '<p class="rebours-texte">C\'est le grand soir !<b>Joyeux Halloween 🎃</b>' + ligneChasse + "</p>";
         } else {
             rebours.innerHTML = AGC.citrouille(46) +
-                '<p class="rebours-texte">C\'est le grand soir !<b>Joyeux Halloween 🎃</b></p>';
+                '<p class="rebours-texte">Merci pour cette soirée !<b>À l\'année prochaine 🎃</b>' + ligneChasse + "</p>";
         }
         AGC.animerRebours();
     </script>

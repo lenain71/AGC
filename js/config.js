@@ -63,7 +63,8 @@ AGC.config = {
             public: "Conseillé jusqu'à 5-6 ans",
             description: "Un petit parcours tout près, pour trouver une phrase courte.",
             // 7 citrouilles maximum
-            ouverture: "2026-10-31T17:00:00",   // À COMPLÉTER
+            ouverture: "2026-10-14T00:00:00",   // chasses ouvertes 2 semaines et demie : du mercredi 14/10
+            fermeture: "2026-11-04T23:59:59",   // au mercredi 4/11 inclus
             couleur: "orange",
             fond: "plan",   // fond de carte par défaut : "plan" (nuit) ou "satellite" ; le joueur peut basculer avec le bouton
             sons: { trouve: ["enfant-trouve-1", "enfant-trouve-2", "enfant-trouve-3"], final: "enfant-final" },   // sons/ : citrouille trouvée (au hasard), phrase complète
@@ -83,7 +84,8 @@ AGC.config = {
             nom: "Chasse des grands",
             public: "Enfants — 7 ans et plus",
             description: "Chaque citrouille cache une syllabe : retrouve-les toutes, puis le point secret !",
-            ouverture: "2026-10-31T17:00:00",    // À COMPLÉTER
+            ouverture: "2026-10-14T00:00:00",   // chasses ouvertes 2 semaines et demie : du mercredi 14/10
+            fermeture: "2026-11-04T23:59:59",   // au mercredi 4/11 inclus
             couleur: "violet",
             fond: "plan",   // fond de carte par défaut : "plan" (nuit) ou "satellite" ; le joueur peut basculer avec le bouton
             sons: { trouve: ["enfant-trouve-1", "enfant-trouve-2", "enfant-trouve-3"], final: "enfant-final" },   // sons/ : citrouille trouvée (au hasard), phrase complète
@@ -112,8 +114,9 @@ AGC.config = {
             public: "Nouveauté 2026 — de nuit, pour les parents",
             description: "La nuit tombée, suis les murmures jusqu'aux citrouilles… Les dernières ne se trouvent qu'à l'oreille.",
             // Uniquement de nuit (heure contrôlée avec l'horloge du serveur, pas celle du téléphone)
-            ouverture: "2026-10-31T21:00:00",
-            fermeture: "2026-11-01T01:00:00",
+            ouverture: "2026-10-14T21:00:00",   // premier soir : mercredi 14/10
+            fermeture: "2026-11-05T01:00:00",   // dernière nuit : celle du mercredi 4/11
+            plage: { debut: "21:00", fin: "01:00" },   // ouverte seulement chaque soir de 21h à 1h
             couleur: "violet",
             // À COMPLÉTER : lieux différents des enfants ; provisoirement, les 8 points de 2025 non repris par les grands
             points: {

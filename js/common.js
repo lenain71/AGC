@@ -66,12 +66,43 @@
         })
         .catch(() => { /* hors ligne : heure du téléphone */ });
 
+    /* Plage horaire quotidienne facultative d'un parcours : plage = { debut: "21:00", fin: "01:00" } (peut passer minuit).
+       En dehors de cette plage, le parcours est fermé même entre l'ouverture et la fermeture. */
+    const enMinutes = hhmm => { const [h, m] = hhmm.split(":").map(Number); return h * 60 + m; };
+    function dansPlage(P, t) {
+        if (!P.plage) return true;
+        const d = new Date(t), x = d.getHours() * 60 + d.getMinutes();
+        const a = enMinutes(P.plage.debut), b = enMinutes(P.plage.fin);
+        return a < b ? x >= a && x < b : x >= a || x < b;
+    }
+
     AGC.estTermine = function (id) {
         const f = C.parcours[id].fermeture;
         return !AGC.debug && !!f && AGC.maintenant() >= new Date(f).getTime();
     };
     AGC.estOuvert = function (id) {
-        return AGC.debug || (AGC.maintenant() >= new Date(C.parcours[id].ouverture).getTime() && !AGC.estTermine(id));
+        const P = C.parcours[id], t = AGC.maintenant();
+        return AGC.debug || (t >= new Date(P.ouverture).getTime() && !AGC.estTermine(id) && dansPlage(P, t));
+    };
+    /* Prochain moment d'ouverture (date ISO), ou null si la chasse est terminée */
+    AGC.prochaineOuverture = function (id) {
+        const P = C.parcours[id], t = AGC.maintenant(), debut = new Date(P.ouverture).getTime();
+        if (AGC.estTermine(id)) return null;
+        if (t < debut) return new Date(debut).toISOString();
+        if (!P.plage) return null;
+        const d = new Date(t), [h, m] = P.plage.debut.split(":").map(Number);
+        d.setHours(h, m, 0, 0);
+        if (d.getTime() <= t) d.setDate(d.getDate() + 1);
+        return P.fermeture && d.getTime() >= new Date(P.fermeture).getTime() ? null : d.toISOString();
+    };
+    AGC.hhmm = hhmm => hhmm.replace(/^0(\d)/, "$1").replace(":", "h");   // "01:00" → "1h00"
+    /* Dernier jour de chasse à afficher (une plage qui finit après minuit appartient à la veille) */
+    AGC.dernierJour = function (id) {
+        const P = C.parcours[id];
+        if (!P.fermeture) return null;
+        const d = new Date(P.fermeture);
+        if (P.plage && enMinutes(P.plage.fin) < enMinutes(P.plage.debut) && d.getHours() * 60 + d.getMinutes() <= enMinutes(P.plage.fin)) d.setDate(d.getDate() - 1);
+        return d.toISOString();
     };
 
     AGC.compteARebours = function (iso) {
@@ -231,7 +262,13 @@
     AGC.etatParcours = function (id) {
         const p = C.parcours[id];
         if (AGC.estTermine(id)) return { classe: "ferme", texte: '<i class="fa-solid fa-moon"></i> Terminé pour cette année' };
-        if (!AGC.estOuvert(id)) return { classe: "ferme", texte: '<i class="fa-solid fa-lock"></i> Ouverture dans <b data-rebours="' + p.ouverture + '">' + AGC.texteRebours(p.ouverture) + "</b>" };
+        if (!AGC.estOuvert(id)) {
+            const prochaine = AGC.prochaineOuverture(id);
+            const dejaOuverte = AGC.maintenant() >= new Date(p.ouverture).getTime();
+            return { classe: "ferme", texte: '<i class="fa-solid ' + (dejaOuverte ? "fa-moon" : "fa-lock") + '"></i> ' +
+                (dejaOuverte ? "Réouverture à " + AGC.hhmm(p.plage.debut) + " · dans " : "Ouverture dans ") +
+                '<b data-rebours="' + prochaine + '">' + AGC.texteRebours(prochaine) + "</b>" };
+        }
         const pr = AGC.progression(id);
         if (pr.fini) return { classe: "fini", texte: '<i class="fa-solid fa-trophy"></i> Terminé !' };
         if (pr.trouves > 0) return { classe: "encours", texte: '<i class="fa-solid fa-play"></i> Continuer · ' + pr.trouves + "/" + pr.total };
