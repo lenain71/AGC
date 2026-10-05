@@ -2,138 +2,14 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AGC - Halloween | À l'année prochaine !</title>
-    <link href="https://fonts.googleapis.com/css2?family=Creepster&display=swap" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            background-color: #121212;
-            color: #fff;
-            font-family: 'Creepster', cursive;
-            height: 100vh;
-            overflow: hidden;
-            background-image: url('https://media.giphy.com/media/l0HlNaQ6gWfllcjDO/giphy.gif');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-        }
-        .overlay {
-            background-color: rgba(0, 0, 0, 0.8);
-            width: 100%;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            padding: 20px;
-            position: relative;
-        }
-        h1 {
-            font-size: clamp(2.5rem, 8vw, 4rem);
-            margin-bottom: 20px;
-            color: #ff6b00;
-            text-shadow: 0 0 10px #ff00de, 0 0 20px #ff6b00;
-            animation: flicker 1.5s infinite alternate;
-            line-height: 1.2;
-        }
-        p {
-            font-size: clamp(1.2rem, 4vw, 1.8rem);
-            margin-bottom: 30px;
-            color: #fff;
-            font-family: 'Arial', sans-serif;
-            padding: 0 20px;
-            max-width: 80%;
-        }
-        .pumpkin {
-            font-size: clamp(3rem, 12vw, 5rem);
-            margin-bottom: 20px;
-            animation: bounce 2s infinite;
-        }
-        .ghost {
-            font-size: clamp(2.5rem, 10vw, 4rem);
-            margin: 10px 0;
-            animation: float 3s ease-in-out infinite;
-        }
-        .spider {
-            position: absolute;
-            animation: moveSpider linear infinite;
-            font-size: clamp(1.2rem, 6vw, 2rem);
-            z-index: 10;
-        }
-        .spider:nth-child(1) { animation-duration: 12s; }
-        .spider:nth-child(2) { animation-duration: 15s; }
-        @keyframes flicker {
-            0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { text-shadow: 0 0 10px #ff00de, 0 0 20px #ff6b00; }
-            20%, 24%, 55% { text-shadow: none; }
-        }
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-20px); }
-        }
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-        @keyframes moveSpider {
-            0% { transform: translate(0, 0) rotate(0deg); }
-            25% { transform: translate(calc(80vw - 20px), calc(30vh - 20px)) rotate(90deg); }
-            50% { transform: translate(calc(20vw - 20px), calc(80vh - 20px)) rotate(180deg); }
-            75% { transform: translate(calc(70vw - 20px), calc(20vh - 20px)) rotate(270deg); }
-            100% { transform: translate(0, 0) rotate(360deg); }
-        }
-        .countdown {
-            font-size: clamp(1rem, 4vw, 1.5rem);
-            margin-top: 20px;
-            color: #00ff7f;
-            font-family: 'Arial', sans-serif;
-            background-color: rgba(0, 0, 0, 0.5);
-            padding: 10px 20px;
-            border-radius: 10px;
-            border: 1px solid #ff6b00;
-        }
-        @media (max-width: 600px) {
-            .spider { font-size: 1rem; }
-        }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hallo' Village — Halloween à Couternon</title>
+    <!-- En ligne, staticwebapp.config.json affiche directement accueil.html à la racine.
+         Cette page ne sert qu'en secours (et en local) : elle redirige vers l'accueil en gardant les paramètres. -->
+    <meta http-equiv="refresh" content="0; url=accueil.html">
+    <script>location.replace("accueil.html" + location.search + location.hash);</script>
 </head>
-<body>
-    <div class="overlay">
-        <div class="spider">🕷️</div>
-        <div class="spider" style="top: 15%; right: 10%;">🕸️</div>
-        <div class="pumpkin">🎃</div>
-        <div class="ghost">👻</div>
-        <h1>Merci pour cette année !</h1>
-        <p>
-            Notre chasse aux citrouilles Halloween 2025 est maintenant terminée.<br><br>
-            Nous espérons que vous avez passé un bon moment et que vous avez apprécié l'aventure !<br><br>
-            <strong>RDV en octobre 2026 pour une nouvelle édition, encore plus effrayante !</strong><br>
-            Passez une excellente année et à l'année prochaine !
-        </p>
-        <div class="countdown" id="countdown"></div>
-    </div>
-    <script>
-        function updateCountdown() {
-            const now = new Date();
-            const nextYearDate = new Date("Oct 31, 2026 23:59:59").getTime(); // Prochain Halloween
-            const diff = nextYearDate - now;
-
-            // Calcule le temps restant jusqu'à Halloween 2026
-            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-
-            document.getElementById('countdown').textContent =
-                "Plus que " + days + " jours et " + hours + " heures avant Halloween 2026 !";
-        }
-
-        // Met à jour le compte à rebours toutes les secondes
-        setInterval(updateCountdown, 1000);
-        updateCountdown();
-    </script>
+<body style="background:#080a1a;color:#fff;font-family:sans-serif;text-align:center;padding:40px">
+    <p><a href="accueil.html" style="color:#ff8a00">Ouvrir Hallo' Village 🎃</a></p>
 </body>
 </html>

@@ -1,0 +1,7 @@
+{
+  "routes": [
+    { "route": "/", "rewrite": "/accueil.html" },
+    { "route": "/index.html", "redirect": "/", "statusCode": 301 },
+    { "route": "/index_*", "redirect": "/", "statusCode": 301 }
+  ]
+}
