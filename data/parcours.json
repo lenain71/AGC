@@ -1,5 +1,638 @@
 {
   "format": "hallo-village/parcours",
   "version": 1,
-  "parcours": {}
+  "misAJourLe": "2026-10-10T17:21:49.589Z",
+  "parcours": {
+    "petits": {
+      "points": {
+        "1": {
+          "coords": [
+            47.3317242,
+            5.1545504
+          ],
+          "lettre": "B"
+        },
+        "2": {
+          "coords": [
+            47.332244,
+            5.154542
+          ],
+          "lettre": "O"
+        },
+        "3": {
+          "coords": [
+            47.332224,
+            5.153939
+          ],
+          "lettre": "U"
+        },
+        "4": {
+          "coords": [
+            47.3319498,
+            5.1526818
+          ],
+          "lettre": "H"
+        },
+        "5": {
+          "coords": [
+            47.3311885,
+            5.1512958
+          ],
+          "lettre": "🎃"
+        },
+        "6": {
+          "coords": [
+            47.3343302,
+            5.1488303
+          ],
+          "lettre": "U",
+          "enigme": "Sous les morts"
+        },
+        "7": {
+          "coords": [
+            47.3316313,
+            5.15226
+          ],
+          "lettre": "U",
+          "enigme": "Pour les sportifs (mais attention aux morts-vivants)",
+          "note": "Au coin du bac à jeux"
+        }
+      },
+      "secret": null,
+      "phrase": [
+        "1",
+        "2",
+        "3",
+        "7",
+        "6",
+        "4",
+        " ",
+        "5"
+      ]
+    },
+    "grands": {
+      "points": {
+        "1": {
+          "coords": [
+            47.3304261,
+            5.1583083
+          ],
+          "lettre": "TROU"
+        },
+        "2": {
+          "coords": [
+            47.331878,
+            5.15265
+          ],
+          "lettre": "AI"
+        },
+        "3": {
+          "coords": [
+            47.334267,
+            5.154304
+          ],
+          "lettre": "COR",
+          "enigme": "Là où tu me trouves les nuits hantées",
+          "note": "Eglise"
+        },
+        "4": {
+          "coords": [
+            47.334399,
+            5.149966
+          ],
+          "lettre": "LES"
+        },
+        "5": {
+          "coords": [
+            47.3331887,
+            5.1481046
+          ],
+          "lettre": "CI"
+        },
+        "6": {
+          "coords": [
+            47.332713,
+            5.148748
+          ],
+          "lettre": "ME"
+        },
+        "7": {
+          "coords": [
+            47.334905,
+            5.148384
+          ],
+          "lettre": "NE"
+        },
+        "8": {
+          "coords": [
+            47.336126,
+            5.150325
+          ],
+          "lettre": "BI"
+        },
+        "9": {
+          "coords": [
+            47.3377425,
+            5.1540372
+          ],
+          "lettre": "LES",
+          "note": "Au château d'eau"
+        },
+        "10": {
+          "coords": [
+            47.3341361,
+            5.1489842
+          ],
+          "lettre": "DOU",
+          "note": "Arbres"
+        },
+        "11": {
+          "coords": [
+            47.3313685,
+            5.1569736
+          ],
+          "lettre": "IL",
+          "enigme": "Sous la cachette",
+          "note": "Sous la rampe"
+        },
+        "12": {
+          "coords": [
+            47.3354307,
+            5.1582645
+          ],
+          "lettre": "ILLE",
+          "enigme": "À proximité de la cabane où finissent les sorcières",
+          "note": "Entre les cabanes"
+        }
+      },
+      "secret": {
+        "coords": [
+          47.3365115,
+          5.1582566
+        ],
+        "lettre": "🎃",
+        "enigme": "À la bordure de la forêt maudite",
+        "note": "3e allée, forêt des enfants"
+      },
+      "phrase": [
+        "3",
+        "7",
+        "8",
+        "10",
+        "12",
+        " ",
+        "2",
+        "6",
+        " ",
+        "4",
+        " ",
+        "5",
+        "1",
+        "11",
+        "9",
+        " ",
+        "secret"
+      ]
+    },
+    "adultes": {
+      "points": {
+        "1": {
+          "coords": [
+            47.3402597,
+            5.1522895
+          ],
+          "lettre": "LA",
+          "enigme": "La demeure ultime d'Halloween",
+          "note": "Cimetière"
+        },
+        "2": {
+          "coords": [
+            47.332244,
+            5.154542
+          ],
+          "lettre": "COR",
+          "enigme": "Le lieu maudit des chauves-souris",
+          "note": "Arbres mille club"
+        },
+        "3": {
+          "coords": [
+            47.3384608,
+            5.14495
+          ],
+          "lettre": "DANS",
+          "enigme": "Sous l'arbre de la plaine embrumée",
+          "note": "Arbre à la lisière"
+        },
+        "4": {
+          "coords": [
+            47.3217196,
+            5.1505774
+          ],
+          "lettre": "NUIT",
+          "enigme": "Dans le lit des crapauds",
+          "note": "lit en dessous du pont"
+        },
+        "5": {
+          "coords": [
+            47.3239845,
+            5.1519195
+          ],
+          "lettre": "LE",
+          "enigme": "Là où les fantômes font le plus de bruit",
+          "note": "À côté de la bouche d'égout"
+        },
+        "6": {
+          "coords": [
+            47.3251384,
+            5.1472174
+          ],
+          "lettre": "DE",
+          "enigme": "À boire… vite !",
+          "note": "Fontaine d'eau"
+        },
+        "7": {
+          "coords": [
+            47.3288189,
+            5.1493492
+          ],
+          "lettre": "BI",
+          "enigme": "Chez les insectes et mammifères de la nuit.",
+          "note": "Tas de bois"
+        },
+        "8": {
+          "coords": [
+            47.3340938,
+            5.1599811
+          ],
+          "lettre": "IL",
+          "enigme": "Là où le château hanté se dévoile",
+          "note": "En face du château"
+        },
+        "9": {
+          "coords": [
+            47.3343543,
+            5.1594253
+          ],
+          "lettre": "RÔ",
+          "enigme": "Dans le lit de l'habitant du château hanté",
+          "note": "Lit rivière"
+        },
+        "10": {
+          "coords": [
+            47.3372467,
+            5.1585017
+          ],
+          "lettre": "NE",
+          "enigme": "L'arbre du chemin hanté",
+          "note": "Arbre sur le chemin"
+        },
+        "11": {
+          "coords": [
+            47.3366029,
+            5.1560468
+          ],
+          "lettre": "DOU",
+          "enigme": "Arbre des pendus",
+          "note": "Arbres morts au bord du chemin"
+        }
+      },
+      "secret": {
+        "coords": [
+          47.3332425,
+          5.1551137
+        ],
+        "lettre": "🦇",
+        "enigme": "L'endroit où les morts sont noyés !",
+        "note": "Dans le lit de rivière au barrage"
+      },
+      "phrase": [
+        "2",
+        "10",
+        "7",
+        "11",
+        "8",
+        "5",
+        " ",
+        "9",
+        "6",
+        " ",
+        "3",
+        " ",
+        "1",
+        " ",
+        "4",
+        " ",
+        "secret"
+      ]
+    }
+  },
+  "brouillons": {
+    "petits": {
+      "phrase": "B-O-U-U-U-H 🎃",
+      "points": [
+        {
+          "coords": [
+            47.3317242,
+            5.1545504
+          ],
+          "pos": 0,
+          "enigme": "",
+          "note": ""
+        },
+        {
+          "coords": [
+            47.332244,
+            5.154542
+          ],
+          "pos": 1,
+          "enigme": "",
+          "note": ""
+        },
+        {
+          "coords": [
+            47.332224,
+            5.153939
+          ],
+          "pos": 2,
+          "enigme": "",
+          "note": ""
+        },
+        {
+          "coords": [
+            47.3319498,
+            5.1526818
+          ],
+          "pos": 5,
+          "enigme": "",
+          "note": ""
+        },
+        {
+          "coords": [
+            47.3311885,
+            5.1512958
+          ],
+          "pos": 6,
+          "enigme": "",
+          "note": ""
+        },
+        {
+          "coords": [
+            47.3343302,
+            5.1488303
+          ],
+          "pos": 4,
+          "enigme": "Sous les morts",
+          "note": ""
+        },
+        {
+          "coords": [
+            47.3316313,
+            5.15226
+          ],
+          "pos": 3,
+          "enigme": "Pour les sportifs (mais attention aux morts-vivants)",
+          "note": "Au coin du bac à jeux"
+        }
+      ],
+      "secret": null,
+      "modifie": false
+    },
+    "grands": {
+      "phrase": "COR-NE-BI-DOU-ILLE AI-ME LES CI-TROU-IL-LES",
+      "points": [
+        {
+          "coords": [
+            47.3304261,
+            5.1583083
+          ],
+          "pos": 9,
+          "enigme": "",
+          "note": ""
+        },
+        {
+          "coords": [
+            47.331878,
+            5.15265
+          ],
+          "pos": 5,
+          "enigme": "",
+          "note": ""
+        },
+        {
+          "coords": [
+            47.334267,
+            5.154304
+          ],
+          "pos": 0,
+          "enigme": "Là où tu me trouves les nuits hantées",
+          "note": "Eglise"
+        },
+        {
+          "coords": [
+            47.334399,
+            5.149966
+          ],
+          "pos": 7,
+          "enigme": "",
+          "note": ""
+        },
+        {
+          "coords": [
+            47.3331887,
+            5.1481046
+          ],
+          "pos": 8,
+          "enigme": "",
+          "note": ""
+        },
+        {
+          "coords": [
+            47.332713,
+            5.148748
+          ],
+          "pos": 6,
+          "enigme": "",
+          "note": ""
+        },
+        {
+          "coords": [
+            47.334905,
+            5.148384
+          ],
+          "pos": 1,
+          "enigme": "",
+          "note": ""
+        },
+        {
+          "coords": [
+            47.336126,
+            5.150325
+          ],
+          "pos": 2,
+          "enigme": "",
+          "note": ""
+        },
+        {
+          "coords": [
+            47.3377425,
+            5.1540372
+          ],
+          "pos": 11,
+          "enigme": "",
+          "note": "Au château d'eau"
+        },
+        {
+          "coords": [
+            47.3341361,
+            5.1489842
+          ],
+          "pos": 3,
+          "enigme": "",
+          "note": "Arbres"
+        },
+        {
+          "coords": [
+            47.3313685,
+            5.1569736
+          ],
+          "pos": 10,
+          "enigme": "Sous la cachette",
+          "note": "Sous la rampe"
+        },
+        {
+          "coords": [
+            47.3354307,
+            5.1582645
+          ],
+          "pos": 4,
+          "enigme": "À proximité de la cabane où finissent les sorcières",
+          "note": "Entre les cabanes"
+        }
+      ],
+      "secret": {
+        "coords": [
+          47.3365115,
+          5.1582566
+        ],
+        "lettre": "🎃",
+        "enigme": "À la bordure de la forêt maudite",
+        "note": "3e allée, forêt des enfants"
+      },
+      "modifie": false
+    },
+    "adultes": {
+      "phrase": "COR-NE-BI-DOU-IL-LE RÔ-DE DANS LA NUIT",
+      "points": [
+        {
+          "coords": [
+            47.3402597,
+            5.1522895
+          ],
+          "pos": 9,
+          "enigme": "La demeure ultime d'Halloween",
+          "note": "Cimetière"
+        },
+        {
+          "coords": [
+            47.332244,
+            5.154542
+          ],
+          "pos": 0,
+          "enigme": "Le lieu maudit des chauves-souris",
+          "note": "Arbres mille club"
+        },
+        {
+          "coords": [
+            47.3384608,
+            5.14495
+          ],
+          "pos": 8,
+          "enigme": "Sous l'arbre de la plaine embrumée",
+          "note": "Arbre à la lisière"
+        },
+        {
+          "coords": [
+            47.3217196,
+            5.1505774
+          ],
+          "pos": 10,
+          "enigme": "Dans le lit des crapauds",
+          "note": "lit en dessous du pont"
+        },
+        {
+          "coords": [
+            47.3239845,
+            5.1519195
+          ],
+          "pos": 5,
+          "enigme": "Là où les fantômes font le plus de bruit",
+          "note": "À côté de la bouche d'égout"
+        },
+        {
+          "coords": [
+            47.3251384,
+            5.1472174
+          ],
+          "pos": 7,
+          "enigme": "À boire… vite !",
+          "note": "Fontaine d'eau"
+        },
+        {
+          "coords": [
+            47.3288189,
+            5.1493492
+          ],
+          "pos": 2,
+          "enigme": "Chez les insectes et mammifères de la nuit.",
+          "note": "Tas de bois"
+        },
+        {
+          "coords": [
+            47.3340938,
+            5.1599811
+          ],
+          "pos": 4,
+          "enigme": "Là où le château hanté se dévoile",
+          "note": "En face du château"
+        },
+        {
+          "coords": [
+            47.3343543,
+            5.1594253
+          ],
+          "pos": 6,
+          "enigme": "Dans le lit de l'habitant du château hanté",
+          "note": "Lit rivière"
+        },
+        {
+          "coords": [
+            47.3372467,
+            5.1585017
+          ],
+          "pos": 1,
+          "enigme": "L'arbre du chemin hanté",
+          "note": "Arbre sur le chemin"
+        },
+        {
+          "coords": [
+            47.3366029,
+            5.1560468
+          ],
+          "pos": 3,
+          "enigme": "Arbre des pendus",
+          "note": "Arbres morts au bord du chemin"
+        }
+      ],
+      "secret": {
+        "coords": [
+          47.3332425,
+          5.1551137
+        ],
+        "lettre": "🦇",
+        "enigme": "L'endroit où les morts sont noyés !",
+        "note": "Dans le lit de rivière au barrage"
+      },
+      "modifie": false
+    }
+  }
 }
