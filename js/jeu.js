@@ -594,7 +594,9 @@
                     garderEcran();
                     AGC.Nuit.demarrer(N, flash).then(r => {
                         if (!r.son) toast("Le son n'a pas pu démarrer : vérifie le volume et recharge la page.", "info", 6000);
-                        else if (flash && !r.flash) toast("Effets lumineux indisponibles sur ce téléphone.", "info", 5000);
+                        else if (flash && !r.flash) toast(r.flashRaison === "refus"
+                            ? "Effets lumineux : accès à la caméra refusé. Autorise la caméra pour ce site dans les réglages du navigateur, puis recharge."
+                            : "Effets lumineux indisponibles : ce téléphone ou ce navigateur ne permet pas de piloter le flash.", "info", 7000);
                     });
                     if (fini() && !etat.finalVu) apresDecouverte();
                 }

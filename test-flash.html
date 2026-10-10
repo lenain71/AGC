@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Diagnostic du flash — Hallo' Village</title>
+    <link rel="icon" href="picto.png">
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <link rel="stylesheet" href="css/app.css">
+    <style>
+        .journal { list-style: none; display: grid; gap: 6px; margin-top: 12px; font-size: .9rem; }
+        .journal li { padding: 8px 10px; border-radius: 10px; background: rgba(255, 255, 255, .05); word-break: break-word; }
+        .page .bouton + .bouton { margin-top: 10px; }
+        .infos { font-size: .8rem; color: var(--texte-2); word-break: break-all; }
+    </style>
+</head>
+<body>
+    <main class="page">
+        <p class="soiree-desc" style="margin-top:8px">
+            Cette page vérifie si le flash de ce téléphone peut être piloté par le navigateur
+            (effets lumineux de la chasse adulte). Le navigateur va demander l'accès à la caméra.
+        </p>
+        <button class="bouton" id="lancer"><i class="fa-solid fa-magnifying-glass"></i> Lancer le diagnostic</button>
+        <button class="bouton violet" id="clignoter" hidden><i class="fa-solid fa-bolt"></i> Faire clignoter le flash</button>
+        <button class="bouton discret" id="oublier"><i class="fa-solid fa-rotate-left"></i> Oublier la caméra retenue</button>
+        <ul class="journal bloc" id="journal" style="margin-top:16px"></ul>
+        <p class="infos" id="infos"></p>
+    </main>
+
+    <script src="js/config.js"></script>
+    <script src="js/common.js"></script>
+    <script src="js/lampe.js"></script>
+    <script>
+        AGC.coque({ page: "test-flash.html", titre: "Diagnostic du flash", retour: "accueil.html", sansOnglets: true });
+        const $ = id => document.getElementById(id);
+        const log = t => { const li = document.createElement("li"); li.textContent = t; $("journal").appendChild(li); };
+        $("infos").textContent = "Navigateur : " + navigator.userAgent;
+        let lampe = null;
+
+        $("lancer").onclick = async () => {
+            $("journal").innerHTML = "";
+            $("clignoter").hidden = true;
+            if (lampe) { lampe.piste.stop(); lampe = null; }
+            log("Recherche d'une caméra avec flash…");
+            try {
+                lampe = await AGC.trouverLampe(log);
+                log("✅ Flash trouvé sur : " + lampe.label + ". Les effets lumineux fonctionneront.");
+                $("clignoter").hidden = false;
+            } catch (e) {
+                log((e.raison === "refus" ? "⛔ " : "❌ ") + e.message + ".");
+                if (e.raison === "refus") log("→ Autorise la caméra pour ce site dans les réglages du navigateur, puis relance.");
+                if (e.raison === "pas-de-flash" && /SamsungBrowser/i.test(navigator.userAgent)) log("→ Tu es sur Samsung Internet : essaie avec Chrome.");
+            }
+            try {
+                const cams = (await navigator.mediaDevices.enumerateDevices()).filter(d => d.kind === "videoinput");
+                log("Caméras vues par le navigateur : " + cams.length + " (" + cams.map(c => c.label || "sans nom").join(" | ") + ")");
+            } catch (e) { /* ignoré */ }
+        };
+
+        $("clignoter").onclick = async () => {
+            if (!lampe) return;
+            for (let i = 0; i < 6; i++) {
+                await lampe.piste.applyConstraints({ advanced: [{ torch: i % 2 === 0 }] }).catch(e => log("Erreur : " + e.message));
+                await new Promise(r => setTimeout(r, 300));
+            }
+            await lampe.piste.applyConstraints({ advanced: [{ torch: false }] }).catch(() => {});
+            log("Clignotement envoyé : le flash a-t-il clignoté ?");
+        };
+
+        $("oublier").onclick = () => {
+            try { localStorage.removeItem("agc:camera-flash"); } catch (e) { /* ignoré */ }
+            log("Caméra retenue oubliée : le prochain diagnostic repassera toutes les caméras en revue.");
+        };
+    </script>
+</body>
+</html>

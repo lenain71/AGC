@@ -124,7 +124,7 @@
         });
         document.addEventListener("pointerdown", () => { if (ctx && ctx.state !== "running") ctx.resume(); });
 
-        return Promise.all([sonPret, flashPret]).then(([son, flash]) => ({ son, flash }));
+        return Promise.all([sonPret, flashPret]).then(([son, flash]) => ({ son, flash, flashRaison: Flash.raison }));
     };
 
     /* i : 0 (rien à proximité) → 1 (sur la citrouille) */
@@ -200,18 +200,13 @@
         voulu: false, dispo: false, piste: null, ouverture: null,
         allume: false, minuteur: null, extinction: null, periode: 0,
 
+        video: null, raison: "",
         async ouvrir() {
             if (this.piste) return true;
             if (!this.ouverture) {
-                this.ouverture = navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: "environment" } } })
-                    .then(flux => {
-                        const piste = flux.getVideoTracks()[0];
-                        const caps = piste.getCapabilities ? piste.getCapabilities() : {};
-                        if (!caps.torch) { piste.stop(); return false; }
-                        this.piste = piste;
-                        return true;
-                    })
-                    .catch(() => false)
+                this.ouverture = AGC.trouverLampe()
+                    .then(r => { this.piste = r.piste; this.video = r.video; return true; })
+                    .catch(e => { this.raison = e.raison || "pas-de-flash"; return false; })
                     .finally(() => { this.ouverture = null; });
             }
             return this.ouverture;
@@ -223,6 +218,7 @@
             this.periode = 0;
             if (this.piste) this.piste.stop();
             this.piste = null;
+            this.video = null;
             this.allume = false;
         },
         regler(on) {
@@ -231,7 +227,6 @@
         },
         /* demande l'autorisation caméra et vérifie que le flash est pilotable */
         async tester() {
-            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) return false;
             this.voulu = true;
             this.dispo = await this.ouvrir();
             this.fermer();
