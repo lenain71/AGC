@@ -1,7 +1,7 @@
 {
   "format": "hallo-village/parcours",
   "version": 1,
-  "misAJourLe": "2026-10-10T17:21:49.589Z",
+  "misAJourLe": "2026-10-10T17:26:03.898Z",
   "parcours": {
     "petits": {
       "points": {
@@ -294,6 +294,15 @@
           "lettre": "DOU",
           "enigme": "Arbre des pendus",
           "note": "Arbres morts au bord du chemin"
+        },
+        "12": {
+          "coords": [
+            47.334267,
+            5.154304
+          ],
+          "lettre": "NOIRE",
+          "enigme": "Là où tu me trouves les nuits hantées",
+          "note": "Église"
         }
       },
       "secret": {
@@ -321,6 +330,8 @@
         "1",
         " ",
         "4",
+        " ",
+        "12",
         " ",
         "secret"
       ]
@@ -521,7 +532,7 @@
       "modifie": false
     },
     "adultes": {
-      "phrase": "COR-NE-BI-DOU-IL-LE RÔ-DE DANS LA NUIT",
+      "phrase": "COR-NE-BI-DOU-IL-LE RÔ-DE DANS LA NUIT NOIRE",
       "points": [
         {
           "coords": [
@@ -621,6 +632,15 @@
           "pos": 3,
           "enigme": "Arbre des pendus",
           "note": "Arbres morts au bord du chemin"
+        },
+        {
+          "coords": [
+            47.334267,
+            5.154304
+          ],
+          "pos": 11,
+          "enigme": "Là où tu me trouves les nuits hantées",
+          "note": "Église"
         }
       ],
       "secret": {
