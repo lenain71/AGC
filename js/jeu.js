@@ -555,7 +555,7 @@
         );
     } else if (!AGC.estOuvert(id)) {
         const prochaine = AGC.prochaineOuverture(id);
-        const dejaOuverte = AGC.maintenant() >= new Date(P.ouverture).getTime();
+        const dejaOuverte = AGC.periodeCommencee(id);
         const heureOuverture = AGC.heure(P.ouverture) === "0h00" ? "" : " à " + AGC.heure(P.ouverture);
         fenetre(
             AGC.citrouille(64) + "<h2>" + (N ? "Pas avant la nuit…" : "Patience, petit monstre…") + "</h2>" +

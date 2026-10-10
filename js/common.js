@@ -7,10 +7,12 @@
     const params = new URLSearchParams(location.search);
 
     AGC.debug = params.get("debug") === "1";
-    /* Mode test équipe (?bypass=1) : lève les dates et horaires d'ouverture, sans les outils du mode debug.
-       La progression est enregistrée à part, pour repartir de zéro à l'ouverture réelle. */
+    /* Mode test équipe (?bypass=1) : lève les dates d'ouverture et de fermeture, sans les outils du mode debug,
+       mais respecte la plage horaire quotidienne (chasse adulte : seulement de 21h à 1h).
+       La progression est enregistrée à part, pour repartir de zéro à l'ouverture réelle.
+       Le mode debug (?debug=1) lève tout, horaires compris. */
     AGC.bypass = params.get("bypass") === "1";
-    const sansLimites = AGC.debug || AGC.bypass;
+    const sansDates = AGC.debug || AGC.bypass;
 
     AGC.echap = s => String(s == null ? "" : s).replace(/[&<>"']/g, c =>
         ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -80,17 +82,19 @@
         return a < b ? x >= a && x < b : x >= a || x < b;
     }
 
+    /* La période de chasse a-t-elle commencé ? (toujours vrai en mode test ou debug) */
+    AGC.periodeCommencee = id => sansDates || AGC.maintenant() >= new Date(C.parcours[id].ouverture).getTime();
     AGC.estTermine = function (id) {
         const f = C.parcours[id].fermeture;
-        return !sansLimites && !!f && AGC.maintenant() >= new Date(f).getTime();
+        return !sansDates && !!f && AGC.maintenant() >= new Date(f).getTime();
     };
     AGC.estOuvert = function (id) {
         const P = C.parcours[id], t = AGC.maintenant();
-        return sansLimites || (t >= new Date(P.ouverture).getTime() && !AGC.estTermine(id) && dansPlage(P, t));
+        return AGC.debug || (AGC.periodeCommencee(id) && !AGC.estTermine(id) && dansPlage(P, t));
     };
     /* Prochain moment d'ouverture (date ISO), ou null si la chasse est terminée */
     AGC.prochaineOuverture = function (id) {
-        const P = C.parcours[id], t = AGC.maintenant(), debut = new Date(P.ouverture).getTime();
+        const P = C.parcours[id], t = AGC.maintenant(), debut = AGC.bypass ? -Infinity : new Date(P.ouverture).getTime();
         if (AGC.estTermine(id)) return null;
         if (t < debut) return new Date(debut).toISOString();
         if (!P.plage) return null;
@@ -275,7 +279,7 @@
         if (AGC.estTermine(id)) return { classe: "ferme", texte: '<i class="fa-solid fa-moon"></i> Terminé pour cette année' };
         if (!AGC.estOuvert(id)) {
             const prochaine = AGC.prochaineOuverture(id);
-            const dejaOuverte = AGC.maintenant() >= new Date(p.ouverture).getTime();
+            const dejaOuverte = AGC.periodeCommencee(id);
             return { classe: "ferme", texte: '<i class="fa-solid ' + (dejaOuverte ? "fa-moon" : "fa-lock") + '"></i> ' +
                 (dejaOuverte ? "Réouverture à " + AGC.hhmm(p.plage.debut) + " · dans " : "Ouverture dans ") +
                 '<b data-rebours="' + prochaine + '">' + AGC.texteRebours(prochaine) + "</b>" };
