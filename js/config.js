@@ -48,6 +48,13 @@ AGC.config = {
         { icone: "fa-satellite-dish", texte: "Si le GPS est imprécis, reste immobile quelques secondes à découvert." }
     ],
 
+    /* Petites astuces de la chasse adulte (fenêtre « Entrer dans la nuit ») */
+    astucesAdultes: [
+        { icone: "fa-battery-full", texte: "Charge ton téléphone à fond : GPS, sons et flash consomment beaucoup de batterie. Une batterie externe n'est pas de trop." },
+        { icone: "fa-location-crosshairs", texte: "Autorise la localisation quand le navigateur te la demande, et la caméra si tu actives les effets lumineux." },
+        { icone: "fa-satellite-dish", texte: "Si le GPS est imprécis, reste immobile quelques secondes à découvert, loin des murs et des arbres." }
+    ],
+
     /* Adresse qui reçoit les propositions de lieux (fichier JSON envoyé par mail) */
     contact: {
         email: "charly.delarche@idea-design.fr"   // provisoire

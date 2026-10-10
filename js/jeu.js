@@ -616,6 +616,11 @@
             "</ul>";
         fenetre(
             '<div class="lettre-geante">🦇</div><h2>' + (etat.introVue ? "De retour dans la nuit…" : P.nom) + "</h2>" + regles +
+            // petites astuces : ouvertes la première fois, repliées ensuite
+            ((C.astucesAdultes || []).length
+                ? '<details class="astuces-nuit"' + (etat.introVue ? "" : " open") + "><summary><i class=\"fa-solid fa-wand-magic-sparkles\"></i> Petites astuces</summary>" +
+                  '<ul class="regles">' + C.astucesAdultes.map(t => '<li><i class="fa-solid ' + AGC.echap(t.icone) + '"></i><span>' + AGC.echap(t.texte) + "</span></li>").join("") + "</ul></details>"
+                : "") +
             '<label class="case-accord" style="text-align:left"><input type="checkbox" id="opt-flash"' + (etat.flash ? " checked" : "") + ">" +
             "<span><b>Effets lumineux avec le flash</b> (Android uniquement, accès caméra demandé). " +
             "Déconseillé aux personnes sensibles aux lumières clignotantes.</span></label>",

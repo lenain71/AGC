@@ -589,3 +589,9 @@ body.nuit .fenetre-boite, body.nuit .phrase, body.nuit .gps, body.nuit .rond { b
 .popup-enigme b { display: block; font-family: var(--titre); font-weight: 400; letter-spacing: .03em; color: #ff6b6b; font-size: 1rem; }
 .popup-enigme p { margin: 4px 0 0 !important; font-size: .92rem; font-style: italic; }
 .popup-enigme .popup-trouvee { display: block; font-size: .78rem; font-weight: 800; color: var(--vert); }
+
+/* Mode nuit : petites astuces dans la fenêtre d'entrée */
+.astuces-nuit { text-align: left; margin: 0 0 14px; border: 1px solid var(--bord); border-radius: 14px; padding: 8px 12px; }
+.astuces-nuit summary { cursor: pointer; font-weight: 800; color: var(--orange-clair); }
+.astuces-nuit summary i { margin-right: 6px; }
+.astuces-nuit .regles { margin: 10px 0 2px; }
