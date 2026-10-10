@@ -122,7 +122,8 @@
     }
     function suivante() {
         const f = file.shift();
-        if (!f) { fenetreOuverte = false; return; }
+        // plus de fenêtre : on réévalue la dernière position (le GPS d'un joueur immobile n'en renverra pas de nouvelle)
+        if (!f) { fenetreOuverte = false; setTimeout(relancerPosition, 0); return; }
         fenetreOuverte = true;
         const el = document.createElement("div");
         el.className = "fenetre";
@@ -388,14 +389,16 @@
     function attendre(cle, ms) { refroidi[cle] = true; setTimeout(() => { refroidi[cle] = false; }, ms); }
     const borne = x => Math.max(0, Math.min(1, x));
 
+    let dernierePosition = null;   // pour réévaluer dès le lancement de la partie, sans attendre un nouveau point GPS
+    function relancerPosition() { if (dernierePosition) surPosition(...dernierePosition); }
+
     function surPosition(latlng, precision) {
         const ici = latlng;
+        dernierePosition = [latlng, precision];
 
         const gps = document.getElementById("gps");
         gps.className = "gps " + (precision <= 10 ? "bon" : precision <= 25 ? "moyen" : "mauvais");
         document.getElementById("gps-texte").textContent = "GPS ± " + Math.round(precision) + " m";
-
-        if (!jeuOuvert) return;
 
         // Seuils ajustés à la précision du GPS (réglages 2025)
         const proche = precision > 15 ? 15 : 8;
@@ -428,8 +431,12 @@
                 (plusProche ? "<br>Proche : " + plusProche.cle + " à " + plusProche.d.toFixed(1) + " m" + (plusProche.rayon ? " (rayon " + plusProche.trouve + " m)" : "") : "") +
                 (N ? "<br>Son " + Math.round(son * 100) + "% · flash " + Math.round(lumiere * 100) + "%" + (modeAudio() ? " · AUDIO" : "") : "") +
                 '<br><button id="dbg-tout">Tout trouver</button> <button id="dbg-raz">Réinitialiser</button>' +
-                (N ? '<br><button id="dbg-etrange">Son étrange</button> <button id="dbg-cri">Cri</button> <button id="dbg-sons">Tous les sons</button>' : "");
+                (N ? '<br><button id="dbg-etrange">Son étrange</button> <button id="dbg-cri">Cri</button> <button id="dbg-sons">Tous les sons</button>' : "") +
+                (jeuOuvert ? "" : "<br><i>Partie pas encore lancée</i>");
         }
+
+        // le panneau de test s'affiche dès la première position ; le jeu, lui, attend le lancement de la partie
+        if (!jeuOuvert) return;
 
         if (precision > 25 && !refroidi.precision) {
             toast("GPS imprécis (± " + Math.round(precision) + " m) : reste à découvert quelques secondes.", "info", 4000);
@@ -529,6 +536,11 @@
     }
 
     if (AGC.debug) {
+        // panneau visible tout de suite, avant même la première position GPS
+        const dbgInit = document.getElementById("debug");
+        dbgInit.hidden = false;
+        dbgInit.innerHTML = "Mode admin : en attente de la position GPS…<br>Touche la carte pour simuler une position." +
+            '<br><button id="dbg-tout">Tout trouver</button> <button id="dbg-raz">Réinitialiser</button>';
         map.on("click", e => suivi.simuler([e.latlng.lat, e.latlng.lng]));
         document.getElementById("debug").addEventListener("click", e => {
             const S = N && N.sons;
@@ -616,6 +628,7 @@
                     AGC.sauver(id, etat);
                     jeuOuvert = true;
                     garderEcran();
+                    relancerPosition();
                     AGC.Nuit.demarrer(N, flash).then(r => {
                         if (!r.son) toast("Le son n'a pas pu démarrer : vérifie le volume et recharge la page.", "info", 6000);
                         else if (flash && !r.flash) toast(r.flashRaison === "refus"
@@ -629,6 +642,7 @@
     } else {
         jeuOuvert = true;
         garderEcran();
+        relancerPosition();
         if (!etat.introVue) {
             fenetre(
                 AGC.citrouille(64) + "<h2>" + P.nom + "</h2>" +
