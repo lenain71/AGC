@@ -45,8 +45,25 @@
         return { visites: {}, secret: false, finalVu: false };
     };
 
+    // stockage « persistant » : le navigateur ne l'efface plus de lui-même (manque de place, Safari après 7 jours…) ;
+    // un effacement manuel des données du site reste possible. Demandé une fois, au premier enregistrement.
+    let persistanceDemandee = false;
+    function demanderPersistance() {
+        if (persistanceDemandee) return;
+        persistanceDemandee = true;
+        try {
+            if (navigator.storage && navigator.storage.persist) {
+                navigator.storage.persisted()
+                    .then(deja => deja || navigator.storage.persist())
+                    .then(ok => { AGC.stockagePersistant = !!ok; })
+                    .catch(() => { /* ignoré */ });
+            }
+        } catch (e) { /* ignoré */ }
+    }
+
     AGC.sauver = function (id, etat) {
         try { localStorage.setItem(key(id), JSON.stringify(etat)); } catch (e) { /* ignoré */ }
+        demanderPersistance();
     };
 
     AGC.effacer = function (id) {
