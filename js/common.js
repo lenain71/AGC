@@ -7,6 +7,10 @@
     const params = new URLSearchParams(location.search);
 
     AGC.debug = params.get("debug") === "1";
+    /* Mode test équipe (?bypass=1) : lève les dates et horaires d'ouverture, sans les outils du mode debug.
+       La progression est enregistrée à part, pour repartir de zéro à l'ouverture réelle. */
+    AGC.bypass = params.get("bypass") === "1";
+    const sansLimites = AGC.debug || AGC.bypass;
 
     AGC.echap = s => String(s == null ? "" : s).replace(/[&<>"']/g, c =>
         ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -29,7 +33,7 @@
         .catch(() => { /* pas de fichier : configuration par défaut */ });
 
     /* ---------- Progression (localStorage, une clé par année et par parcours) ---------- */
-    function key(id) { return "agc" + C.annee + ":" + id; }
+    function key(id) { return "agc" + C.annee + (AGC.bypass ? "-test" : "") + ":" + id; }
 
     AGC.charger = function (id) {
         try {
@@ -78,11 +82,11 @@
 
     AGC.estTermine = function (id) {
         const f = C.parcours[id].fermeture;
-        return !AGC.debug && !!f && AGC.maintenant() >= new Date(f).getTime();
+        return !sansLimites && !!f && AGC.maintenant() >= new Date(f).getTime();
     };
     AGC.estOuvert = function (id) {
         const P = C.parcours[id], t = AGC.maintenant();
-        return AGC.debug || (t >= new Date(P.ouverture).getTime() && !AGC.estTermine(id) && dansPlage(P, t));
+        return sansLimites || (t >= new Date(P.ouverture).getTime() && !AGC.estTermine(id) && dansPlage(P, t));
     };
     /* Prochain moment d'ouverture (date ISO), ou null si la chasse est terminée */
     AGC.prochaineOuverture = function (id) {
@@ -210,12 +214,16 @@
         { href: "profil.html", icone: "fa-user", texte: "Profil" }
     ];
 
-    function suffixe() { return AGC.debug ? (/\?/.test(this) ? "&debug=1" : "?debug=1") : ""; }
-    AGC.lien = function (href) { return href + suffixe.call(href); };
+    /* Liens internes : transmettent ?debug=1 et ?bypass=1 de page en page */
+    AGC.lien = function (href) {
+        const extra = [AGC.debug ? "debug=1" : "", AGC.bypass ? "bypass=1" : ""].filter(Boolean).join("&");
+        return extra ? href + (href.includes("?") ? "&" : "?") + extra : href;
+    };
 
     /* options : { titre, retour, page } — titre absent = logo Hallo' Village */
     AGC.coque = function (options) {
         const o = options || {};
+
         const entete = document.createElement("header");
         entete.className = "barre";
         entete.innerHTML =
@@ -229,6 +237,9 @@
                 ? '<button class="barre-btn" id="ouvrir-menu" aria-label="Menu"><i class="fa-solid fa-bars"></i></button>'
                 : '<span class="barre-btn" aria-hidden="true"></span>');
         document.body.prepend(entete);
+        if (AGC.bypass && !AGC.debug) {
+            entete.insertAdjacentHTML("beforeend", '<span class="etiquette-test" title="Dates débloquées, progression séparée">🧪 Mode test</span>');
+        }
 
         const menu = document.createElement("div");
         menu.className = "menu";
