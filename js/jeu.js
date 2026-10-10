@@ -384,9 +384,14 @@
         const proche = precision > 15 ? 15 : 8;
         const tresProche = precision > 15 ? 10 : 3;
 
-        const cibles = idsPoints.filter(n => !etat.visites[n]).map(n => ({ cle: n, coords: P.points[n].coords }));
-        if (secretActif() && !etat.secret) cibles.push({ cle: "secret", coords: P.secret.coords });
-        cibles.forEach(c => { c.d = AGC.distance(ici, c.coords); });
+        // rayon de détection propre à une citrouille (champ « rayon », en mètres), pour un endroit difficile d'accès ou mal capté
+        const cibles = idsPoints.filter(n => !etat.visites[n]).map(n => ({ cle: n, coords: P.points[n].coords, rayon: P.points[n].rayon || 0 }));
+        if (secretActif() && !etat.secret) cibles.push({ cle: "secret", coords: P.secret.coords, rayon: P.secret.rayon || 0 });
+        cibles.forEach(c => {
+            c.d = AGC.distance(ici, c.coords);
+            c.trouve = Math.max(tresProche, c.rayon);
+            c.chaud = Math.max(proche, c.rayon + 5);
+        });
         cibles.sort((a, b) => a.d - b.d);
         const plusProche = cibles[0];
 
@@ -403,7 +408,7 @@
             dbg.hidden = false;
             dbg.innerHTML = "Lat " + ici[0].toFixed(6) + "<br>Lng " + ici[1].toFixed(6) + "<br>± " + precision.toFixed(1) + " m" +
                 "<br>Seuils " + proche + " / " + tresProche + " m" +
-                (plusProche ? "<br>Proche : " + plusProche.cle + " à " + plusProche.d.toFixed(1) + " m" : "") +
+                (plusProche ? "<br>Proche : " + plusProche.cle + " à " + plusProche.d.toFixed(1) + " m" + (plusProche.rayon ? " (rayon " + plusProche.trouve + " m)" : "") : "") +
                 (N ? "<br>Son " + Math.round(son * 100) + "% · flash " + Math.round(lumiere * 100) + "%" + (modeAudio() ? " · AUDIO" : "") : "") +
                 '<br><button id="dbg-tout">Tout trouver</button> <button id="dbg-raz">Réinitialiser</button>' +
                 (N ? '<br><button id="dbg-etrange">Son étrange</button> <button id="dbg-cri">Cri</button> <button id="dbg-sons">Tous les sons</button>' : "");
@@ -415,9 +420,10 @@
         }
 
         if (!plusProche || fenetreOuverte) return;
-        if (plusProche.d <= tresProche) {
-            trouver(plusProche.cle);
-        } else if (plusProche.d <= proche && !refroidi.chaud) {
+        const atteinte = cibles.find(c => c.d <= c.trouve);
+        if (atteinte) {
+            trouver(atteinte.cle);
+        } else if (cibles.some(c => c.d <= c.chaud) && !refroidi.chaud) {
             vibrer(100);
             toast(N ? "Quelque chose rôde tout près…" : "Tu chauffes… 🔥", "", 3500);
             attendre("chaud", 6000);

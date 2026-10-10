@@ -48,7 +48,7 @@
             phrase: mots.filter(m => m.length).map(m => m.join("-")).join(" "),
             points: ids.map(n => ({
                 coords: P.points[n].coords, pos: posParId[n] == null ? null : posParId[n],
-                enigme: P.points[n].enigme || "", note: P.points[n].note || ""
+                enigme: P.points[n].enigme || "", note: P.points[n].note || "", rayon: P.points[n].rayon || 0
             })),
             secret: P.secret ? { coords: P.secret.coords, lettre: P.secret.lettre, enigme: P.secret.enigme || "", note: P.secret.note || "" } : null,
             modifie: false
@@ -112,6 +112,7 @@
             const pt = { coords: p.coords, lettre: syl[p.pos] ? syl[p.pos].texte : "?" };
             if (p.enigme.trim()) pt.enigme = p.enigme.trim();
             if (p.note.trim()) pt.note = p.note.trim();
+            if (p.rayon) pt.rayon = p.rayon;   // rayon de détection propre à cette citrouille (m)
             points[i + 1] = pt;
         });
         const phrase = [];
@@ -242,6 +243,8 @@
             '<label class="champ"><span>Syllabe</span><select id="f-syl">' + optionsSyllabes(p.pos) + "</select></label>" +
             '<label class="champ"><span>Énigme ' + (nuit ? "" : "<em>(utilisée seulement en chasse adulte)</em>") + '</span><textarea id="f-enigme" rows="3">' + AGC.echap(p.enigme) + "</textarea></label>" +
             '<label class="champ"><span>Note privée <em>(repère pour les organisateurs, non affichée dans le jeu)</em></span><textarea id="f-note" rows="2">' + AGC.echap(p.note) + "</textarea></label>" +
+            '<label class="champ"><span>Rayon de détection <em>(mètres, vide = normal : 3 m avec un bon GPS, 10 m sinon)</em></span>' +
+            '<input id="f-rayon" type="number" min="0" max="30" step="1" inputmode="numeric" value="' + (p.rayon || "") + '"></label>' +
             '<p class="form-note"><i class="fa-solid fa-hand"></i><span>Pour ajuster la position, fais glisser la citrouille sur la carte.</span></p>' +
             '<div class="ap-boutons"><button class="bouton discret" data-act="gps"><i class="fa-solid fa-location-dot"></i> Ici (GPS)</button>' +
             '<button class="bouton discret" data-act="viseur"><i class="fa-solid fa-crosshairs"></i> Au viseur</button></div>' +
@@ -257,6 +260,7 @@
                     p.pos = v === "" ? null : +v;
                     p.enigme = el.querySelector("#f-enigme").value;
                     p.note = el.querySelector("#f-note").value;
+                    p.rayon = Math.max(0, Math.min(30, parseInt(el.querySelector("#f-rayon").value, 10) || 0));
                 };
                 const pts = B().points;
                 switch (act.dataset.act) {

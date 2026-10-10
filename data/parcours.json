@@ -257,7 +257,8 @@
           ],
           "lettre": "BI",
           "enigme": "Chez les insectes et mammifères de la nuit.",
-          "note": "Tas de bois"
+          "note": "Tas de bois",
+          "rayon": 8
         },
         "8": {
           "coords": [
@@ -595,7 +596,8 @@
           ],
           "pos": 2,
           "enigme": "Chez les insectes et mammifères de la nuit.",
-          "note": "Tas de bois"
+          "note": "Tas de bois",
+          "rayon": 8
         },
         {
           "coords": [
