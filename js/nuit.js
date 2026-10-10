@@ -57,7 +57,7 @@
 
     /* Sons aléatoires : cle = "etranges" | "cris". L'intervalle dépend de la phase (normale / finale). */
     let finale = false;
-    const VOLUMES = { etranges: .8, cris: 1 };
+    const VOLUMES = { etranges: 1, cris: 1 };
     const prochains = {};
     function planifier(cle) {
         const [min, max] = ((finale && cfg.intervallesFinale) || cfg.intervalles)[cle];

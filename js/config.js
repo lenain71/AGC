@@ -143,15 +143,15 @@ AGC.config = {
                 sonar: { cris: 5, portee: 400, angle: 40, longueur: 120, duree: 3 },  // cris de chauve-souris de la finale ; portée (m) de l'écho ; cône de direction : ouverture (°), longueur (m), durée après l'écho (s)
                 rayonFlash: 25,     // m : distance à partir de laquelle le flash clignote (Android)
                 intervalles: {      // secondes entre deux sons aléatoires (min, max)
-                    etranges: [35, 80],
-                    cris: [150, 300]
-                },
-                intervallesFinale: { // idem pendant la finale (cibles cachées) : la tension monte
-                    etranges: [20, 45],
+                    etranges: [20, 50],
                     cris: [90, 180]
                 },
+                intervallesFinale: { // idem pendant la finale (cibles cachées) : la tension monte
+                    etranges: [12, 30],
+                    cris: [60, 120]
+                },
                 sons: {             // fichiers de sons/ (sans .mp3) ; ambiance : [fichier, volume]
-                    ambiance: [["ambiance-cimetiere", .55], ["ambiance-voix", .22]],
+                    ambiance: [["ambiance-cimetiere", .65], ["ambiance-voix", .32]],
                     murmures: "proche-murmures",
                     coeur: "proche-coeur",
                     etranges: ["etrange-porte", "etrange-rire", "etrange-chouette", "etrange-loup", "etrange-corbeaux",
