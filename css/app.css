@@ -582,3 +582,10 @@ body.nuit .fenetre-boite, body.nuit .phrase, body.nuit .gps, body.nuit .rond { b
     padding: 2px 10px; border-radius: 99px; white-space: nowrap; pointer-events: none;
     background: #ffd400; color: #2b2000; font-size: .66rem; font-weight: 900; box-shadow: 0 3px 10px rgba(0, 0, 0, .4);
 }
+
+/* Mode nuit : bulle d'énigme au toucher d'une citrouille */
+.bulle-enigme .leaflet-popup-content-wrapper, .bulle-enigme .leaflet-popup-tip { background: rgba(14, 9, 16, .96); border: 1px solid #7d0d12; color: var(--texte); }
+.bulle-enigme .leaflet-popup-content { margin: 10px 14px; min-width: 170px; }
+.popup-enigme b { display: block; font-family: var(--titre); font-weight: 400; letter-spacing: .03em; color: #ff6b6b; font-size: 1rem; }
+.popup-enigme p { margin: 4px 0 0 !important; font-size: .92rem; font-style: italic; }
+.popup-enigme .popup-trouvee { display: block; font-size: .78rem; font-weight: 800; color: var(--vert); }

@@ -83,6 +83,14 @@
         ];
     }
 
+    /* Mode nuit : énigmes de toutes les cibles restant à trouver (citrouilles, puis l'esprit une fois apparu) */
+    function ciblesRestantes() {
+        const liste = idsPoints.filter(n => !etat.visites[n])
+            .map(n => ({ cle: n, enigme: P.points[n].enigme, nom: "Citrouille n°" + n + (modeAudio() ? " (cachée)" : "") }));
+        if (secretActif() && !etat.secret) liste.push({ cle: "secret", enigme: P.secret.enigme, nom: "L'esprit" + (modeAudio() ? " (caché)" : "") });
+        return liste;
+    }
+
     function texteEnigmes(liste) {
         return '<ul class="regles enigmes">' + liste.map(c =>
             '<li><i class="fa-solid fa-scroll"></i><span><b>' + c.nom + "</b><br>" + AGC.echap(c.enigme || "Aucun indice… écoute.") + "</span></li>").join("") + "</ul>";
@@ -240,6 +248,11 @@
     }
     idsPoints.forEach(n => {
         marqueurs[n] = L.marker(P.points[n].coords, { icon: iconePoint(n), keyboard: false });
+        if (N && P.points[n].enigme) {
+            marqueurs[n].bindPopup(() => '<div class="popup-enigme"><b>Citrouille n°' + n + "</b>" +
+                (etat.visites[n] ? '<span class="popup-trouvee">✓ trouvée : ' + AGC.echap(P.points[n].lettre) + "</span>" : "") +
+                "<p>" + AGC.echap(P.points[n].enigme) + "</p></div>", { className: "bulle-enigme" });
+        }
     });
 
     /* Ajoute / retire les marqueurs selon l'avancement (point secret, cibles masquées du mode audio) */
@@ -259,6 +272,9 @@
                     html: etat.secret ? '<div class="marqueur-trouve">' + P.secret.lettre + "</div>" : '<div class="marqueur-secret">👻</div>'
                 })
             }).addTo(map);
+            if (N && P.secret.enigme) {
+                marqueurSecret.bindPopup("<div class=\"popup-enigme\"><b>L'esprit</b><p>" + AGC.echap(P.secret.enigme) + "</p></div>", { className: "bulle-enigme" });
+            }
         }
 
         // zones maudites + outils de la finale (radar, énigmes)
@@ -273,7 +289,7 @@
         if (N) {
             AGC.Nuit.finale(cachees.length > 0);   // sons aléatoires plus fréquents pendant la finale
             document.getElementById("sonar").hidden = !cachees.length;
-            document.getElementById("enigmes").hidden = !cachees.length;
+            document.getElementById("enigmes").hidden = !ciblesRestantes().some(c => c.enigme);   // énigmes dispo dès le début
             const reste = N.sonar.cris - (etat.sonar || 0);
             document.getElementById("sonar-reste").textContent = Math.max(0, reste);
             document.getElementById("sonar").disabled = reste <= 0;
@@ -332,7 +348,8 @@
                   "<p>Toutes les citrouilles sont trouvées. Un esprit se cache dans une nouvelle zone maudite : suis sa voix.</p>" +
                   texteEnigmes(ciblesCachees().filter(c => c.cle === "secret"))
                 : '<div class="lettre-geante">👻</div><h2>Un point secret est apparu !</h2>' +
-                  "<p>Toutes les citrouilles sont trouvées. Un fantôme se cache quelque part sur la carte : trouve-le pour compléter la phrase.</p>",
+                  "<p>Toutes les citrouilles sont trouvées. Un fantôme se cache quelque part sur la carte : trouve-le pour compléter la phrase.</p>" +
+                  (N && P.secret.enigme ? texteEnigmes([{ nom: "L'esprit", enigme: P.secret.enigme }]) : ""),
                 modeAudio()
                     ? [{ texte: "J'écoute…" }]
                     : [{ texte: "Voir où il est", action: () => map.flyTo(P.secret.coords, 17) }]
@@ -507,7 +524,7 @@
             }, delai * 1000);
         };
         document.getElementById("enigmes").onclick = () => {
-            fenetre("<h2>Les énigmes</h2>" + texteEnigmes(ciblesCachees()), [{ texte: "Fermer" }]);
+            fenetre("<h2>Les énigmes</h2>" + texteEnigmes(ciblesRestantes()), [{ texte: "Fermer" }]);
         };
     }
 
@@ -580,6 +597,7 @@
             '<ul class="regles">' +
             '<li><i class="fa-solid fa-moon"></i><span>La chasse n\'existe que la nuit' + (plageTexte ? ", " + plageTexte : "") + (jusquau ? ", " + jusquau : "") + ".</span></li>" +
             '<li><i class="fa-solid fa-headphones"></i><span>Monte le son, ou mieux : mets des écouteurs. Murmures et battements de cœur trahissent les citrouilles… et la nuit n\'est jamais silencieuse.</span></li>' +
+            '<li><i class="fa-solid fa-scroll"></i><span>Chaque citrouille a son énigme : touche-la sur la carte, ou le bouton 📜, pour la lire.</span></li>' +
             '<li><i class="fa-solid fa-ear-listen"></i><span>Les ' + N.audioSeul + " dernières cibles disparaissent de la carte : seule ton oreille pourra les trouver.</span></li>" +
             '<li><i class="fa-solid fa-ban"></i><span>Lampe torche interdite ! C\'est la règle du jeu.</span></li>' +
             '<li><i class="fa-solid fa-person-walking"></i><span>Reste sur les trottoirs et porte un gilet ou un accessoire réfléchissant.</span></li>' +
