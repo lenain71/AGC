@@ -477,7 +477,9 @@ body.nuit .bouton:not(.discret) { background: linear-gradient(180deg, #c81e26, #
 body.nuit .case.trouvee { background: #b3121b; border-color: #b3121b; }
 body.nuit .phrase-finale { background: linear-gradient(160deg, #b3121b, #3b0508); }
 body.nuit .lettre-geante { color: #ff3b3b; text-shadow: 0 0 24px rgba(255, 30, 30, .6); }
-body.nuit .marqueur-citrouille { filter: drop-shadow(0 0 10px rgba(255, 40, 40, .8)) saturate(.7) brightness(.8); }
+body.nuit .marqueur-citrouille { filter: drop-shadow(0 0 9px rgba(255, 30, 30, .85)); }
+/* le visage de la citrouille rouge luit de l'intérieur */
+.citrouille-sang path:not(:first-child) { filter: drop-shadow(0 0 2px #ffcc33); }
 body.nuit .fenetre-boite, body.nuit .phrase, body.nuit .gps, body.nuit .rond { background: rgba(14, 9, 16, .96); }
 
 /* Finale du mode nuit : radar chauve-souris, énigmes, zones maudites */

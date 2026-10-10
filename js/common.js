@@ -139,15 +139,26 @@
     };
 
     /* ---------- Illustrations ---------- */
-    AGC.citrouille = function (taille, extra) {
-        return '<svg class="citrouille ' + (extra || "") + '" width="' + taille + '" height="' + taille + '" viewBox="0 0 64 64" aria-hidden="true">' +
-            '<path d="M32 14c1-5 4-8 8-9l2 3c-3 1-5 3-6 6z" fill="#4a7a2a"/>' +
-            '<ellipse cx="20" cy="37" rx="15" ry="20" fill="#e86a00"/>' +
-            '<ellipse cx="44" cy="37" rx="15" ry="20" fill="#e86a00"/>' +
-            '<ellipse cx="32" cy="37" rx="15" ry="21" fill="#ff8a00"/>' +
-            '<path d="M18 31l7-6 3 8zM46 31l-7-6-3 8z" fill="#2a1100"/>' +
-            '<path d="M29 37l3-4 3 4z" fill="#2a1100"/>' +
-            '<path d="M16 42q16 12 32 0l-3 6-3-3-3 4-3-4-3 4-3-4-3 4-3-3-3 3z" fill="#2a1100"/>' +
+    /* Citrouille dessinée en SVG. Variante « sang » (rouge, visage qui luit de l'intérieur) en mode nuit (chasse adulte),
+       choisie automatiquement quand la page a la classe « nuit ». */
+    AGC.citrouille = function (taille, extra, variante) {
+        const sang = variante ? variante === "sang" : document.body && document.body.classList.contains("nuit");
+        const c = sang
+            ? { tige: "#2a1a12", cotes: "#5c070c", centre: "#8f0f16", visage: "#ffb21f" }
+            : { tige: "#4a7a2a", cotes: "#e86a00", centre: "#ff8a00", visage: "#2a1100" };
+        return '<svg class="citrouille ' + (sang ? "citrouille-sang " : "") + (extra || "") + '" width="' + taille + '" height="' + taille + '" viewBox="0 0 64 64" aria-hidden="true">' +
+            '<path d="M32 14c1-5 4-8 8-9l2 3c-3 1-5 3-6 6z" fill="' + c.tige + '"/>' +
+            '<ellipse cx="20" cy="37" rx="15" ry="20" fill="' + c.cotes + '"/>' +
+            '<ellipse cx="44" cy="37" rx="15" ry="20" fill="' + c.cotes + '"/>' +
+            '<ellipse cx="32" cy="37" rx="15" ry="21" fill="' + c.centre + '"/>' +
+            (sang
+                // yeux plissés et méchants, crocs plus marqués
+                ? '<path d="M15 29l12 4-9 4zM49 29l-12 4 9 4z" fill="' + c.visage + '"/>' +
+                  '<path d="M29 39l3-5 3 5z" fill="' + c.visage + '"/>' +
+                  '<path d="M14 43q18 13 36 0l-4 8-3-5-3 6-3-6-3 6-3-6-3 6-3-6-3 5z" fill="' + c.visage + '"/>'
+                : '<path d="M18 31l7-6 3 8zM46 31l-7-6-3 8z" fill="' + c.visage + '"/>' +
+                  '<path d="M29 37l3-4 3 4z" fill="' + c.visage + '"/>' +
+                  '<path d="M16 42q16 12 32 0l-3 6-3-3-3 4-3-4-3 4-3-4-3 4-3-3-3 3z" fill="' + c.visage + '"/>') +
             '</svg>';
     };
 
