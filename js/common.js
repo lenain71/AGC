@@ -8,7 +8,7 @@
 
     AGC.debug = params.get("debug") === "1";
     /* Mode test équipe (?bypass=1) : lève les dates d'ouverture et de fermeture, sans les outils du mode debug,
-       mais respecte la plage horaire quotidienne (chasse adulte : seulement de 21h à 1h).
+       mais respecte la plage horaire quotidienne (chasse adulte : seulement de 20h à 1h).
        La progression est enregistrée à part, pour repartir de zéro à l'ouverture réelle.
        Le mode debug (?debug=1) lève tout, horaires compris. */
     AGC.bypass = params.get("bypass") === "1";
@@ -89,7 +89,7 @@
         })
         .catch(() => { /* hors ligne : heure du téléphone */ });
 
-    /* Plage horaire quotidienne facultative d'un parcours : plage = { debut: "21:00", fin: "01:00" } (peut passer minuit).
+    /* Plage horaire quotidienne facultative d'un parcours : plage = { debut: "20:00", fin: "01:00" } (peut passer minuit).
        En dehors de cette plage, le parcours est fermé même entre l'ouverture et la fermeture. */
     const enMinutes = hhmm => { const [h, m] = hhmm.split(":").map(Number); return h * 60 + m; };
     function dansPlage(P, t) {

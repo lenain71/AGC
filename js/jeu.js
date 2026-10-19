@@ -578,7 +578,7 @@
 
     const retour = () => history.length > 1 ? history.back() : location.assign(AGC.lien("accueil.html"));
 
-    // ex. « chaque soir de 21h00 à 1h00 » / « jusqu'au mercredi 4 novembre 2026 »
+    // ex. « chaque soir de 20h00 à 1h00 » / « jusqu'au mercredi 4 novembre 2026 »
     const plageTexte = P.plage ? "chaque soir de " + AGC.hhmm(P.plage.debut) + " à " + AGC.hhmm(P.plage.fin) : "";
     const jusquau = AGC.dernierJour(id) ? "jusqu'au " + AGC.dateLongue(AGC.dernierJour(id)) : "";
 

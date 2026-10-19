@@ -121,9 +121,9 @@ AGC.config = {
             public: "Nouveauté 2026 — de nuit, pour les parents",
             description: "La nuit tombée, suis les murmures jusqu'aux citrouilles… Les dernières ne se trouvent qu'à l'oreille.",
             // Uniquement de nuit (heure contrôlée avec l'horloge du serveur, pas celle du téléphone)
-            ouverture: "2026-10-14T21:00:00",   // premier soir : mercredi 14/10
+            ouverture: "2026-10-14T20:00:00",   // premier soir : mercredi 14/10
             fermeture: "2026-11-05T01:00:00",   // dernière nuit : celle du mercredi 4/11
-            plage: { debut: "21:00", fin: "01:00" },   // ouverte seulement chaque soir de 21h à 1h
+            plage: { debut: "20:00", fin: "01:00" },   // ouverte seulement chaque soir de 20h à 1h
             couleur: "violet",
             // À COMPLÉTER : lieux différents des enfants ; provisoirement, les 8 points de 2025 non repris par les grands
             points: {
