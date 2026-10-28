@@ -1,7 +1,7 @@
 {
   "format": "hallo-village/lieux",
   "version": 1,
-  "misAJourLe": "2026-09-29T18:58:18.266Z",
+  "misAJourLe": "2026-10-28T13:45:05.311Z",
   "lieux": [
     {
       "id": "e2974ac6-1a92-4f13-9782-583b06c88236",
@@ -22,6 +22,28 @@
       "coords": [
         47.334451,
         5.149171
+      ],
+      "photo": null
+    },
+    {
+      "id": "e8538852-9d7e-45e4-9c67-59248db5e37d",
+      "type": "maison",
+      "nom": "Le Pin des Pendus",
+      "description": "",
+      "coords": [
+        47.339373,
+        5.151931
+      ],
+      "photo": null
+    },
+    {
+      "id": "709e8675-4d10-48a5-ab1c-74d561146710",
+      "type": "maison",
+      "nom": "Le cimetière hanté",
+      "description": "",
+      "coords": [
+        47.338355,
+        5.154062
       ],
       "photo": null
     }
