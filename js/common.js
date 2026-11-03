@@ -109,6 +109,10 @@
         const P = C.parcours[id], t = AGC.maintenant();
         return AGC.debug || (AGC.periodeCommencee(id) && !AGC.estTermine(id) && dansPlage(P, t));
     };
+    /* Toutes les chasses sont terminées (jamais en mode test ou debug) : l'appli passe en « archive » */
+    AGC.saisonTerminee = () => Object.keys(C.parcours).every(AGC.estTermine);
+    AGC.soireePassee = () => AGC.maintenant() >= new Date(C.soiree.fin || C.soiree.date).getTime();
+
     /* Prochain moment d'ouverture (date ISO), ou null si la chasse est terminée */
     AGC.prochaineOuverture = function (id) {
         const P = C.parcours[id], t = AGC.maintenant(), debut = AGC.bypass ? -Infinity : new Date(P.ouverture).getTime();
@@ -118,7 +122,7 @@
         const d = new Date(t), [h, m] = P.plage.debut.split(":").map(Number);
         d.setHours(h, m, 0, 0);
         if (d.getTime() <= t) d.setDate(d.getDate() + 1);
-        return P.fermeture && d.getTime() >= new Date(P.fermeture).getTime() ? null : d.toISOString();
+        return P.fermeture && !sansDates && d.getTime() >= new Date(P.fermeture).getTime() ? null : d.toISOString();
     };
     AGC.hhmm = hhmm => hhmm.replace(/^0(\d)/, "$1").replace(":", "h");   // "01:00" → "1h00"
     /* Dernier jour de chasse à afficher (une plage qui finit après minuit appartient à la veille) */

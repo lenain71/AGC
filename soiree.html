@@ -24,6 +24,7 @@
             <li id="ligne-services" hidden><i class="fa-solid fa-mug-hot"></i><span id="services"></span></li>
         </ul>
         <p class="soiree-desc" id="description"></p>
+        <p class="alerte-repas fin" id="soiree-finie" hidden><i class="fa-solid fa-heart"></i><span></span></p>
         <p class="alerte-repas" id="repas" hidden><i class="fa-solid fa-utensils"></i><span></span></p>
         <a class="bouton" id="inscription" target="_blank" rel="noopener">
             <i class="fa-solid fa-ticket"></i> Je participe
@@ -48,7 +49,13 @@
         texte("description", S.description);
         if (S.services) { texte("services", S.services); document.getElementById("ligne-services").hidden = false; }
         document.getElementById("inscription").href = S.helloasso;
-        if (S.repas) {
+        if (AGC.soireePassee()) {
+            // après la soirée : un merci à la place de l'inscription et de la consigne repas
+            const fin = document.getElementById("soiree-finie");
+            fin.querySelector("span").textContent = "La soirée a eu lieu le " + AGC.dateLongue(S.date) + ". Merci à tous d'être venus frissonner avec nous… et à l'année prochaine 🎃";
+            fin.hidden = false;
+            document.getElementById("inscription").hidden = true;
+        } else if (S.repas) {
             const repas = document.getElementById("repas");
             repas.querySelector("span").textContent = S.repas;
             repas.hidden = false;

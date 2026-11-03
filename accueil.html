@@ -21,6 +21,8 @@
             <span class="pastille" id="habitants"></span>
         </section>
 
+        <div class="bloc rebours" id="fin-saison" hidden></div>
+
         <div class="tuiles">
             <a class="tuile orange" data-href="soiree.html">
                 <i class="fa-solid fa-calendar-days"></i>
@@ -30,7 +32,7 @@
             <a class="tuile violet" data-href="enfants.html">
                 <i class="fa-solid fa-candy-cane"></i>
                 <span class="tuile-nom">Chasse des enfants</span>
-                <span class="tuile-info">Petits &amp; grands</span>
+                <span class="tuile-info" id="info-enfants">Petits &amp; grands</span>
             </a>
             <a class="tuile violet" data-href="carte.html">
                 <i class="fa-solid fa-map-location-dot"></i>
@@ -41,7 +43,7 @@
                 <span class="tuile-nouveau">NOUVEAU</span>
                 <i class="fa-solid fa-user-group"></i>
                 <span class="tuile-nom">Chasse des adultes</span>
-                <span class="tuile-info">Pour les parents</span>
+                <span class="tuile-info" id="info-adultes">Pour les parents</span>
             </a>
         </div>
 
@@ -79,7 +81,18 @@
             : AGC.maintenant() < finChasse
                 ? '<span class="rebours-ligne">🎃 Chasses aux citrouilles ouvertes jusqu\'au ' + AGC.dateLongue(E.fermeture).replace(/ \d{4}$/, "") + "</span>"
                 : "";
-        if (AGC.maintenant() < new Date(S.date).getTime()) {
+        if (AGC.saisonTerminee()) {
+            // fin de l'édition : un merci en haut de page, les tuiles restent pour revoir la carte et le programme
+            const fin = document.getElementById("fin-saison");
+            fin.innerHTML = AGC.citrouille(46) +
+                '<p class="rebours-texte">La chasse ' + C.annee + ' est terminée !<b>Merci à tous, et à l’année prochaine 🎃</b></p>';
+            fin.hidden = false;
+            rebours.hidden = true;
+            document.querySelectorAll(".tuile-nouveau").forEach(el => el.remove());
+            document.getElementById("info-soiree").textContent = new Date(S.date).getDate() + " oct. · merci !";
+            document.getElementById("info-enfants").textContent = "Terminé";
+            document.getElementById("info-adultes").textContent = "Terminé";
+        } else if (AGC.maintenant() < new Date(S.date).getTime()) {
             rebours.innerHTML = AGC.citrouille(46) +
                 '<p class="rebours-texte">La soirée commence dans<b data-rebours="' + S.date + '">' + AGC.texteRebours(S.date) + "</b>" + ligneChasse + "</p>";
         } else if (AGC.maintenant() < finSoiree) {

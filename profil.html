@@ -28,14 +28,20 @@
         function afficher() {
             const P = AGC.config.parcours;
             document.getElementById("liste").innerHTML = Object.keys(P).map(id => {
-                const pr = AGC.progression(id), e = AGC.etatParcours(id);
+                const pr = AGC.progression(id), e = AGC.etatParcours(id), termine = AGC.estTermine(id);
                 return '<section class="bloc"><div class="profil-ligne"><h2>' + P[id].nom + "</h2>" +
                     '<span class="etat">' + e.texte + "</span></div>" +
                     '<div class="progres"><span style="width:' + Math.round(100 * pr.trouves / pr.total) + '%"></span></div>' +
-                    '<div class="profil-actions">' +
-                    '<a class="bouton violet" href="' + AGC.lien("jeu.html?p=" + id) + '">' + (pr.trouves ? "Reprendre" : "Jouer") + "</a>" +
-                    (pr.trouves ? '<button class="bouton discret" data-effacer="' + id + '"><i class="fa-solid fa-rotate-left"></i> Recommencer</button>' : "") +
-                    "</div></section>";
+                    (termine
+                        ? '<p class="profil-bilan">' + (pr.fini
+                            ? '<i class="fa-solid fa-trophy"></i> Bravo : ' + pr.total + "/" + pr.total + " citrouilles, phrase secrète trouvée !"
+                            : pr.trouves
+                                ? '<i class="fa-solid fa-magnifying-glass"></i> ' + pr.trouves + "/" + pr.total + " citrouilles trouvées"
+                                : "Pas joué cette année") + "</p></section>"
+                        : '<div class="profil-actions">' +
+                          '<a class="bouton violet" href="' + AGC.lien("jeu.html?p=" + id) + '">' + (pr.trouves ? "Reprendre" : "Jouer") + "</a>" +
+                          (pr.trouves ? '<button class="bouton discret" data-effacer="' + id + '"><i class="fa-solid fa-rotate-left"></i> Recommencer</button>' : "") +
+                          "</div></section>");
             }).join("");
         }
         document.getElementById("liste").addEventListener("click", e => {

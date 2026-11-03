@@ -511,6 +511,11 @@ body.nuit .fenetre-boite, body.nuit .phrase, body.nuit .gps, body.nuit .rond { b
     font-weight: 800; font-size: .92rem;
 }
 .alerte-repas i { color: var(--orange); margin-top: 3px; }
+.alerte-repas.fin { background: rgba(106, 75, 255, .16); border-color: rgba(167, 139, 250, .55); }
+.alerte-repas.fin i { color: var(--violet-clair); }
+#fin-saison { margin: 0 0 18px; }
+.profil-bilan { margin-top: 10px; font-weight: 800; color: var(--texte-2); }
+.profil-bilan i { color: var(--orange); margin-right: 6px; }
 .programme .heure.suite { background: rgba(106, 75, 255, .18); color: var(--violet-clair); font-weight: 800; font-size: .8rem; }
 .programme li { align-items: center; }
 

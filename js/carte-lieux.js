@@ -74,12 +74,13 @@
                 .bindPopup(contenuPopup(p, true)).addTo(coucheMiens);
         });
         const n = propositions.length, aEnvoyer = propositions.filter(p => !p.envoyeLe).length;
-        $("mes-propositions").hidden = n === 0;
+        $("mes-propositions").hidden = n === 0 || AGC.saisonTerminee();
         $("mes-propositions").innerHTML = '<i class="fa-solid fa-map-pin"></i> ' +
             (n > 1 ? "Mes " + n + " propositions" : "Ma proposition") +
             (aEnvoyer ? ' <span class="badge">' + aEnvoyer + " à envoyer</span>" : ' <i class="fa-solid fa-check"></i>');
     }
     afficherMiens();
+    if (AGC.saisonTerminee()) $("proposer").hidden = true;   // édition terminée : plus personne ne valide les propositions
 
     map.on("popupopen", e => {
         const b = e.popup.getElement().querySelector("[data-modifier]");
